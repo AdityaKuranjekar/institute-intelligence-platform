@@ -1,0 +1,7 @@
+# Purpose: Canonical clean CSV template for student enrolment records.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §8 (students table) and §12 (Data capture).
+roll_no,name,name_alt,dob,gender,class_level,exam,batch_name,join_date,fee_plan,out_of_town
+PAT26-001,Aarav Test,आरव टेस्ट,2009-05-14,male,class_11,jee_main,JEE-11-Morning-A,2026-04-15,standard_3_instalment,false
+PAT26-002,Ananya Sample,अनन्या सैंपल,2008-11-22,female,class_12,neet_ug,NEET-12-Regular-B,2026-04-16,rajasthan_4_equal,true
+PAT26-003,Rohan Demo,रोहन डेमो,2007-02-10,male,dropper,jee_main,JEE-Target-Dropper-A,2026-04-18,upfront_full,true

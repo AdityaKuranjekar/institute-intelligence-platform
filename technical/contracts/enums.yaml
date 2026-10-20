@@ -1,0 +1,292 @@
+# Purpose: Single source of truth for all enumerations across database schema, OpenAPI specification, and data dictionary.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §8 (Data model), §10 (ML modules & routing), §11 (GenAI), §12 (Data capture), §13 (API), §15 (Privacy & DPDP).
+
+contract_version: "1.0.0"
+
+enums:
+  role:
+    description: "User role within an institute controlling RBAC and response field filtering."
+    values:
+      - owner
+      - admin
+      - teacher
+      - mentor
+      - parent
+      - student
+
+  class_level:
+    description: "Student academic cohort or class level."
+    values:
+      - class_11
+      - class_12
+      - dropper
+
+  exam:
+    description: "Target competitive entrance examination."
+    values:
+      - jee_main
+      - neet_ug
+
+  institute_exam_focus:
+    description: "Primary entrance exam focus of a coaching institute."
+    values:
+      - jee_main
+      - neet_ug
+      - mix
+
+  city_tier:
+    description: "Indian urban tier classification of the institute's city."
+    values:
+      - tier_1
+      - tier_2
+      - tier_3
+
+  institute_plan:
+    description: "Subscription plan tier of the coaching institute."
+    values:
+      - starter
+      - standard
+      - pro
+
+  student_status:
+    description: "Current enrolment lifecycle status of a student."
+    values:
+      - active
+      - left
+      - transferred
+
+  gender:
+    description: "Student gender for fairness slice reporting."
+    values:
+      - female
+      - male
+      - other
+      - prefer_not_to_say
+
+  fee_plan:
+    description: "Tuition fee payment schedule plan chosen at admission."
+    values:
+      - upfront_full
+      - standard_3_instalment
+      - rajasthan_4_equal
+      - custom_scholarship
+
+  guardian_relation:
+    description: "Relationship of the consenting adult guardian to the student."
+    values:
+      - father
+      - mother
+      - legal_guardian
+      - self
+
+  response_status:
+    description: "Capture and grading state of an individual question response."
+    values:
+      - answered
+      - blank
+      - multi_marked
+      - unreadable
+
+  q_type:
+    description: "Question format type."
+    values:
+      - mcq_single
+      - mcq_multi
+      - numeric
+
+  partial_rule:
+    description: "Rule for awarding marks on multi-correct or dropped questions."
+    values:
+      - none
+      - full_marks_if_any_accepted
+      - proportional_no_negative
+
+  dropped_question_rule:
+    description: "Scoring policy when an item is officially dropped from a test."
+    values:
+      - full_marks_all
+      - full_marks_attempted_only
+
+  test_source:
+    description: "Data ingestion channel through which test responses or marks arrived."
+    values:
+      - omr
+      - csv
+      - online
+
+  attendance_source:
+    description: "Source channel for daily student attendance records."
+    values:
+      - csv
+      - manual
+      - biometric
+
+  consent_purpose:
+    description: "Granular DPDP Act processing purpose requiring verifiable consent."
+    values:
+      - analytics
+      - risk_alerts
+      - parent_reports
+      - benchmarking
+      - engagement_tracking
+
+  verification_method:
+    description: "DPDP Rule 10 identity and age verification method for consent."
+    values:
+      - in_person_id_check
+      - otp_known_parent
+      - digilocker_token
+      - self_adult
+
+  intervention_type:
+    description: "Supportive mentor action triggered by an early-warning alert."
+    values:
+      - mentoring
+      - counselling_referral
+      - remedial_session
+      - fee_plan_discussion
+      - parent_call
+
+  intervention_outcome:
+    description: "Logged outcome of a completed supportive intervention."
+    values:
+      - pending
+      - completed_improved
+      - completed_no_change
+      - escalated_to_counsellor
+      - parent_unreachable
+      - declined
+
+  risk_target:
+    description: "Early-warning prediction or rule evaluation target."
+    values:
+      - academic_support
+      - retention
+      - fee
+
+  risk_band:
+    description: "Supportive triage band assigned to a student."
+    values:
+      - low
+      - watch
+      - needs_support
+
+  mastery_band:
+    description: "Categorical topic mastery band displayed when standard error is sufficiently small."
+    values:
+      - not_enough_data
+      - building
+      - steady
+      - strong
+
+  trend_direction:
+    description: "Overall academic trajectory direction over the reporting window."
+    values:
+      - improving
+      - steady
+      - declining
+
+  feature_tier:
+    description: "Privacy tier classification of model features (A=tests, B=attendance, C=fees, D=engagement)."
+    values:
+      - A
+      - B
+      - C
+      - D
+
+  batch_change_reason:
+    description: "Permitted administrative reason for transferring a student between batches (performance is deliberately absent per MoE cl. 12(vii))."
+    values:
+      - timing
+      - subject_change
+      - relocation
+      - other
+
+  ingest_type:
+    description: "Category of data uploaded in an ingestion job."
+    values:
+      - students
+      - guardians
+      - results_responses
+      - results_marks_only
+      - answer_key
+      - attendance
+      - fees
+      - omr_photos
+
+  ingest_status:
+    description: "Processing status of an upload ingestion job."
+    values:
+      - pending_mapping
+      - preview_ready
+      - awaiting_review
+      - confirmed
+      - failed
+
+  report_path:
+    description: "Generation pathway used to produce a verified parent report."
+    values:
+      - llm
+      - template
+
+  report_channel:
+    description: "Delivery channel for parent progress reports."
+    values:
+      - none
+      - whatsapp_preview
+      - pdf_download
+      - portal_view
+
+  lang:
+    description: "ISO 639-1 language code supported by user interfaces and templates."
+    values:
+      - en
+      - hi
+
+  tagger_source:
+    description: "Origin of a question-to-topic mapping tag."
+    values:
+      - human
+      - embedding_llm
+      - keyword_rule
+
+  item_fit_flag:
+    description: "IRT calibration diagnostic flag for a question item."
+    values:
+      - ok
+      - suspect_wrong_key
+      - low_discrimination
+      - too_few_responses
+
+  day_of_week:
+    description: "Day of the week in Asia/Kolkata calendar."
+    values:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+
+  routing_method:
+    description: "Execution method permitted by purpose- and age-aware legal routing."
+    values:
+      - ml
+      - rules
+      - none
+
+  audit_action:
+    description: "Audited security or privacy event type (retained >= 1 year per DPDP Rule 6)."
+    values:
+      - view_risk_scores
+      - view_student_profile
+      - export_register
+      - update_legal_settings
+      - update_privacy_tier
+      - grant_consent
+      - revoke_consent
+      - update_answer_key
+      - create_intervention
+      - generate_report

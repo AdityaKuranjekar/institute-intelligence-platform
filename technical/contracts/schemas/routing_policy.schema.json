@@ -1,0 +1,197 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for contracts/routing_policy.yaml. contract_version: 1.0.0. Implements: TECH_PLAN \u00a71 #11, \u00a710, \u00a715.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/schemas/routing_policy.schema.json",
+  "title": "RoutingPolicyContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "age_derivation",
+    "required_consents_by_target",
+    "routing_matrix",
+    "rules"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "age_derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adult_age_years",
+        "formula",
+        "reconsent_on_18th_birthday"
+      ],
+      "properties": {
+        "adult_age_years": {
+          "type": "integer",
+          "const": 18
+        },
+        "formula": {
+          "type": "string"
+        },
+        "reconsent_on_18th_birthday": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "required_consents_by_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "academic_support",
+        "retention",
+        "fee"
+      ],
+      "properties": {
+        "academic_support": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "retention": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fee": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "routing_matrix": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "is_minor",
+          "minor_ml_risk_enabled",
+          "target",
+          "method",
+          "allowed_tiers",
+          "rationale"
+        ],
+        "properties": {
+          "is_minor": {
+            "type": "boolean"
+          },
+          "minor_ml_risk_enabled": {
+            "type": "boolean"
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "academic_support",
+              "retention",
+              "fee"
+            ]
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "ml",
+              "rules",
+              "none"
+            ]
+          },
+          "allowed_tiers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ]
+            }
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 10
+          }
+        }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "target",
+          "feature",
+          "operator",
+          "threshold",
+          "band",
+          "reason_template_key",
+          "suggested_action"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "academic_support",
+              "retention",
+              "fee"
+            ]
+          },
+          "feature": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              ">=",
+              "<=",
+              ">",
+              "<",
+              "=="
+            ]
+          },
+          "threshold": {
+            "type": "number"
+          },
+          "band": {
+            "type": "string",
+            "enum": [
+              "low",
+              "watch",
+              "needs_support"
+            ]
+          },
+          "reason_template_key": {
+            "type": "string"
+          },
+          "suggested_action": {
+            "type": "string",
+            "enum": [
+              "mentoring",
+              "counselling_referral",
+              "remedial_session",
+              "fee_plan_discussion",
+              "parent_call"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for the deterministic GenAI numbers_json payload. contract_version: 1.0.0. Implements: TECH_PLAN §1 #9 and §11 (GenAI layer).",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/report_numbers.schema.json",
+  "title": "ReportNumbersJson",
+  "description": "Deterministic fact payload passed to the local LLM or bilingual template engine. Never contains real student or institute names; uses {STUDENT} and {INSTITUTE} placeholders.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "period",
+    "lang",
+    "student_placeholder",
+    "institute_placeholder",
+    "attendance_pct",
+    "tests_taken",
+    "trend",
+    "strengths",
+    "focus",
+    "home_tips"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "period": {
+      "type": "string",
+      "description": "Reporting window label (e.g. 2026-W20 or 2026-08).",
+      "minLength": 4,
+      "maxLength": 32
+    },
+    "lang": {
+      "type": "string",
+      "enum": ["en", "hi"]
+    },
+    "student_placeholder": {
+      "type": "string",
+      "const": "{STUDENT}"
+    },
+    "institute_placeholder": {
+      "type": "string",
+      "const": "{INSTITUTE}"
+    },
+    "attendance_pct": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 100.0
+    },
+    "tests_taken": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "trend": {
+      "type": "string",
+      "enum": ["improving", "steady", "declining"]
+    },
+    "strengths": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/topic_item"
+      }
+    },
+    "focus": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/topic_item"
+      }
+    },
+    "home_tips": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "string",
+        "enum": [
+          "tip_fixed_revision_slot",
+          "tip_mistake_notebook_review",
+          "tip_sleep_and_rest_day",
+          "tip_formula_flashcards",
+          "tip_timed_practice_set",
+          "tip_ask_faculty_doubts",
+          "tip_regular_class_attendance",
+          "tip_encourage_steady_effort"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "topic_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["topic_id", "name_en", "name_hi", "mastery_band"],
+      "properties": {
+        "topic_id": {
+          "type": "string",
+          "minLength": 3
+        },
+        "name_en": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name_hi": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mastery_band": {
+          "type": "string",
+          "enum": ["not_enough_data", "building", "steady", "strong"]
+        }
+      }
+    }
+  }
+}

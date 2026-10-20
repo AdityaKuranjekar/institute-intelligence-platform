@@ -1,0 +1,421 @@
+# Purpose: Fuzzy column header synonyms (English, Hinglish, Devanagari) and attendance/blank markers for messy Excel/CSV ingestion.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §9 (Messy injector) and §12 (Fuzzy column mapping).
+
+contract_version: "1.0.0"
+
+absent_markers:
+  - "AB"
+  - "A"
+  - "Absent"
+  - "absent"
+  - "-"
+  - "--"
+  - "NA"
+  - "N/A"
+  - "अनुपस्थित"
+  - "गैरहाजिर"
+
+present_markers:
+  - "P"
+  - "Present"
+  - "present"
+  - "1"
+  - "Y"
+  - "Yes"
+  - "उपस्थित"
+  - "हाजिर"
+
+column_synonyms:
+  roll_no:
+    - "Roll No."
+    - "Roll No"
+    - "R.No"
+    - "Roll Number"
+    - "Admission No"
+    - "Enrolment ID"
+    - "Student ID"
+    - "रोल नंबर"
+    - "नामांकन संख्या"
+    - "क्रमांक"
+
+  name:
+    - "Student Name"
+    - "Name"
+    - "Full Name"
+    - "Candidate Name"
+    - "Bacche Ka Naam"
+    - "Chatra Ka Naam"
+    - "छात्र का नाम"
+    - "विद्यार्थी का नाम"
+    - "नाम"
+
+  name_alt:
+    - "Hindi Name"
+    - "Regional Name"
+    - "Alternate Name"
+    - "Devanagari Name"
+    - "हिंदी नाम"
+    - "उपनाम"
+
+  dob:
+    - "Date of Birth"
+    - "DOB"
+    - "D.O.B."
+    - "Birth Date"
+    - "Janam Tithi"
+    - "जन्म तिथि"
+    - "जन्मदिनांक"
+
+  gender:
+    - "Gender"
+    - "Sex"
+    - "M/F"
+    - "Ling"
+    - "लिंग"
+    - "छात्र/छात्रा"
+
+  class_level:
+    - "Class"
+    - "Standard"
+    - "Grade"
+    - "Course Year"
+    - "Kaksha"
+    - "कक्षा"
+    - "वर्ग"
+
+  exam:
+    - "Target Exam"
+    - "Exam"
+    - "Stream"
+    - "Course"
+    - "JEE/NEET"
+    - "परीक्षा"
+    - "कोर्स"
+
+  batch_name:
+    - "Batch"
+    - "Batch Name"
+    - "Section"
+    - "Batch Code"
+    - "Group"
+    - "बैच"
+    - "बैच का नाम"
+
+  join_date:
+    - "Admission Date"
+    - "Joining Date"
+    - "Enrolment Date"
+    - "Date of Joining"
+    - "DOJ"
+    - "प्रवेश तिथि"
+    - "दाखिला तारीख"
+
+  fee_plan:
+    - "Fee Plan"
+    - "Payment Plan"
+    - "Instalment Plan"
+    - "Fee Structure"
+    - "Kist Plan"
+    - "शुल्क योजना"
+    - "फीस प्लान"
+
+  out_of_town:
+    - "Outstation"
+    - "Hosteller"
+    - "Out of Town"
+    - "Local/Outstation"
+    - "Bahari"
+    - "हॉस्टल/बाहरी"
+    - "बाहरी छात्र"
+
+  guardian_name:
+    - "Parent Name"
+    - "Father/Mother Name"
+    - "Guardian Name"
+    - "Father's Name"
+    - "Pita Ka Naam"
+    - "अभिभावक का नाम"
+    - "पिता/माता का नाम"
+
+  phone:
+    - "Mobile No"
+    - "Phone Number"
+    - "WhatsApp No"
+    - "Contact No"
+    - "Parent Mobile"
+    - "मोबाइल नंबर"
+    - "फ़ोन नंबर"
+
+  relation:
+    - "Relation"
+    - "Relationship"
+    - "Guardian Relation"
+    - "Rishta"
+    - "संबंध"
+    - "रिश्ता"
+
+  lang_pref:
+    - "Preferred Language"
+    - "Report Language"
+    - "Language"
+    - "Bhasha"
+    - "Medium"
+    - "भाषा"
+    - "रिपोर्ट भाषा"
+
+  test_name:
+    - "Test Name"
+    - "Exam Name"
+    - "Mock Test"
+    - "Assessment Name"
+    - "Paper Code"
+    - "टेस्ट का नाम"
+    - "परीक्षा नाम"
+
+  test_date:
+    - "Test Date"
+    - "Exam Date"
+    - "Date of Test"
+    - "Paper Date"
+    - "Pariksha Tithi"
+    - "परीक्षा तिथि"
+    - "टेस्ट तारीख"
+
+  q1:
+    - "Q1"
+    - "Q.1"
+    - "Ques 1"
+    - "Question 1"
+    - "प्र. 1"
+    - "प्रश्न 1"
+
+  q2:
+    - "Q2"
+    - "Q.2"
+    - "Ques 2"
+    - "Question 2"
+    - "प्र. 2"
+    - "प्रश्न 2"
+
+  q3:
+    - "Q3"
+    - "Q.3"
+    - "Ques 3"
+    - "Question 3"
+    - "प्र. 3"
+    - "प्रश्न 3"
+
+  q4:
+    - "Q4"
+    - "Q.4"
+    - "Ques 4"
+    - "Question 4"
+    - "प्र. 4"
+    - "प्रश्न 4"
+
+  q5:
+    - "Q5"
+    - "Q.5"
+    - "Ques 5"
+    - "Question 5"
+    - "प्र. 5"
+    - "प्रश्न 5"
+
+  raw_score:
+    - "Total Marks"
+    - "Raw Score"
+    - "Marks Obtained"
+    - "Net Score"
+    - "Grand Total"
+    - "कुल अंक"
+    - "प्राप्तांक"
+
+  physics_score:
+    - "Physics"
+    - "Phy Marks"
+    - "Physics Score"
+    - "PHY"
+    - "Bhautiki"
+    - "भौतिकी अंक"
+    - "भौतिक विज्ञान"
+
+  chemistry_score:
+    - "Chemistry"
+    - "Chem Marks"
+    - "Chemistry Score"
+    - "CHEM"
+    - "Rasayan"
+    - "रसायन अंक"
+    - "रसायन विज्ञान"
+
+  math_or_bio_score:
+    - "Mathematics / Biology"
+    - "Maths Marks"
+    - "Biology Marks"
+    - "MATH/BIO"
+    - "Ganit / Jeev Vigyan"
+    - "गणित / जीव विज्ञान"
+    - "मैथ्स/बायो अंक"
+
+  absent_flag:
+    - "Absent?"
+    - "Attendance Status"
+    - "Is Absent"
+    - "Exam Attendance"
+    - "Gairhazir"
+    - "अनुपस्थिति"
+    - "परीक्षा उपस्थिति"
+
+  question_no:
+    - "Question No"
+    - "Q.No."
+    - "Item No"
+    - "Sr. No"
+    - "Q_ID"
+    - "प्रश्न संख्या"
+    - "सवाल नंबर"
+
+  q_type:
+    - "Question Type"
+    - "Type"
+    - "Format"
+    - "MCQ/Numeric"
+    - "Pattern"
+    - "प्रश्न प्रकार"
+    - "सवाल का प्रकार"
+
+  subject:
+    - "Subject"
+    - "Subject Name"
+    - "Discipline"
+    - "Paper Subject"
+    - "Vishay"
+    - "विषय"
+    - "सब्जेक्ट"
+
+  topic_id:
+    - "Topic ID"
+    - "Topic Code"
+    - "Chapter/Topic"
+    - "Syllabus Tag"
+    - "Concept ID"
+    - "टॉपिक कोड"
+    - "अध्याय/विषय"
+
+  accepted_answers:
+    - "Correct Answer"
+    - "Answer Key"
+    - "Key"
+    - "Right Option"
+    - "Sahi Uttar"
+    - "सही उत्तर"
+    - "उत्तर कुंजी"
+
+  numeric_tolerance:
+    - "Tolerance"
+    - "Numeric Tolerance"
+    - "Allowed Error"
+    - "Margin"
+    - "Range (+/-)"
+    - "सहनशीलता"
+    - "त्रुटि सीमा"
+
+  dropped:
+    - "Dropped"
+    - "Is Bonus"
+    - "Cancelled"
+    - "Bonus Question"
+    - "Dropped Flag"
+    - "बोनस प्रश्न"
+    - "रद्द प्रश्न"
+
+  attendance_date:
+    - "Date"
+    - "Attendance Date"
+    - "Class Date"
+    - "Lecture Date"
+    - "Tarikh"
+    - "दिनांक"
+    - "उपस्थिति तिथि"
+
+  present_flag:
+    - "Present/Absent"
+    - "Status"
+    - "Attendance"
+    - "P/A"
+    - "Haziri"
+    - "उपस्थिति"
+    - "हाजिरी"
+
+  source:
+    - "Source"
+    - "Capture Mode"
+    - "Entry Type"
+    - "Register/Biometric"
+    - "Madhyam"
+    - "स्रोत"
+    - "माध्यम"
+
+  instalment_no:
+    - "Instalment No"
+    - "Installment #"
+    - "Kist No"
+    - "Tranche"
+    - "Payment No"
+    - "किस्त संख्या"
+    - "किश्त नंबर"
+
+  due_date:
+    - "Due Date"
+    - "Instalment Date"
+    - "Scheduled Date"
+    - "Pay By"
+    - "Jama Tarikh"
+    - "देय तिथि"
+    - "अंतिम तिथि"
+
+  amount_paise:
+    - "Amount (Paise)"
+    - "Due Amount"
+    - "Instalment Amount"
+    - "Fee Due"
+    - "Kul Rashi"
+    - "देय राशि (पैसे)"
+    - "फीस राशि"
+
+  paid_date:
+    - "Paid Date"
+    - "Receipt Date"
+    - "Payment Date"
+    - "Date of Payment"
+    - "Bhugtan Tithi"
+    - "भुगतान तिथि"
+    - "जमा तारीख"
+
+  paid_amount_paise:
+    - "Paid Amount (Paise)"
+    - "Amount Received"
+    - "Collected Fee"
+    - "Jama Rashi"
+    - "Paid"
+    - "प्राप्त राशि (पैसे)"
+    - "भुगतान राशि"
+
+  refund_due_paise:
+    - "Refund Due (Paise)"
+    - "Pro-Rata Refund"
+    - "Refundable Amount"
+    - "Wapasi Rashi"
+    - "Refund"
+    - "वापसी देय राशि"
+    - "रिफंड राशि"
+
+  refund_paid_date:
+    - "Refund Date"
+    - "Refund Paid On"
+    - "Settlement Date"
+    - "Wapasi Tithi"
+    - "Refund Disbursed Date"
+    - "रिफंड भुगतान तिथि"
+    - "वापसी तारीख"

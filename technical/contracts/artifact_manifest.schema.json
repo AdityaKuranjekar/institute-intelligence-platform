@@ -1,0 +1,83 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for ML artifact folder manifest (`ml/artifacts/vX/manifest.json`). contract_version: 1.0.0. Implements: TECH_PLAN §6, §7, §8 (model_registry), and §10.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/artifact_manifest.schema.json",
+  "title": "ArtifactManifest",
+  "description": "Manifest describing a trained, versioned ML artifact bundle baked into the offline container.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "version",
+    "trained_at",
+    "data_version",
+    "files",
+    "models",
+    "library_versions"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "trained_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data_version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generator_seed", "generator_config_sha256"],
+      "properties": {
+        "generator_seed": { "type": "integer" },
+        "generator_config_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256", "kind"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "kind": {
+            "type": "string",
+            "enum": ["irt_params", "mastery_priors", "lightgbm_model", "calibrator", "conformal_quantiles", "metrics", "model_card"]
+          }
+        }
+      }
+    },
+    "models": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["model_id", "module", "target", "feature_tier", "features_used", "minor_eligible"],
+        "properties": {
+          "model_id": { "type": "string" },
+          "module": { "type": "string", "enum": ["irt", "mastery", "early_warning", "percentile_band", "tagging"] },
+          "target": { "type": ["string", "null"], "enum": ["academic_support", "retention", "fee", null] },
+          "feature_tier": { "type": "string", "enum": ["A", "B", "C", "D"] },
+          "features_used": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "minor_eligible": { "type": "boolean" }
+        }
+      }
+    },
+    "library_versions": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "required": ["python", "numpy", "lightgbm", "scikit_learn"]
+    }
+  }
+}

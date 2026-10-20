@@ -1,0 +1,159 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for OMR physical sheet geometry layouts in mm. contract_version: 1.0.0. Implements: TECH_PLAN §8 (omr_templates), §9 (OMR images), and §12 (OMR photo pipeline).",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/omr_template.schema.json",
+  "title": "OmrTemplateLayout",
+  "description": "Physical coordinate schema (in mm) for OMR sheet rendering and OpenCV perspective warp / bubble fill detection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "layout_name",
+    "total_questions",
+    "page_size_mm",
+    "bubble_radius_mm",
+    "fiducials",
+    "qr_box",
+    "roll_number_grid",
+    "question_blocks"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "layout_name": {
+      "type": "string",
+      "enum": ["generic_mcq_100", "neet_200", "jee_75"]
+    },
+    "total_questions": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 250
+    },
+    "page_size_mm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width_mm", "height_mm"],
+      "properties": {
+        "width_mm": { "type": "number", "minimum": 100.0, "maximum": 350.0 },
+        "height_mm": { "type": "number", "minimum": 150.0, "maximum": 500.0 }
+      }
+    },
+    "bubble_radius_mm": {
+      "type": "number",
+      "minimum": 0.6,
+      "maximum": 3.0
+    },
+    "fiducials": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["size_mm", "top_left", "top_right", "bottom_left", "bottom_right"],
+      "properties": {
+        "size_mm": { "type": "number", "minimum": 4.0, "maximum": 15.0 },
+        "top_left": { "$ref": "#/$defs/point_mm" },
+        "top_right": { "$ref": "#/$defs/point_mm" },
+        "bottom_left": { "$ref": "#/$defs/point_mm" },
+        "bottom_right": { "$ref": "#/$defs/point_mm" }
+      }
+    },
+    "qr_box": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x_mm", "y_mm", "size_mm", "payload_format"],
+      "properties": {
+        "x_mm": { "type": "number", "minimum": 0.0 },
+        "y_mm": { "type": "number", "minimum": 0.0 },
+        "size_mm": { "type": "number", "minimum": 15.0, "maximum": 40.0 },
+        "payload_format": {
+          "type": "string",
+          "const": "DM1|<test_id>|<page>"
+        }
+      }
+    },
+    "roll_number_grid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digits_count", "digit_values", "columns"],
+      "properties": {
+        "digits_count": { "type": "integer", "const": 8 },
+        "digit_values": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "items": { "type": "integer", "minimum": 0, "maximum": 9 }
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["digit_index", "bubbles"],
+            "properties": {
+              "digit_index": { "type": "integer", "minimum": 0, "maximum": 7 },
+              "bubbles": {
+                "type": "array",
+                "minItems": 10,
+                "maxItems": 10,
+                "items": { "$ref": "#/$defs/labeled_bubble" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "question_blocks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question_no", "section", "q_type", "options_n", "bubbles"],
+        "properties": {
+          "question_no": { "type": "integer", "minimum": 1, "maximum": 250 },
+          "section": { "type": "string", "enum": ["A", "B"] },
+          "q_type": { "type": "string", "enum": ["mcq_single", "mcq_multi", "numeric"] },
+          "options_n": { "type": "integer", "minimum": 0, "maximum": 10 },
+          "numeric_meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["has_sign", "has_decimal", "digit_columns"],
+            "properties": {
+              "has_sign": { "type": "boolean" },
+              "has_decimal": { "type": "boolean" },
+              "digit_columns": { "type": "integer", "minimum": 1, "maximum": 6 }
+            }
+          },
+          "bubbles": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/labeled_bubble" }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "point_mm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x_mm", "y_mm"],
+      "properties": {
+        "x_mm": { "type": "number" },
+        "y_mm": { "type": "number" }
+      }
+    },
+    "labeled_bubble": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "dx_mm", "dy_mm"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "dx_mm": { "type": "number", "description": "Horizontal offset in mm relative to top_left fiducial." },
+        "dy_mm": { "type": "number", "description": "Vertical offset in mm relative to top_left fiducial." }
+      }
+    }
+  }
+}

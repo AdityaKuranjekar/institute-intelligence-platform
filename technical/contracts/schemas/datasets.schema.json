@@ -1,0 +1,131 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for contracts/datasets.yaml. contract_version: 1.0.0. Implements: TECH_PLAN \u00a78, \u00a79.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/schemas/datasets.schema.json",
+  "title": "DatasetsContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "determinism_rule",
+    "partitioning_and_naming",
+    "clean_tables",
+    "truth_tables",
+    "omr_truth_schema"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "determinism_rule": {
+      "type": "object",
+      "required": [
+        "description",
+        "default_seed",
+        "compression",
+        "sort_keys_enforced"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "default_seed": {
+          "type": "integer"
+        },
+        "compression": {
+          "type": "string"
+        },
+        "sort_keys_enforced": {
+          "type": "boolean"
+        }
+      }
+    },
+    "partitioning_and_naming": {
+      "type": "object"
+    },
+    "clean_tables": {
+      "type": "object",
+      "minProperties": 10,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "path",
+          "mirrors_sql_table",
+          "sort_by",
+          "columns"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "mirrors_sql_table": {
+            "type": "string"
+          },
+          "sort_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "columns": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "dtype",
+                "nullable"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "dtype": {
+                  "type": "string"
+                },
+                "nullable": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "truth_tables": {
+      "type": "object",
+      "minProperties": 4,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "path",
+          "description",
+          "sort_by",
+          "columns"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "sort_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "columns": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    "omr_truth_schema": {
+      "type": "object"
+    }
+  }
+}

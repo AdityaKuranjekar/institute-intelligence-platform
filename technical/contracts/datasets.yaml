@@ -1,0 +1,322 @@
+# Purpose: Machine-readable schemas for synthetic generator parquet outputs (`data/clean/*.parquet`, `data/truth/*.parquet`) and OMR truth JSON files (`data/omr/*/truth.json`).
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §7 (Repository layout), §8 (Data model & truth schema), and §9 (Synthetic data generator).
+
+contract_version: "1.0.0"
+
+determinism_rule:
+  description: "Given the same integer seed and generator_config.yaml, the generator MUST produce byte-identical parquet and JSON files (fixed row sort order, canonical parquet compression zstd, no wall-clock timestamps in generated columns)."
+  default_seed: 42
+  compression: "zstd"
+  sort_keys_enforced: true
+
+partitioning_and_naming:
+  clean_dir: "data/clean"
+  truth_dir: "data/truth"
+  dirty_dir: "data/dirty"
+  omr_synthetic_dir: "data/omr/synthetic"
+  omr_real_dir: "data/omr/real"
+  file_pattern: "{dir}/{table_name}.parquet"
+
+clean_tables:
+  institutes:
+    path: "data/clean/institutes.parquet"
+    mirrors_sql_table: institutes
+    sort_by: [id]
+    columns:
+      - {name: id, dtype: string, nullable: false}
+      - {name: name, dtype: string, nullable: false}
+      - {name: city, dtype: string, nullable: false}
+      - {name: city_tier, dtype: string, nullable: false}
+      - {name: exam_focus, dtype: string, nullable: false}
+      - {name: plan, dtype: string, nullable: false}
+      - {name: weekly_off_day, dtype: string, nullable: false}
+      - {name: counsellor_name, dtype: string, nullable: true}
+      - {name: counsellor_contact, dtype: string, nullable: true}
+      - {name: created_at, dtype: timestamp_tz, nullable: false}
+
+  batches:
+    path: "data/clean/batches.parquet"
+    mirrors_sql_table: batches
+    sort_by: [institute_id, id]
+    columns:
+      - {name: id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: name, dtype: string, nullable: false}
+      - {name: class_level, dtype: string, nullable: false}
+      - {name: exam, dtype: string, nullable: false}
+      - {name: academic_year, dtype: int32, nullable: false}
+      - {name: start_date, dtype: date32, nullable: false}
+      - {name: published_capacity, dtype: int32, nullable: false}
+      - {name: mentor_capacity_per_week, dtype: int32, nullable: false}
+      - {name: created_at, dtype: timestamp_tz, nullable: false}
+
+  students:
+    path: "data/clean/students.parquet"
+    mirrors_sql_table: students
+    sort_by: [institute_id, roll_no]
+    columns:
+      - {name: id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: batch_id, dtype: string, nullable: false}
+      - {name: academic_year, dtype: int32, nullable: false}
+      - {name: roll_no, dtype: string, nullable: false}
+      - {name: name, dtype: string, nullable: false}
+      - {name: name_alt, dtype: string, nullable: true}
+      - {name: dob, dtype: date32, nullable: false}
+      - {name: gender, dtype: string, nullable: false}
+      - {name: join_date, dtype: date32, nullable: false}
+      - {name: status, dtype: string, nullable: false}
+      - {name: left_date, dtype: date32, nullable: true}
+      - {name: fee_plan, dtype: string, nullable: false}
+      - {name: out_of_town, dtype: bool, nullable: false}
+      - {name: created_at, dtype: timestamp_tz, nullable: false}
+
+  guardians:
+    path: "data/clean/guardians.parquet"
+    mirrors_sql_table: guardians
+    sort_by: [institute_id, student_id]
+    columns:
+      - {name: id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: student_id, dtype: string, nullable: false}
+      - {name: name, dtype: string, nullable: false}
+      - {name: phone, dtype: string, nullable: false}
+      - {name: relation, dtype: string, nullable: false}
+      - {name: lang_pref, dtype: string, nullable: false}
+      - {name: created_at, dtype: timestamp_tz, nullable: false}
+
+  consents:
+    path: "data/clean/consents.parquet"
+    mirrors_sql_table: consents
+    sort_by: [institute_id, student_id, purpose]
+    columns:
+      - {name: id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: student_id, dtype: string, nullable: false}
+      - {name: guardian_id, dtype: string, nullable: true}
+      - {name: purpose, dtype: string, nullable: false}
+      - {name: verification_method, dtype: string, nullable: false}
+      - {name: verified_by_user_id, dtype: string, nullable: true}
+      - {name: verified_at, dtype: timestamp_tz, nullable: false}
+      - {name: revoked_at, dtype: timestamp_tz, nullable: true}
+      - {name: notice_version, dtype: string, nullable: false}
+      - {name: notice_lang, dtype: string, nullable: false}
+
+  questions:
+    path: "data/clean/questions.parquet"
+    mirrors_sql_table: questions
+    sort_by: [id]
+    columns:
+      - {name: id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: true}
+      - {name: subject, dtype: string, nullable: false}
+      - {name: text_hash, dtype: string, nullable: false}
+      - {name: q_type, dtype: string, nullable: false}
+      - {name: options_n, dtype: int32, nullable: false}
+      - {name: created_at, dtype: timestamp_tz, nullable: false}
+
+  question_topics:
+    path: "data/clean/question_topics.parquet"
+    mirrors_sql_table: question_topics
+    sort_by: [question_id, topic_id]
+    columns:
+      - {name: institute_id, dtype: string, nullable: true}
+      - {name: question_id, dtype: string, nullable: false}
+      - {name: topic_id, dtype: string, nullable: false}
+      - {name: weight, dtype: float64, nullable: false}
+      - {name: tagged_by, dtype: string, nullable: false}
+      - {name: confidence, dtype: float64, nullable: false}
+      - {name: reviewed_by, dtype: string, nullable: true}
+
+  item_params:
+    path: "data/clean/item_params.parquet"
+    mirrors_sql_table: item_params
+    sort_by: [question_id]
+    columns:
+      - {name: institute_id, dtype: string, nullable: true}
+      - {name: question_id, dtype: string, nullable: false}
+      - {name: a, dtype: float64, nullable: false}
+      - {name: b, dtype: float64, nullable: false}
+      - {name: c, dtype: float64, nullable: false}
+      - {name: point_biserial, dtype: float64, nullable: true}
+      - {name: key_confidence, dtype: float64, nullable: true}
+      - {name: suspected_wrong_key, dtype: bool, nullable: false}
+      - {name: n_responses, dtype: int32, nullable: false}
+      - {name: updated_at, dtype: timestamp_tz, nullable: false}
+
+  tests:
+    path: "data/clean/tests.parquet"
+    mirrors_sql_table: tests
+    sort_by: [institute_id, test_date, id]
+    columns:
+      - {name: id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: batch_id, dtype: string, nullable: false}
+      - {name: name, dtype: string, nullable: false}
+      - {name: test_date, dtype: date32, nullable: false}
+      - {name: exam_pattern_code, dtype: string, nullable: false}
+      - {name: marking_scheme_id, dtype: string, nullable: false}
+      - {name: max_marks, dtype: float64, nullable: false}
+      - {name: source, dtype: string, nullable: false}
+      - {name: day_after_off_warning, dtype: bool, nullable: false}
+      - {name: created_at, dtype: timestamp_tz, nullable: false}
+
+  test_questions:
+    path: "data/clean/test_questions.parquet"
+    mirrors_sql_table: test_questions
+    sort_by: [test_id, position]
+    columns:
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: test_id, dtype: string, nullable: false}
+      - {name: question_id, dtype: string, nullable: false}
+      - {name: position, dtype: int32, nullable: false}
+      - {name: section, dtype: string, nullable: false}
+
+  answer_keys:
+    path: "data/clean/answer_keys.parquet"
+    mirrors_sql_table: answer_keys
+    sort_by: [test_id, question_id, version]
+    columns:
+      - {name: id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: test_id, dtype: string, nullable: false}
+      - {name: question_id, dtype: string, nullable: false}
+      - {name: accepted_answers, dtype: list_string, nullable: false}
+      - {name: numeric_tolerance, dtype: float64, nullable: false}
+      - {name: dropped, dtype: bool, nullable: false}
+      - {name: version, dtype: int32, nullable: false}
+      - {name: created_by, dtype: string, nullable: true}
+      - {name: created_at, dtype: timestamp_tz, nullable: false}
+
+  responses:
+    path: "data/clean/responses.parquet"
+    mirrors_sql_table: responses
+    sort_by: [test_id, student_id, question_id]
+    columns:
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: test_id, dtype: string, nullable: false}
+      - {name: student_id, dtype: string, nullable: false}
+      - {name: question_id, dtype: string, nullable: false}
+      - {name: response, dtype: string, nullable: true}
+      - {name: is_correct, dtype: bool, nullable: false}
+      - {name: marks_awarded, dtype: float64, nullable: false}
+      - {name: status, dtype: string, nullable: false}
+      - {name: confidence, dtype: float64, nullable: false}
+
+  test_totals:
+    path: "data/clean/test_totals.parquet"
+    mirrors_sql_table: test_totals
+    sort_by: [test_id, student_id]
+    columns:
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: test_id, dtype: string, nullable: false}
+      - {name: student_id, dtype: string, nullable: false}
+      - {name: raw_score, dtype: float64, nullable: true}
+      - {name: physics_score, dtype: float64, nullable: true}
+      - {name: chemistry_score, dtype: float64, nullable: true}
+      - {name: math_or_bio_score, dtype: float64, nullable: true}
+      - {name: absent_flag, dtype: bool, nullable: false}
+
+  attendance:
+    path: "data/clean/attendance.parquet"
+    mirrors_sql_table: attendance
+    sort_by: [institute_id, student_id, attendance_date]
+    columns:
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: student_id, dtype: string, nullable: false}
+      - {name: attendance_date, dtype: date32, nullable: false}
+      - {name: present_flag, dtype: bool, nullable: false}
+      - {name: source, dtype: string, nullable: false}
+
+  fees:
+    path: "data/clean/fees.parquet"
+    mirrors_sql_table: fees
+    sort_by: [institute_id, student_id, instalment_no]
+    columns:
+      - {name: id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: student_id, dtype: string, nullable: false}
+      - {name: instalment_no, dtype: int32, nullable: false}
+      - {name: due_date, dtype: date32, nullable: false}
+      - {name: amount_paise, dtype: int64, nullable: false}
+      - {name: paid_date, dtype: date32, nullable: true}
+      - {name: paid_amount_paise, dtype: int64, nullable: false}
+      - {name: refund_due_paise, dtype: int64, nullable: false}
+      - {name: refund_paid_date, dtype: date32, nullable: true}
+
+  engagement:
+    path: "data/clean/engagement.parquet"
+    mirrors_sql_table: engagement
+    sort_by: [institute_id, student_id, activity_date]
+    columns:
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: student_id, dtype: string, nullable: false}
+      - {name: activity_date, dtype: date32, nullable: false}
+      - {name: doubts_asked, dtype: int32, nullable: false}
+      - {name: homework_submitted, dtype: bool, nullable: false}
+      - {name: app_logins, dtype: int32, nullable: false}
+
+truth_tables:
+  true_theta_topic:
+    path: "data/truth/true_theta_topic.parquet"
+    description: "Latent student ability per topic and month (never loaded into application DB)."
+    sort_by: [student_id, topic_id, month_index]
+    columns:
+      - {name: student_id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: topic_id, dtype: string, nullable: false}
+      - {name: month_index, dtype: int32, nullable: false}
+      - {name: true_g, dtype: float64, nullable: false}
+      - {name: true_theta, dtype: float64, nullable: false}
+      - {name: risk_aversion_tau, dtype: float64, nullable: false}
+
+  true_item_params:
+    path: "data/truth/true_item_params.parquet"
+    description: "Ground-truth IRT parameters and injected wrong-key flag per question."
+    sort_by: [question_id]
+    columns:
+      - {name: question_id, dtype: string, nullable: false}
+      - {name: topic_id, dtype: string, nullable: false}
+      - {name: true_a, dtype: float64, nullable: false}
+      - {name: true_b, dtype: float64, nullable: false}
+      - {name: true_g, dtype: float64, nullable: false}
+      - {name: is_injected_wrong_key, dtype: bool, nullable: false}
+      - {name: true_correct_answer, dtype: string, nullable: false}
+
+  dropout_events:
+    path: "data/truth/dropout_events.parquet"
+    description: "Ground-truth attrition events, fade onset date, gradual vs sudden type, and root cause."
+    sort_by: [student_id]
+    columns:
+      - {name: student_id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: dropped_out, dtype: bool, nullable: false}
+      - {name: dropout_date, dtype: date32, nullable: true}
+      - {name: fade_start_date, dtype: date32, nullable: true}
+      - {name: dropout_type, dtype: string, nullable: true, allowed_values: [gradual, sudden]}
+      - {name: dropout_reason, dtype: string, nullable: true, allowed_values: [academic_gap, financial, homesick_relocation, switched_institute, health_other]}
+
+  true_final_outcomes:
+    path: "data/truth/true_final_outcomes.parquet"
+    description: "Ground-truth end-of-year exam raw score, shift modifier, and actual NTA percentile."
+    sort_by: [student_id]
+    columns:
+      - {name: student_id, dtype: string, nullable: false}
+      - {name: institute_id, dtype: string, nullable: false}
+      - {name: exam, dtype: string, nullable: false}
+      - {name: shift_difficulty_delta_marks, dtype: float64, nullable: false}
+      - {name: true_final_score, dtype: float64, nullable: false}
+      - {name: true_final_percentile, dtype: float64, nullable: false}
+
+omr_truth_schema:
+  path_pattern: "data/omr/{subset}/truth.json"
+  subsets: [synthetic, real]
+  required_fields:
+    - image_filename
+    - layout_name
+    - test_id
+    - roll_no
+    - augmentation_condition
+    - responses
+    - deliberate_anomalies

@@ -1,0 +1,2970 @@
+# Purpose: OpenAPI 3.1 specification for all DataMoat backend endpoints, RBAC role filtering, JWT claims, and RFC 7807 errors.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §12 (Data capture), §13 (API), §14 (Prototype scope), and §15 (Privacy & DPDP).
+
+openapi: 3.1.0
+info:
+  title: DataMoat Institute Intelligence API
+  version: 1.0.0
+  summary: Local-first, DPDP-compliant Institute Intelligence Platform API for JEE/NEET coaching institutes.
+  description: 'OpenAPI 3.1 contract for DataMoat (`contract_version: 1.0.0`).
+
+
+    ### Authentication & Multi-Tenancy
+
+    - Bearer JWT authentication (`Authorization: Bearer <token>`).
+
+    - Required JWT claims: `sub` (UUID of user), `institute_id` (UUID of tenant), `role` (`owner|admin|teacher|mentor|parent|student`).
+
+    - Tenant isolation is enforced strictly from the JWT `institute_id` claim + PostgreSQL Row-Level Security (`app.institute_id`),
+    never from request bodies.
+
+
+    ### Rate Limits & Upload Limits
+
+    - Standard API endpoints: 120 requests/minute per user.
+
+    - Report generation (`POST /students/{id}/reports`): 20 requests/minute.
+
+    - Multipart uploads: 15 MB for `/ingest/students`, 25 MB for `/ingest/results`, 50 MB for `/ingest/omr`.'
+servers:
+- url: http://localhost:8000
+  description: Local offline docker-compose FastAPI server
+security:
+- bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Local HS256 JWT containing claims: `sub` (user UUID), `institute_id` (tenant UUID), `role` (`owner|admin|teacher|mentor|parent|student`).'
+  schemas:
+    role_enum:
+      type: string
+      description: User role within an institute controlling RBAC and response field filtering.
+      enum:
+      - owner
+      - admin
+      - teacher
+      - mentor
+      - parent
+      - student
+    class_level_enum:
+      type: string
+      description: Student academic cohort or class level.
+      enum:
+      - class_11
+      - class_12
+      - dropper
+    exam_enum:
+      type: string
+      description: Target competitive entrance examination.
+      enum:
+      - jee_main
+      - neet_ug
+    institute_exam_focus_enum:
+      type: string
+      description: Primary entrance exam focus of a coaching institute.
+      enum:
+      - jee_main
+      - neet_ug
+      - mix
+    city_tier_enum:
+      type: string
+      description: Indian urban tier classification of the institute's city.
+      enum:
+      - tier_1
+      - tier_2
+      - tier_3
+    institute_plan_enum:
+      type: string
+      description: Subscription plan tier of the coaching institute.
+      enum:
+      - starter
+      - standard
+      - pro
+    student_status_enum:
+      type: string
+      description: Current enrolment lifecycle status of a student.
+      enum:
+      - active
+      - left
+      - transferred
+    gender_enum:
+      type: string
+      description: Student gender for fairness slice reporting.
+      enum:
+      - female
+      - male
+      - other
+      - prefer_not_to_say
+    fee_plan_enum:
+      type: string
+      description: Tuition fee payment schedule plan chosen at admission.
+      enum:
+      - upfront_full
+      - standard_3_instalment
+      - rajasthan_4_equal
+      - custom_scholarship
+    guardian_relation_enum:
+      type: string
+      description: Relationship of the consenting adult guardian to the student.
+      enum:
+      - father
+      - mother
+      - legal_guardian
+      - self
+    response_status_enum:
+      type: string
+      description: Capture and grading state of an individual question response.
+      enum:
+      - answered
+      - blank
+      - multi_marked
+      - unreadable
+    q_type_enum:
+      type: string
+      description: Question format type.
+      enum:
+      - mcq_single
+      - mcq_multi
+      - numeric
+    partial_rule_enum:
+      type: string
+      description: Rule for awarding marks on multi-correct or dropped questions.
+      enum:
+      - none
+      - full_marks_if_any_accepted
+      - proportional_no_negative
+    dropped_question_rule_enum:
+      type: string
+      description: Scoring policy when an item is officially dropped from a test.
+      enum:
+      - full_marks_all
+      - full_marks_attempted_only
+    test_source_enum:
+      type: string
+      description: Data ingestion channel through which test responses or marks arrived.
+      enum:
+      - omr
+      - csv
+      - online
+    attendance_source_enum:
+      type: string
+      description: Source channel for daily student attendance records.
+      enum:
+      - csv
+      - manual
+      - biometric
+    consent_purpose_enum:
+      type: string
+      description: Granular DPDP Act processing purpose requiring verifiable consent.
+      enum:
+      - analytics
+      - risk_alerts
+      - parent_reports
+      - benchmarking
+      - engagement_tracking
+    verification_method_enum:
+      type: string
+      description: DPDP Rule 10 identity and age verification method for consent.
+      enum:
+      - in_person_id_check
+      - otp_known_parent
+      - digilocker_token
+      - self_adult
+    intervention_type_enum:
+      type: string
+      description: Supportive mentor action triggered by an early-warning alert.
+      enum:
+      - mentoring
+      - counselling_referral
+      - remedial_session
+      - fee_plan_discussion
+      - parent_call
+    intervention_outcome_enum:
+      type: string
+      description: Logged outcome of a completed supportive intervention.
+      enum:
+      - pending
+      - completed_improved
+      - completed_no_change
+      - escalated_to_counsellor
+      - parent_unreachable
+      - declined
+    risk_target_enum:
+      type: string
+      description: Early-warning prediction or rule evaluation target.
+      enum:
+      - academic_support
+      - retention
+      - fee
+    risk_band_enum:
+      type: string
+      description: Supportive triage band assigned to a student.
+      enum:
+      - low
+      - watch
+      - needs_support
+    mastery_band_enum:
+      type: string
+      description: Categorical topic mastery band displayed when standard error is sufficiently small.
+      enum:
+      - not_enough_data
+      - building
+      - steady
+      - strong
+    trend_direction_enum:
+      type: string
+      description: Overall academic trajectory direction over the reporting window.
+      enum:
+      - improving
+      - steady
+      - declining
+    feature_tier_enum:
+      type: string
+      description: Privacy tier classification of model features (A=tests, B=attendance, C=fees, D=engagement).
+      enum:
+      - A
+      - B
+      - C
+      - D
+    batch_change_reason_enum:
+      type: string
+      description: Permitted administrative reason for transferring a student between batches (performance is deliberately
+        absent per MoE cl. 12(vii)).
+      enum:
+      - timing
+      - subject_change
+      - relocation
+      - other
+    ingest_type_enum:
+      type: string
+      description: Category of data uploaded in an ingestion job.
+      enum:
+      - students
+      - guardians
+      - results_responses
+      - results_marks_only
+      - answer_key
+      - attendance
+      - fees
+      - omr_photos
+    ingest_status_enum:
+      type: string
+      description: Processing status of an upload ingestion job.
+      enum:
+      - pending_mapping
+      - preview_ready
+      - awaiting_review
+      - confirmed
+      - failed
+    report_path_enum:
+      type: string
+      description: Generation pathway used to produce a verified parent report.
+      enum:
+      - llm
+      - template
+    report_channel_enum:
+      type: string
+      description: Delivery channel for parent progress reports.
+      enum:
+      - none
+      - whatsapp_preview
+      - pdf_download
+      - portal_view
+    lang_enum:
+      type: string
+      description: ISO 639-1 language code supported by user interfaces and templates.
+      enum:
+      - en
+      - hi
+    tagger_source_enum:
+      type: string
+      description: Origin of a question-to-topic mapping tag.
+      enum:
+      - human
+      - embedding_llm
+      - keyword_rule
+    item_fit_flag_enum:
+      type: string
+      description: IRT calibration diagnostic flag for a question item.
+      enum:
+      - ok
+      - suspect_wrong_key
+      - low_discrimination
+      - too_few_responses
+    day_of_week_enum:
+      type: string
+      description: Day of the week in Asia/Kolkata calendar.
+      enum:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+    routing_method_enum:
+      type: string
+      description: Execution method permitted by purpose- and age-aware legal routing.
+      enum:
+      - ml
+      - rules
+      - none
+    audit_action_enum:
+      type: string
+      description: Audited security or privacy event type (retained >= 1 year per DPDP Rule 6).
+      enum:
+      - view_risk_scores
+      - view_student_profile
+      - export_register
+      - update_legal_settings
+      - update_privacy_tier
+      - grant_consent
+      - revoke_consent
+      - update_answer_key
+      - create_intervention
+      - generate_report
+    problem:
+      type: object
+      description: RFC 7807 Problem Details error response.
+      required:
+      - type
+      - title
+      - status
+      - detail
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+    login_request:
+      type: object
+      required:
+      - phone
+      - role_override
+      properties:
+        phone:
+          type: string
+        institute_id:
+          type: string
+          format: uuid
+        role_override:
+          $ref: '#/components/schemas/role_enum'
+    auth_token_response:
+      type: object
+      required:
+      - access_token
+      - token_type
+      - claims
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          const: bearer
+        claims:
+          type: object
+          required:
+          - sub
+          - institute_id
+          - role
+          - exp
+          properties:
+            sub:
+              type: string
+              format: uuid
+            institute_id:
+              type: string
+              format: uuid
+            role:
+              $ref: '#/components/schemas/role_enum'
+            exp:
+              type: integer
+    user_profile:
+      type: object
+      required:
+      - id
+      - institute_id
+      - role
+      - name
+      - phone
+      - lang
+      - city_tier
+      - exam_focus
+      - plan
+      - weekly_off_day
+      properties:
+        id:
+          type: string
+          format: uuid
+        institute_id:
+          type: string
+          format: uuid
+        role:
+          $ref: '#/components/schemas/role_enum'
+        name:
+          type: string
+        phone:
+          type: string
+        lang:
+          $ref: '#/components/schemas/lang_enum'
+        city_tier:
+          $ref: '#/components/schemas/city_tier_enum'
+        exam_focus:
+          $ref: '#/components/schemas/institute_exam_focus_enum'
+        plan:
+          $ref: '#/components/schemas/institute_plan_enum'
+        weekly_off_day:
+          $ref: '#/components/schemas/day_of_week_enum'
+    ingest_job_response:
+      type: object
+      required:
+      - id
+      - institute_id
+      - file_hash
+      - type
+      - status
+      - rows_ok
+      - rows_failed
+      - errors
+      properties:
+        id:
+          type: string
+          format: uuid
+        institute_id:
+          type: string
+          format: uuid
+        file_hash:
+          type: string
+        type:
+          $ref: '#/components/schemas/ingest_type_enum'
+        status:
+          $ref: '#/components/schemas/ingest_status_enum'
+        rows_ok:
+          type: integer
+        rows_failed:
+          type: integer
+        mapping:
+          type: object
+          additionalProperties:
+            type: string
+        compliance_warnings:
+          type: array
+          items:
+            type: string
+          description: Age < 16 at enrolment or test-day-after-weekly-off warnings per MoE 2024 guidelines.
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - row_no
+            - column
+            - message
+            properties:
+              row_no:
+                type: integer
+              column:
+                type: string
+              message:
+                type: string
+    omr_cell_review:
+      type: object
+      required:
+      - question_no
+      - q_type
+      - detected_response
+      - status
+      - confidence
+      properties:
+        question_no:
+          type: integer
+        q_type:
+          $ref: '#/components/schemas/q_type_enum'
+        detected_response:
+          type:
+          - string
+          - 'null'
+        status:
+          $ref: '#/components/schemas/response_status_enum'
+        confidence:
+          type: number
+          minimum: 0.0
+          maximum: 1.0
+    omr_ingest_response:
+      type: object
+      required:
+      - job_id
+      - status
+      - test_id
+      - sheets
+      - model_version
+      properties:
+        job_id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ingest_status_enum'
+        test_id:
+          type: string
+          format: uuid
+        model_version:
+          type: string
+        sheets:
+          type: array
+          items:
+            type: object
+            required:
+            - image_name
+            - roll_no
+            - low_confidence_cells
+            properties:
+              image_name:
+                type: string
+              roll_no:
+                type: string
+              low_confidence_cells:
+                type: array
+                items:
+                  $ref: '#/components/schemas/omr_cell_review'
+    omr_confirm_request:
+      type: object
+      required:
+      - corrections
+      properties:
+        corrections:
+          type: array
+          items:
+            type: object
+            required:
+            - roll_no
+            - question_no
+            - confirmed_response
+            - status
+            properties:
+              roll_no:
+                type: string
+              question_no:
+                type: integer
+              confirmed_response:
+                type:
+                - string
+                - 'null'
+              status:
+                $ref: '#/components/schemas/response_status_enum'
+    batch_heatmap_response:
+      type: object
+      required:
+      - batch_id
+      - exam
+      - class_level
+      - model_version
+      - topics
+      - cells
+      properties:
+        batch_id:
+          type: string
+          format: uuid
+        exam:
+          $ref: '#/components/schemas/exam_enum'
+        class_level:
+          $ref: '#/components/schemas/class_level_enum'
+        model_version:
+          type: string
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        topics:
+          type: array
+          items:
+            type: object
+            required:
+            - topic_id
+            - name_en
+            - name_hi
+            - probably_untaught
+            properties:
+              topic_id:
+                type: string
+              name_en:
+                type: string
+              name_hi:
+                type: string
+              probably_untaught:
+                type: boolean
+        cells:
+          type: array
+          items:
+            type: object
+            required:
+            - student_id
+            - roll_no
+            - student_name
+            - topic_id
+            - theta
+            - se
+            - band
+            properties:
+              student_id:
+                type: string
+                format: uuid
+              roll_no:
+                type: string
+              student_name:
+                type: string
+              topic_id:
+                type: string
+              theta:
+                type: number
+              se:
+                type: number
+              band:
+                $ref: '#/components/schemas/mastery_band_enum'
+    support_reason_item:
+      type: object
+      required:
+      - reason_template_key
+      - text_en
+      - text_hi
+      - suggested_action
+      - action_text_en
+      - action_text_hi
+      properties:
+        reason_template_key:
+          type: string
+        text_en:
+          type: string
+        text_hi:
+          type: string
+        suggested_action:
+          $ref: '#/components/schemas/intervention_type_enum'
+        action_text_en:
+          type: string
+        action_text_hi:
+          type: string
+    support_list_response:
+      type: object
+      required:
+      - batch_id
+      - week
+      - mentor_capacity_per_week
+      - model_version
+      - students
+      properties:
+        batch_id:
+          type: string
+          format: uuid
+        week:
+          type: string
+        mentor_capacity_per_week:
+          type: integer
+        model_version:
+          type: string
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        students:
+          type: array
+          items:
+            type: object
+            required:
+            - student_id
+            - roll_no
+            - name
+            - is_minor
+            - target
+            - routing_method
+            - band
+            - feature_tier
+            - reasons
+            properties:
+              student_id:
+                type: string
+                format: uuid
+              roll_no:
+                type: string
+              name:
+                type: string
+              is_minor:
+                type: boolean
+              target:
+                $ref: '#/components/schemas/risk_target_enum'
+              routing_method:
+                $ref: '#/components/schemas/routing_method_enum'
+              p:
+                type:
+                - number
+                - 'null'
+              band:
+                $ref: '#/components/schemas/risk_band_enum'
+              feature_tier:
+                $ref: '#/components/schemas/feature_tier_enum'
+              reasons:
+                type: array
+                items:
+                  $ref: '#/components/schemas/support_reason_item'
+    batch_summary_response:
+      type: object
+      required:
+      - batch_id
+      - name
+      - class_level
+      - exam
+      - enrolled_count
+      - published_capacity
+      - mean_attendance_28d
+      - needs_support_count
+      - model_version
+      properties:
+        batch_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        class_level:
+          $ref: '#/components/schemas/class_level_enum'
+        exam:
+          $ref: '#/components/schemas/exam_enum'
+        enrolled_count:
+          type: integer
+        published_capacity:
+          type: integer
+        mean_attendance_28d:
+          type: number
+        needs_support_count:
+          type: integer
+        model_version:
+          type: string
+    student_profile_response:
+      type: object
+      description: Role-filtered student profile. Parents/students see only mastery, trend, and percentile_band (risk_summary
+        is omitted/null for parent and student roles). For under-18 minors, retention/fee entries in risk_summary follow routing_policy.yaml.
+      required:
+      - student_id
+      - roll_no
+      - name
+      - gender
+      - class_level
+      - status
+      - fee_plan
+      - is_minor
+      - trend
+      - percentile_band
+      - mastery
+      - model_version
+      properties:
+        student_id:
+          type: string
+          format: uuid
+        roll_no:
+          type: string
+        name:
+          type: string
+        name_alt:
+          type:
+          - string
+          - 'null'
+        gender:
+          $ref: '#/components/schemas/gender_enum'
+        class_level:
+          $ref: '#/components/schemas/class_level_enum'
+        status:
+          $ref: '#/components/schemas/student_status_enum'
+        fee_plan:
+          $ref: '#/components/schemas/fee_plan_enum'
+        is_minor:
+          type: boolean
+        trend:
+          $ref: '#/components/schemas/trend_direction_enum'
+        model_version:
+          type: string
+        percentile_band:
+          type: object
+          required:
+          - as_of
+          - q10
+          - q50
+          - q90
+          - mapped_low
+          - mapped_high
+          - coverage_level
+          - disclaimer_en
+          - disclaimer_hi
+          properties:
+            as_of:
+              type: string
+              format: date
+            q10:
+              type: number
+            q50:
+              type: number
+            q90:
+              type: number
+            mapped_low:
+              type: number
+            mapped_high:
+              type: number
+            coverage_level:
+              type: number
+            disclaimer_en:
+              type: string
+            disclaimer_hi:
+              type: string
+        mastery:
+          type: array
+          items:
+            type: object
+            required:
+            - topic_id
+            - name_en
+            - name_hi
+            - theta
+            - se
+            - band
+            properties:
+              topic_id:
+                type: string
+              name_en:
+                type: string
+              name_hi:
+                type: string
+              theta:
+                type: number
+              se:
+                type: number
+              band:
+                $ref: '#/components/schemas/mastery_band_enum'
+        risk_summary:
+          type:
+          - array
+          - 'null'
+          description: Visible ONLY to owner, admin, mentor, and teacher roles; strictly null/omitted for parent and student
+            roles.
+          items:
+            type: object
+            required:
+            - target
+            - routing_method
+            - band
+            - feature_tier
+            - reasons
+            properties:
+              target:
+                $ref: '#/components/schemas/risk_target_enum'
+              routing_method:
+                $ref: '#/components/schemas/routing_method_enum'
+              p:
+                type:
+                - number
+                - 'null'
+              band:
+                $ref: '#/components/schemas/risk_band_enum'
+              feature_tier:
+                $ref: '#/components/schemas/feature_tier_enum'
+              reasons:
+                type: array
+                items:
+                  $ref: '#/components/schemas/support_reason_item'
+        pro_rata_refund_estimate_paise:
+          type:
+          - integer
+          - 'null'
+          description: Computed 10-day pro-rata refund in paise if student withdraws (MoE 2024 cl. 8(iv)).
+    attendance_patch_request:
+      type: object
+      required:
+      - as_of
+      - records
+      properties:
+        as_of:
+          type: string
+          format: date
+        records:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - attendance_date
+            - present_flag
+            - source
+            properties:
+              attendance_date:
+                type: string
+                format: date
+              present_flag:
+                type: boolean
+              source:
+                $ref: '#/components/schemas/attendance_source_enum'
+    fees_patch_request:
+      type: object
+      required:
+      - as_of
+      - instalments
+      properties:
+        as_of:
+          type: string
+          format: date
+        instalments:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - instalment_no
+            - due_date
+            - amount_paise
+            - paid_amount_paise
+            properties:
+              instalment_no:
+                type: integer
+                minimum: 1
+              due_date:
+                type: string
+                format: date
+              amount_paise:
+                type: integer
+                minimum: 0
+              paid_date:
+                type:
+                - string
+                - 'null'
+                format: date
+              paid_amount_paise:
+                type: integer
+                minimum: 0
+    intervention_create_request:
+      type: object
+      required:
+      - type
+      - due_date
+      properties:
+        type:
+          $ref: '#/components/schemas/intervention_type_enum'
+        due_date:
+          type: string
+          format: date
+        batch_change:
+          type:
+          - object
+          - 'null'
+          required:
+          - to_batch
+          - reason
+          properties:
+            to_batch:
+              type: string
+              format: uuid
+            reason:
+              $ref: '#/components/schemas/batch_change_reason_enum'
+    intervention_patch_request:
+      type: object
+      required:
+      - outcome
+      properties:
+        done_at:
+          type: string
+          format: date-time
+        outcome:
+          $ref: '#/components/schemas/intervention_outcome_enum'
+    intervention_response:
+      type: object
+      required:
+      - id
+      - student_id
+      - type
+      - owner_user_id
+      - due_date
+      - outcome
+      properties:
+        id:
+          type: string
+          format: uuid
+        student_id:
+          type: string
+          format: uuid
+        type:
+          $ref: '#/components/schemas/intervention_type_enum'
+        owner_user_id:
+          type: string
+          format: uuid
+        due_date:
+          type: string
+          format: date
+        done_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        outcome:
+          $ref: '#/components/schemas/intervention_outcome_enum'
+    report_generate_response:
+      type: object
+      required:
+      - id
+      - student_id
+      - period
+      - lang
+      - content
+      - verified
+      - path
+      - sent_via
+      - model_version
+      properties:
+        id:
+          type: string
+          format: uuid
+        student_id:
+          type: string
+          format: uuid
+        period:
+          type: string
+        lang:
+          $ref: '#/components/schemas/lang_enum'
+        content:
+          type: string
+        verified:
+          type: boolean
+        path:
+          $ref: '#/components/schemas/report_path_enum'
+        sent_via:
+          $ref: '#/components/schemas/report_channel_enum'
+        model_version:
+          type: string
+    flagged_questions_response:
+      type: object
+      required:
+      - test_id
+      - model_version
+      - items
+      properties:
+        test_id:
+          type: string
+          format: uuid
+        model_version:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            required:
+            - question_id
+            - position
+            - q_type
+            - fit_flag
+            - a
+            - b
+            - se_b
+            - n_responses
+            - tagged_by
+            - current_accepted_answers
+            - dropped
+            properties:
+              question_id:
+                type: string
+                format: uuid
+              position:
+                type: integer
+              q_type:
+                $ref: '#/components/schemas/q_type_enum'
+              fit_flag:
+                $ref: '#/components/schemas/item_fit_flag_enum'
+              a:
+                type: number
+              b:
+                type: number
+              se_b:
+                type: number
+              n_responses:
+                type: integer
+              tagged_by:
+                $ref: '#/components/schemas/tagger_source_enum'
+              current_accepted_answers:
+                type: array
+                items:
+                  type: string
+              dropped:
+                type: boolean
+    answer_key_update_request:
+      type: object
+      required:
+      - accepted_answers
+      - numeric_tolerance
+      - dropped
+      - partial_rule
+      - dropped_rule
+      properties:
+        accepted_answers:
+          type: array
+          items:
+            type: string
+        numeric_tolerance:
+          type: number
+          minimum: 0.0
+        dropped:
+          type: boolean
+        partial_rule:
+          $ref: '#/components/schemas/partial_rule_enum'
+        dropped_rule:
+          $ref: '#/components/schemas/dropped_question_rule_enum'
+    answer_key_update_response:
+      type: object
+      required:
+      - test_id
+      - question_id
+      - new_version
+      - students_rescored
+      - model_version
+      properties:
+        test_id:
+          type: string
+          format: uuid
+        question_id:
+          type: string
+          format: uuid
+        new_version:
+          type: integer
+        students_rescored:
+          type: integer
+        model_version:
+          type: string
+    owner_dashboard_response:
+      type: object
+      required:
+      - institute_id
+      - active_students
+      - batches
+      - compliance_status
+      - model_version
+      properties:
+        institute_id:
+          type: string
+          format: uuid
+        active_students:
+          type: integer
+        model_version:
+          type: string
+        batches:
+          type: array
+          items:
+            $ref: '#/components/schemas/batch_summary_response'
+        compliance_status:
+          type: object
+          required:
+          - minors_with_verified_consent_pct
+          - tests_after_weekly_off_count
+          - pending_refunds_over_10d_count
+          properties:
+            minors_with_verified_consent_pct:
+              type: number
+            tests_after_weekly_off_count:
+              type: integer
+            pending_refunds_over_10d_count:
+              type: integer
+            last_audit_action:
+              $ref: '#/components/schemas/audit_action_enum'
+    consent_record:
+      type: object
+      required:
+      - id
+      - student_id
+      - purpose
+      - verification_method
+      - verified_at
+      - notice_version
+      - notice_lang
+      properties:
+        id:
+          type: string
+          format: uuid
+        student_id:
+          type: string
+          format: uuid
+        guardian_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        guardian_relation:
+          $ref: '#/components/schemas/guardian_relation_enum'
+        purpose:
+          $ref: '#/components/schemas/consent_purpose_enum'
+        verification_method:
+          $ref: '#/components/schemas/verification_method_enum'
+        verified_at:
+          type: string
+          format: date-time
+        revoked_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        notice_version:
+          type: string
+        notice_lang:
+          $ref: '#/components/schemas/lang_enum'
+    consent_list_response:
+      type: object
+      required:
+      - items
+      properties:
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/consent_record'
+    consent_create_request:
+      type: object
+      required:
+      - student_id
+      - purpose
+      - verification_method
+      - notice_version
+      - notice_lang
+      properties:
+        student_id:
+          type: string
+          format: uuid
+        guardian_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        purpose:
+          $ref: '#/components/schemas/consent_purpose_enum'
+        verification_method:
+          $ref: '#/components/schemas/verification_method_enum'
+        notice_version:
+          type: string
+        notice_lang:
+          $ref: '#/components/schemas/lang_enum'
+    privacy_tier_settings_response:
+      type: object
+      required:
+      - active_feature_tier
+      - minor_ml_risk_enabled
+      - ablation_auc_by_tier
+      - model_version
+      properties:
+        active_feature_tier:
+          $ref: '#/components/schemas/feature_tier_enum'
+        minor_ml_risk_enabled:
+          type: boolean
+        legal_opinion_ref:
+          type:
+          - string
+          - 'null'
+        model_version:
+          type: string
+        ablation_auc_by_tier:
+          type: object
+          required:
+          - A
+          - B
+          - C
+          - D
+          properties:
+            A:
+              type: number
+            B:
+              type: number
+            C:
+              type: number
+            D:
+              type: number
+    privacy_tier_update_request:
+      type: object
+      required:
+      - active_feature_tier
+      - minor_ml_risk_enabled
+      properties:
+        active_feature_tier:
+          $ref: '#/components/schemas/feature_tier_enum'
+        minor_ml_risk_enabled:
+          type: boolean
+        legal_opinion_ref:
+          type:
+          - string
+          - 'null'
+    health_response:
+      type: object
+      required:
+      - status
+      - db_ok
+      - ollama_available
+      properties:
+        status:
+          type: string
+          const: ok
+        db_ok:
+          type: boolean
+        ollama_available:
+          type: boolean
+    version_response:
+      type: object
+      required:
+      - contract_version
+      - model_version
+      - trained_at
+      - data_version
+      properties:
+        contract_version:
+          type: string
+          const: 1.0.0
+        model_version:
+          type: string
+        trained_at:
+          type: string
+          format: date-time
+        data_version:
+          type: string
+paths:
+  /auth/login:
+    post:
+      operationId: login_demo_user
+      tags:
+      - auth
+      summary: Authenticate seeded demo user or switch role for local demo.
+      description: 'Role filtering: available to all demo roles. Issues a local Bearer JWT with claims `sub` (user UUID),
+        `institute_id` (tenant UUID), and `role`.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login_request'
+      responses:
+        '200':
+          description: Issued JWT and decoded claims.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/auth_token_response'
+              example:
+                access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.demo
+                token_type: bearer
+                claims:
+                  sub: 22222222-3333-4444-5555-666666666666
+                  institute_id: 99999999-8888-7777-6666-555555555555
+                  role: owner
+                  exp: 1792540800
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /me:
+    get:
+      operationId: get_current_user
+      tags:
+      - auth
+      summary: Return current authenticated user profile and tenant metadata from JWT.
+      description: 'Role filtering: accessible to any authenticated role (`owner`, `admin`, `teacher`, `mentor`, `parent`,
+        `student`). Tenant is resolved strictly from JWT `institute_id`.'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Current user profile.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user_profile'
+              example:
+                id: 22222222-3333-4444-5555-666666666666
+                institute_id: 99999999-8888-7777-6666-555555555555
+                role: owner
+                name: Vikram Demo Owner
+                phone: '9000000000'
+                lang: en
+                city_tier: tier_2
+                exam_focus: jee_main
+                plan: standard
+                weekly_off_day: sunday
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /ingest/students:
+    post:
+      operationId: ingest_students_file
+      tags:
+      - ingest
+      summary: Upload CSV/XLSX of students, guardians, attendance, or fees with fuzzy header mapping.
+      description: 'Role filtering: `owner`, `admin`, `teacher` only (`parent` and `student` receive 403). Max upload size:
+        15 MB (`15728640` bytes). Idempotent by `(institute_id, file_hash)`.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - file
+              - ingest_type
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV or XLSX file (max 15 MB).
+                ingest_type:
+                  $ref: '#/components/schemas/ingest_type_enum'
+      responses:
+        '200':
+          description: Ingestion job created or matched by hash.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ingest_job_response'
+              example: &id004
+                id: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+                institute_id: 99999999-8888-7777-6666-555555555555
+                file_hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+                type: students
+                status: preview_ready
+                rows_ok: 58
+                rows_failed: 2
+                mapping: &id001
+                  R.No: roll_no
+                  Chatra Ka Naam: name
+                compliance_warnings: &id002
+                - 'Row 14: Student age at join_date is under 16 years (MoE 2024 cl. 7 warning).'
+                errors: &id003
+                - row_no: 19
+                  column: dob
+                  message: Invalid date format
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /ingest/results:
+    post:
+      operationId: ingest_results_file
+      tags:
+      - ingest
+      summary: Upload CSV/XLSX of item-level test responses, marks-only totals, or answer keys.
+      description: 'Role filtering: `owner`, `admin`, `teacher` only. Max upload size: 25 MB (`26214400` bytes). Triggers
+        synchronous batch recompute on confirm.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - file
+              - ingest_type
+              - batch_id
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV or XLSX file (max 25 MB).
+                ingest_type:
+                  $ref: '#/components/schemas/ingest_type_enum'
+                batch_id:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Results ingestion job status and row validation preview.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ingest_job_response'
+              example:
+                id: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+                institute_id: 99999999-8888-7777-6666-555555555555
+                file_hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+                type: results_responses
+                status: preview_ready
+                rows_ok: 58
+                rows_failed: 2
+                mapping: *id001
+                compliance_warnings: *id002
+                errors: *id003
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /ingest/omr:
+    post:
+      operationId: ingest_omr_photos
+      tags:
+      - ingest
+      - omr
+      summary: Upload one or more OMR sheet phone photos for warp, bubble detection, and confidence scoring.
+      description: 'Role filtering: `owner`, `admin`, `teacher` only. Max upload size: 50 MB total (`52428800` bytes, up to
+        25 JPEG/PNG images). Raw OMR photos are deleted after confirmation per TECH_PLAN §15.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - images
+              - test_id
+              - layout_name
+              properties:
+                images:
+                  type: array
+                  maxItems: 25
+                  items:
+                    type: string
+                    format: binary
+                test_id:
+                  type: string
+                  format: uuid
+                layout_name:
+                  type: string
+                  enum:
+                  - generic_mcq_100
+                  - neet_200
+                  - jee_75
+      responses:
+        '200':
+          description: Parsed OMR responses with uncertain/low-confidence cells flagged for human review.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/omr_ingest_response'
+              example:
+                job_id: bbbbbbbb-cccc-dddd-eeee-ffffffffffff
+                status: awaiting_review
+                test_id: 33333333-4444-5555-6666-777777777777
+                model_version: v1.0.0
+                sheets:
+                - image_name: sheet_01.jpg
+                  roll_no: PAT26-001
+                  low_confidence_cells:
+                  - question_no: 12
+                    q_type: mcq_single
+                    detected_response: B
+                    status: multi_marked
+                    confidence: 0.48
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /ingest/omr/{job}/confirm:
+    post:
+      operationId: confirm_omr_ingest_job
+      tags:
+      - ingest
+      - omr
+      summary: Confirm reviewed OMR cells, score responses, and recompute batch mastery and support list.
+      description: 'Role filtering: `owner`, `admin`, `teacher` only.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: job
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/omr_confirm_request'
+      responses:
+        '200':
+          description: OMR job confirmed and batch analytics updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ingest_job_response'
+              example:
+                id: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+                institute_id: 99999999-8888-7777-6666-555555555555
+                file_hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+                type: omr_photos
+                status: confirmed
+                rows_ok: 58
+                rows_failed: 2
+                mapping: *id001
+                compliance_warnings: *id002
+                errors: *id003
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /ingest/jobs/{id}:
+    get:
+      operationId: get_ingest_job
+      tags:
+      - ingest
+      summary: Fetch status, column mapping, and row errors for an ingestion job.
+      description: 'Role filtering: `owner`, `admin`, `teacher` only.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Ingestion job details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ingest_job_response'
+              example: *id004
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /batches/{id}/heatmap:
+    get:
+      operationId: get_batch_heatmap
+      tags:
+      - batches
+      - analytics
+      summary: Return student x topic mastery heatmap and untaught-topic flags for a batch.
+      description: 'Role filtering: `owner`, `admin`, `teacher`, `mentor` only (`parent` and `student` cannot view batch-wide
+        peer data per MoE 2024 cl. 10.2(xi)). Supports pagination via `limit` and `cursor`.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - &id005
+        name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 200
+          default: 50
+      - &id006
+        name: cursor
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Batch topic mastery heatmap with `model_version`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/batch_heatmap_response'
+              example:
+                batch_id: 44444444-5555-6666-7777-888888888888
+                exam: jee_main
+                class_level: class_11
+                model_version: v1.0.0
+                next_cursor: null
+                topics:
+                - topic_id: jee.phy.kinematics.projectile
+                  name_en: Projectile Motion
+                  name_hi: प्रक्षेप्य गति
+                  probably_untaught: false
+                cells:
+                - student_id: 11111111-2222-3333-4444-555555555555
+                  roll_no: PAT26-001
+                  student_name: Aarav Test
+                  topic_id: jee.phy.kinematics.projectile
+                  theta: 0.65
+                  se: 0.22
+                  band: steady
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /batches/{id}/support-list:
+    get:
+      operationId: get_batch_support_list
+      tags:
+      - batches
+      - analytics
+      summary: Return top-k students in the batch who would most benefit from a mentor check-in this week.
+      description: 'Role filtering: `owner` and assigned `mentor` only (logged in `audit_log` with action `view_risk_scores`).
+        Never accessible to `parent` or `student`. Under-18 minors follow `routing_policy.yaml` (ML only for `academic_support`
+        tier A; transparent rules for `retention` and `fee` unless `minor_ml_risk_enabled` is true).'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: week
+        in: query
+        required: false
+        schema:
+          type: string
+          example: 2026-W33
+      - *id005
+      - *id006
+      responses:
+        '200':
+          description: Top-k supportive check-in list with plain-language reasons and suggested actions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/support_list_response'
+              example:
+                batch_id: 44444444-5555-6666-7777-888888888888
+                week: 2026-W33
+                mentor_capacity_per_week: 8
+                model_version: v1.0.0
+                next_cursor: null
+                students:
+                - student_id: 11111111-2222-3333-4444-555555555555
+                  roll_no: PAT26-001
+                  name: Aarav Test
+                  is_minor: true
+                  target: academic_support
+                  routing_method: ml
+                  p: 0.68
+                  band: needs_support
+                  feature_tier: A
+                  reasons:
+                  - reason_template_key: score_z_drop
+                    text_en: Recent 3 test scores shifted by 0.8 standard deviations relative to batch pace
+                    text_hi: पिछले 3 टेस्ट के अंकों में बैच की गति के सापेक्ष 0.8 मानक विचलन का अंतर आया है
+                    suggested_action: remedial_session
+                    action_text_en: Invite to a supplementary concept-review session on recent test chapters
+                    action_text_hi: हाल के टेस्ट अध्यायों पर अतिरिक्त अवधारणा-पुनरावलोकन सत्र के लिए आमंत्रित करें
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /batches/{id}/summary:
+    get:
+      operationId: get_batch_summary
+      tags:
+      - batches
+      summary: Return high-level attendance, capacity, and support summary for a batch.
+      description: 'Role filtering: `owner`, `admin`, `teacher`, `mentor` only.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Batch summary statistics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/batch_summary_response'
+              example:
+                batch_id: 44444444-5555-6666-7777-888888888888
+                name: JEE-11-Morning-A
+                class_level: class_11
+                exam: jee_main
+                enrolled_count: 56
+                published_capacity: 60
+                mean_attendance_28d: 0.84
+                needs_support_count: 8
+                model_version: v1.0.0
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /students/{id}/profile:
+    get:
+      operationId: get_student_profile
+      tags:
+      - students
+      - analytics
+      summary: Return a student's mastery, trend, conformal percentile range, and role-filtered support reasons.
+      description: 'Role filtering: (1) `parent` can access ONLY their own linked child (`guardians.student_id = id`) and
+        NEVER sees `risk_summary`; (2) `student` can access ONLY their own record and NEVER sees `risk_summary`; (3) `teacher`
+        sees mastery and percentile band; (4) `mentor` and `owner` see `risk_summary` routed per `routing_policy.yaml` (for
+        minors with `minor_ml_risk_enabled = false`, `retention` and `fee` come from deterministic rules only, never ML).
+        Access is logged in `audit_log`.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Role-filtered student profile with `model_version`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/student_profile_response'
+              example: &id007
+                student_id: 11111111-2222-3333-4444-555555555555
+                roll_no: PAT26-001
+                name: Aarav Test
+                name_alt: आरव टेस्ट
+                gender: male
+                class_level: class_11
+                status: active
+                fee_plan: standard_3_instalment
+                is_minor: true
+                trend: steady
+                model_version: v1.0.0
+                percentile_band:
+                  as_of: '2026-08-15'
+                  q10: 135.0
+                  q50: 162.0
+                  q90: 188.0
+                  mapped_low: 94.5
+                  mapped_high: 98.8
+                  coverage_level: 0.8
+                  disclaimer_en: Predicted range based on internal tests and historical NTA shift assumptions; not a rank
+                    guarantee.
+                  disclaimer_hi: आंतरिक टेस्ट और ऐतिहासिक एनटीए शिफ्ट मान्यताओं पर आधारित अनुमानित सीमा; यह रैंक की गारंटी
+                    नहीं है।
+                mastery:
+                - topic_id: jee.phy.kinematics.projectile
+                  name_en: Projectile Motion
+                  name_hi: प्रक्षेप्य गति
+                  theta: 0.65
+                  se: 0.22
+                  band: steady
+                risk_summary:
+                - target: academic_support
+                  routing_method: ml
+                  p: 0.68
+                  band: needs_support
+                  feature_tier: A
+                  reasons:
+                  - reason_template_key: score_z_drop
+                    text_en: Scores across the last 3 tests dropped noticeably (0.8 points on the batch scale) relative to
+                      batch pace
+                    text_hi: पिछले 3 टेस्ट के अंकों में बैच की गति के सापेक्ष स्पष्ट गिरावट (0.8 अंक बैच पैमाने पर) देखी गई
+                      है
+                    suggested_action: remedial_session
+                    action_text_en: Invite to a supplementary concept-review session on recent test chapters
+                    action_text_hi: हाल के टेस्ट अध्यायों पर अतिरिक्त अवधारणा-पुनरावलोकन सत्र के लिए आमंत्रित करें
+                pro_rata_refund_estimate_paise: 0
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /students/{id}/attendance:
+    patch:
+      operationId: patch_student_attendance
+      tags:
+      - students
+      - what_if
+      summary: Update or simulate attendance rows for a student and synchronously recompute risk and reasons.
+      description: 'Role filtering: `owner`, `admin`, `teacher`, `mentor` only.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/attendance_patch_request'
+      responses:
+        '200':
+          description: Updated student profile with recomputed risk and reasons.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/student_profile_response'
+              example: *id007
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /students/{id}/fees:
+    patch:
+      operationId: patch_student_fees
+      tags:
+      - students
+      - what_if
+      summary: Update or simulate fee instalment payments for a student and synchronously recompute fee/retention status.
+      description: 'Role filtering: `owner`, `admin` only.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/fees_patch_request'
+      responses:
+        '200':
+          description: Updated student profile with recomputed fee/retention status and pro-rata refund estimate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/student_profile_response'
+              example: *id007
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /students/{id}/interventions:
+    post:
+      operationId: create_student_intervention
+      tags:
+      - interventions
+      summary: Assign a supportive mentor intervention for a student.
+      description: 'Role filtering: `owner`, `admin`, `mentor`, `teacher` only. No free-text clinical or mental-health notes
+        are accepted.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/intervention_create_request'
+      responses:
+        '200':
+          description: Created supportive intervention task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/intervention_response'
+              example:
+                id: 55555555-6666-7777-8888-999999999999
+                student_id: 11111111-2222-3333-4444-555555555555
+                type: remedial_session
+                owner_user_id: 22222222-3333-4444-5555-666666666666
+                due_date: '2026-08-22'
+                done_at: null
+                outcome: pending
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /interventions/{id}:
+    patch:
+      operationId: update_intervention_outcome
+      tags:
+      - interventions
+      summary: Record completion timestamp and structured outcome of an intervention.
+      description: 'Role filtering: `owner`, `admin`, `mentor`, `teacher` only.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/intervention_patch_request'
+      responses:
+        '200':
+          description: Updated intervention task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/intervention_response'
+              example:
+                id: 55555555-6666-7777-8888-999999999999
+                student_id: 11111111-2222-3333-4444-555555555555
+                type: remedial_session
+                owner_user_id: 22222222-3333-4444-5555-666666666666
+                due_date: '2026-08-22'
+                done_at: '2026-08-21T11:30:00+05:30'
+                outcome: completed_improved
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /students/{id}/reports:
+    post:
+      operationId: generate_student_parent_report
+      tags:
+      - reports
+      - genai
+      summary: Generate a verified Hindi or English parent report using numbers_json, verifier, and template fallback.
+      description: 'Role filtering: `owner`, `admin`, `mentor`, `teacher`, and the student''s consented `parent`. Requires
+        active `parent_reports` consent (`403` if consent missing or revoked). Student and institute names are substituted
+        only AFTER LLM generation and verification.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: lang
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/lang_enum'
+      responses:
+        '200':
+          description: Verified parent progress report with `model_version`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/report_generate_response'
+              example:
+                id: 66666666-7777-8888-9999-000000000000
+                student_id: 11111111-2222-3333-4444-555555555555
+                period: 2026-08
+                lang: hi
+                content: 'नमस्ते अभिभावक, पटना जेईई संस्थान से आरव टेस्ट की अगस्त 2026 प्रगति रिपोर्ट: उपस्थिति 86% रही और
+                  4 अभ्यास टेस्ट दिए गए। प्रक्षेप्य गति में अच्छी पकड़ है।'
+                verified: true
+                path: llm
+                sent_via: whatsapp_preview
+                model_version: v1.0.0
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /tests/{id}/flagged-questions:
+    get:
+      operationId: get_test_flagged_questions
+      tags:
+      - tests
+      - analytics
+      summary: List questions in a test flagged by IRT item-fit diagnostics (e.g. suspect wrong answer key).
+      description: 'Role filtering: `owner`, `admin`, `teacher` only.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Flagged questions with IRT parameters and current answer key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/flagged_questions_response'
+              example:
+                test_id: 33333333-4444-5555-6666-777777777777
+                model_version: v1.0.0
+                items:
+                - question_id: 77777777-8888-9999-0000-111111111111
+                  position: 14
+                  q_type: mcq_single
+                  fit_flag: suspect_wrong_key
+                  a: 0.25
+                  b: 2.4
+                  se_b: 0.35
+                  n_responses: 120
+                  tagged_by: human
+                  current_accepted_answers:
+                  - B
+                  dropped: false
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /answer-keys/{test}/{q}:
+    post:
+      operationId: update_answer_key_and_rescore
+      tags:
+      - tests
+      summary: Create a new answer key version (multi-correct, numeric tolerance, or dropped flag) and re-score the test.
+      description: 'Role filtering: `owner`, `admin`, `teacher` only. Logs `update_answer_key` in `audit_log`.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: test
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: q
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/answer_key_update_request'
+      responses:
+        '200':
+          description: New answer key version saved and affected student responses re-scored.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/answer_key_update_response'
+              example:
+                test_id: 33333333-4444-5555-6666-777777777777
+                question_id: 77777777-8888-9999-0000-111111111111
+                new_version: 2
+                students_rescored: 120
+                model_version: v1.0.0
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /owner/dashboard:
+    get:
+      operationId: get_owner_dashboard
+      tags:
+      - owner
+      summary: Return institute-wide batch summaries and MoE 2024 / DPDP compliance indicators.
+      description: 'Role filtering: `owner` and `admin` only.'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Owner overview dashboard with `model_version`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/owner_dashboard_response'
+              example:
+                institute_id: 99999999-8888-7777-6666-555555555555
+                active_students: 385
+                model_version: v1.0.0
+                batches:
+                - batch_id: 44444444-5555-6666-7777-888888888888
+                  name: JEE-11-Morning-A
+                  class_level: class_11
+                  exam: jee_main
+                  enrolled_count: 56
+                  published_capacity: 60
+                  mean_attendance_28d: 0.84
+                  needs_support_count: 8
+                  model_version: v1.0.0
+                compliance_status:
+                  minors_with_verified_consent_pct: 100.0
+                  tests_after_weekly_off_count: 0
+                  pending_refunds_over_10d_count: 0
+                  last_audit_action: view_risk_scores
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /consents:
+    get:
+      operationId: list_consents
+      tags:
+      - consents
+      - privacy
+      summary: List purpose-wise verifiable parental or adult student consent records.
+      description: 'Role filtering: `owner`, `admin` can list all institute consents; `parent` and `student` see only their
+        own consent ledger.'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: student_id
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - *id005
+      - *id006
+      responses:
+        '200':
+          description: Paginated consent ledger.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consent_list_response'
+              example:
+                next_cursor: null
+                items:
+                - id: 88888888-9999-0000-1111-222222222222
+                  student_id: 11111111-2222-3333-4444-555555555555
+                  guardian_id: 77777777-6666-5555-4444-333333333333
+                  guardian_relation: father
+                  purpose: parent_reports
+                  verification_method: in_person_id_check
+                  verified_at: '2026-04-15T10:15:00+05:30'
+                  revoked_at: null
+                  notice_version: '2026.1'
+                  notice_lang: hi
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+    post:
+      operationId: grant_consent
+      tags:
+      - consents
+      - privacy
+      summary: Record verifiable parental consent (DPDP Rule 10) or adult self-consent for a specific purpose.
+      description: 'Role filtering: `owner`, `admin`, `parent`, `student` (if 18+). No ID document images are accepted or
+        stored.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/consent_create_request'
+      responses:
+        '200':
+          description: Recorded consent entry.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consent_record'
+              example:
+                id: 88888888-9999-0000-1111-222222222222
+                student_id: 11111111-2222-3333-4444-555555555555
+                guardian_id: 77777777-6666-5555-4444-333333333333
+                guardian_relation: father
+                purpose: analytics
+                verification_method: in_person_id_check
+                verified_at: '2026-04-15T10:15:00+05:30'
+                revoked_at: null
+                notice_version: '2026.1'
+                notice_lang: hi
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /consents/{id}:
+    delete:
+      operationId: revoke_consent
+      tags:
+      - consents
+      - privacy
+      summary: One-tap withdrawal of consent for a student and purpose; immediately halts processing and purges derived scores.
+      description: 'Role filtering: `owner`, `admin`, `parent` (for their child), `student` (if 18+).'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Revoked consent record with `revoked_at` timestamp.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consent_record'
+              example:
+                id: 88888888-9999-0000-1111-222222222222
+                student_id: 11111111-2222-3333-4444-555555555555
+                guardian_id: 77777777-6666-5555-4444-333333333333
+                guardian_relation: father
+                purpose: analytics
+                verification_method: in_person_id_check
+                verified_at: '2026-04-15T10:15:00+05:30'
+                revoked_at: '2026-09-01T16:00:00+05:30'
+                notice_version: '2026.1'
+                notice_lang: hi
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /settings/privacy-tier:
+    get:
+      operationId: get_privacy_tier_settings
+      tags:
+      - settings
+      - privacy
+      summary: Return current institute feature privacy tier, minor legal flag, and live tier-ablation AUC metrics.
+      description: 'Role filtering: `owner` and `admin` only.'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Privacy tier settings and ablation curve.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/privacy_tier_settings_response'
+              example:
+                active_feature_tier: C
+                minor_ml_risk_enabled: false
+                legal_opinion_ref: null
+                model_version: v1.0.0
+                ablation_auc_by_tier:
+                  A: 0.74
+                  B: 0.81
+                  C: 0.84
+                  D: 0.85
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+    put:
+      operationId: update_privacy_tier_settings
+      tags:
+      - settings
+      - privacy
+      summary: Switch active feature privacy tier (A/B/C/D) or legal routing flag and recompute batch risk scores.
+      description: 'Role filtering: `owner` only. Enabling `minor_ml_risk_enabled` requires a non-empty `legal_opinion_ref`.
+        Audited in `audit_log`.'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/privacy_tier_update_request'
+      responses:
+        '200':
+          description: Updated privacy tier settings and recomputed metrics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/privacy_tier_settings_response'
+              example:
+                active_feature_tier: A
+                minor_ml_risk_enabled: false
+                legal_opinion_ref: null
+                model_version: v1.0.0
+                ablation_auc_by_tier:
+                  A: 0.74
+                  B: 0.81
+                  C: 0.84
+                  D: 0.85
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /health:
+    get:
+      operationId: get_health_status
+      tags:
+      - system
+      summary: Liveness and readiness check for Postgres DB and optional local Ollama LLM container.
+      description: 'Role filtering: public / all roles (includes bearer security declaration for contract uniformity). If
+        `ollama_available` is false, parent reports automatically use deterministic bilingual templates.'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: System health status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/health_response'
+              example:
+                status: ok
+                db_ok: true
+                ollama_available: true
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+  /version:
+    get:
+      operationId: get_system_version
+      tags:
+      - system
+      summary: Return frozen contract_version and active ML model_version from model_registry.
+      description: 'Role filtering: accessible to all roles.'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Contract and ML model version metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/version_response'
+              example:
+                contract_version: 1.0.0
+                model_version: v1.0.0
+                trained_at: '2026-10-20T18:00:00+05:30'
+                data_version: seed42_sha256_a1b2c3
+        '401':
+          description: Unauthorized — missing or invalid Bearer JWT.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '403':
+          description: Forbidden — role or DPDP consent/routing policy forbids this operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found — entity does not exist or belongs to another institute tenant (RLS).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        '422':
+          description: Unprocessable Entity — validation failure (RFC 7807).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem'

@@ -1,0 +1,80 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for contracts/metrics_bars.yaml. contract_version: 1.0.0. Implements: TECH_PLAN \u00a74.2, \u00a710.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/schemas/metrics_bars.schema.json",
+  "title": "MetricsBarsContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "bars"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "bars": {
+      "type": "array",
+      "minItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "metric_key",
+          "module",
+          "dataset_origin",
+          "description",
+          "operator",
+          "gate"
+        ],
+        "properties": {
+          "metric_key": {
+            "type": "string"
+          },
+          "module": {
+            "type": "string"
+          },
+          "dataset_origin": {
+            "type": "string",
+            "enum": [
+              "synthetic",
+              "public",
+              "real_photo"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              ">=",
+              "<=",
+              ">",
+              "<",
+              "==",
+              "between"
+            ]
+          },
+          "target": {
+            "type": "number"
+          },
+          "min_target": {
+            "type": "number"
+          },
+          "max_target": {
+            "type": "number"
+          },
+          "gate": {
+            "type": "string",
+            "enum": [
+              "blocking",
+              "report"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

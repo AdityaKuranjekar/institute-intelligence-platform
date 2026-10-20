@@ -1,0 +1,7 @@
+# Purpose: Canonical clean CSV template for wide-format item-level test responses (MCQ options A-D, numeric values, empty = blank).
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §8 (responses table) and §12 (CSV/XLSX upload).
+test_name,test_date,roll_no,q1,q2,q3,q4,q5
+FT-01-JEE,2026-05-03,PAT26-001,A,C,,B,42.5
+FT-01-JEE,2026-05-03,PAT26-002,B,C,D,,18
+FT-01-JEE,2026-05-03,PAT26-003,A,A,D,B,42.5

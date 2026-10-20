@@ -1,0 +1,7 @@
+# Purpose: Canonical clean CSV template for daily student attendance records.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §8 (attendance table) and §12 (Data capture).
+roll_no,attendance_date,present_flag,source
+PAT26-001,2026-05-04,true,csv
+PAT26-002,2026-05-04,false,csv
+PAT26-003,2026-05-04,true,biometric

@@ -1,0 +1,45 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for contracts/enums.yaml. contract_version: 1.0.0. Implements: TECH_PLAN \u00a78, \u00a710, \u00a713.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/schemas/enums.schema.json",
+  "title": "EnumsContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "enums"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "enums": {
+      "type": "object",
+      "minProperties": 15,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "description",
+          "values"
+        ],
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 5
+          },
+          "values": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^([a-z][a-z0-9_]*|[ABCD])$"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,204 @@
+# Purpose: Bilingual (EN/HI) supportive reason templates, suggested mentor actions, and banned shaming/ranking lexicon.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §10 (SHAP reasons -> actions), §11 (GenAI verifier banned lexicon), and §15 (Well-being).
+
+contract_version: "1.0.0"
+
+banned_words:
+  en:
+    - "dropout"
+    - "drop out"
+    - "fail"
+    - "failure"
+    - "weak student"
+    - "poor student"
+    - "hopeless"
+    - "rank"
+    - "ranking"
+    - "leaderboard"
+    - "compare"
+    - "comparison"
+    - "worse than"
+    - "bottom of"
+    - "last in batch"
+    - "star batch"
+    - "depressed"
+    - "depression"
+    - "mental health"
+    - "suicidal"
+    - "lazy"
+    - "careless"
+    - "defaulter"
+  hi:
+    - "ड्रॉपआउट"
+    - "फेल"
+    - "असफल"
+    - "कमजोर छात्र"
+    - "कमज़ोर छात्र"
+    - "नाकाम"
+    - "रैंक"
+    - "रैंकिंग"
+    - "लीडरबोर्ड"
+    - "तुलना"
+    - "सबसे पीछे"
+    - "स्टार बैच"
+    - "डिप्रेशन"
+    - "मानसिक स्वास्थ्य"
+    - "आलसी"
+    - "लापरवाह"
+    - "डिफ़ॉल्टर"
+
+templates:
+  score_z_drop:
+    slots:
+      - name: n_tests
+        type: integer
+      - name: delta_sd
+        type: number
+    en: "Scores across the last {n_tests} tests dropped noticeably ({delta_sd} points on the batch scale) relative to batch pace"
+    hi: "पिछले {n_tests} टेस्ट के अंकों में बैच की गति के सापेक्ष स्पष्ट गिरावट ({delta_sd} अंक बैच पैमाने पर) देखी गई है"
+    suggested_action: remedial_session
+    action_text:
+      en: "Invite to a supplementary concept-review session on recent test chapters"
+      hi: "हाल के टेस्ट अध्यायों पर अतिरिक्त अवधारणा-पुनरावलोकन सत्र के लिए आमंत्रित करें"
+
+  score_trend_negative:
+    slots:
+      - name: window_weeks
+        type: integer
+      - name: n_tests
+        type: integer
+    en: "Test scores over the last {window_weeks} weeks ({n_tests} assessments) show a gradual downward trend"
+    hi: "पिछले {window_weeks} सप्ताहों ({n_tests} मूल्यांकनों) में टेस्ट के अंकों में क्रमिक गिरावट दिखी है"
+    suggested_action: mentoring
+    action_text:
+      en: "Schedule a 15-minute 1-on-1 mentor check-in to review study schedule and pacing"
+      hi: "अध्ययन समय-सारणी और गति की समीक्षा के लिए 15 मिनट की मेंटर चर्चा निर्धारित करें"
+
+  mastery_slope_drop:
+    slots:
+      - name: n_topics
+        type: integer
+      - name: window_weeks
+        type: integer
+    en: "Topic mastery estimates across {n_topics} recent chapters softened over the past {window_weeks} weeks"
+    hi: "पिछले {window_weeks} सप्ताहों में {n_topics} हालिया अध्यायों की विषय पकड़ में कमी आई है"
+    suggested_action: remedial_session
+    action_text:
+      en: "Assign targeted practice problems from foundational prerequisite topics"
+      hi: "आधारभूत पूर्व-आवश्यक विषयों से लक्षित अभ्यास प्रश्न दें"
+
+  tests_missed_recent:
+    slots:
+      - name: n_missed
+        type: integer
+      - name: n_scheduled
+        type: integer
+    en: "Missed {n_missed} of the last {n_scheduled} scheduled practice assessments"
+    hi: "निर्धारित पिछले {n_scheduled} अभ्यास मूल्यांकनों में से {n_missed} में अनुपस्थित रहे"
+    suggested_action: mentoring
+    action_text:
+      en: "Check in with the student to arrange a calm make-up practice slot"
+      hi: "शांत वातावरण में पुनः अभ्यास स्लॉट तय करने के लिए छात्र से बात करें"
+
+  high_blank_rate:
+    slots:
+      - name: blank_pct
+        type: number
+      - name: n_tests
+        type: integer
+    en: "Left {blank_pct}% of questions unattempted across the last {n_tests} assessments"
+    hi: "पिछले {n_tests} मूल्यांकनों में {blank_pct}% प्रश्न बिना प्रयास के छोड़े गए"
+    suggested_action: mentoring
+    action_text:
+      en: "Review time-management and option-elimination confidence with the faculty mentor"
+      hi: "फैकल्टी मेंटर के साथ समय-प्रबंधन और विकल्प-चयन आत्मविश्वास पर चर्चा करें"
+
+  attendance_window_low:
+    slots:
+      - name: n_absent
+        type: integer
+      - name: n_sessions
+        type: integer
+    en: "Absent {n_absent} of last {n_sessions} scheduled classes"
+    hi: "पिछली {n_sessions} निर्धारित कक्षाओं में से {n_absent} में अनुपस्थित"
+    suggested_action: parent_call
+    action_text:
+      en: "Make a supportive call to the family to check on health, travel, or schedule hurdles"
+      hi: "स्वास्थ्य, यात्रा या समय की किसी कठिनाई को समझने के लिए परिवार से सहयोगात्मक बात करें"
+
+  attendance_slope_drop:
+    slots:
+      - name: window_weeks
+        type: integer
+      - name: drop_pct
+        type: number
+    en: "Class attendance dipped by {drop_pct}% over the past {window_weeks} weeks relative to the batch schedule"
+    hi: "पिछले {window_weeks} सप्ताहों में बैच के सापेक्ष कक्षा उपस्थिति में {drop_pct}% की कमी आई है"
+    suggested_action: mentoring
+    action_text:
+      en: "Have the assigned mentor greet the student and share missed lecture notes"
+      hi: "निर्धारित मेंटर द्वारा छात्र से संवाद करें और छूटे हुए लेक्चर नोट्स साझा करें"
+
+  consecutive_absences_high:
+    slots:
+      - name: n_days
+        type: integer
+    en: "Missed {n_days} consecutive class days recently"
+    hi: "हाल ही में लगातार {n_days} कक्षा दिनों में अनुपस्थित रहे"
+    suggested_action: parent_call
+    action_text:
+      en: "Reach out to the guardian to ensure well-being and share a catch-up plan"
+      hi: "कुशलक्षेम जानने और छूटे पाठ्यक्रम की योजना साझा करने के लिए अभिभावक से संपर्क करें"
+
+  fee_days_overdue:
+    slots:
+      - name: days_overdue
+        type: integer
+      - name: instalment_no
+        type: integer
+    en: "Instalment #{instalment_no} payment is {days_overdue} days past the scheduled due date"
+    hi: "किस्त संख्या #{instalment_no} का भुगतान निर्धारित तिथि से {days_overdue} दिन लंबित है"
+    suggested_action: fee_plan_discussion
+    action_text:
+      en: "Invite the parent for a private administrative conversation on flexible instalment options"
+      hi: "लचीले किस्त विकल्पों पर निजी प्रशासनिक चर्चा के लिए अभिभावक को आमंत्रित करें"
+
+  fee_partial_payment:
+    slots:
+      - name: paid_pct
+        type: number
+      - name: instalment_no
+        type: integer
+    en: "Instalment #{instalment_no} is currently {paid_pct}% settled"
+    hi: "किस्त संख्या #{instalment_no} का वर्तमान में {paid_pct}% भुगतान प्राप्त हुआ है"
+    suggested_action: fee_plan_discussion
+    action_text:
+      en: "Confirm revised schedule dates with the parent via the accounts desk"
+      hi: "लेखा कार्यालय के माध्यम से अभिभावक के साथ संशोधित भुगतान तिथि की पुष्टि करें"
+
+  cohort_transition_period:
+    slots:
+      - name: tenure_month
+        type: integer
+      - name: class_label
+        type: string
+    en: "Month {tenure_month} of the {class_label} calendar often requires pacing adjustments as syllabus load increases"
+    hi: "{class_label} कैलेंडर के महीने {tenure_month} में पाठ्यक्रम बढ़ने पर अक्सर गति समायोजन की आवश्यकता होती है"
+    suggested_action: counselling_referral
+    action_text:
+      en: "Offer an optional check-in with the institute academic counsellor on study balance"
+      hi: "अध्ययन संतुलन के लिए संस्थान के शैक्षणिक परामर्शदाता के साथ वैकल्पिक सत्र की पेशकश करें"
+
+  engagement_activity_dip:
+    slots:
+      - name: window_days
+        type: integer
+      - name: n_active_days
+        type: integer
+    en: "Logged practice portal activity on {n_active_days} of the last {window_days} days"
+    hi: "पिछले {window_days} दिनों में से {n_active_days} दिन अभ्यास पोर्टल पर सक्रिय रहे"
+    suggested_action: mentoring
+    action_text:
+      en: "Review homework practice routine during the next mentor check-in"
+      hi: "अगली मेंटर चर्चा के दौरान गृहकार्य अभ्यास दिनचर्या की समीक्षा करें"

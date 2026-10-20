@@ -1,0 +1,46 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for contracts/csv_templates/header_synonyms.yaml. contract_version: 1.0.0. Implements: TECH_PLAN \u00a79, \u00a712.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/schemas/header_synonyms.schema.json",
+  "title": "HeaderSynonymsContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "absent_markers",
+    "present_markers",
+    "column_synonyms"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "absent_markers": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "string"
+      }
+    },
+    "present_markers": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "string"
+      }
+    },
+    "column_synonyms": {
+      "type": "object",
+      "minProperties": 20,
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 5,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

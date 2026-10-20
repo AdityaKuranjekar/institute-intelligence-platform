@@ -1,0 +1,42 @@
+# Purpose: Canonical marking schemes for JEE Main, NEET-UG, and common internal coaching test formats.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §8 (marking_schemes table) and §9 (Exam realism).
+
+contract_version: "1.0.0"
+
+schemes:
+  jee_main:
+    id: jee_main
+    name: "JEE Main Official (+4 / -1 / 0)"
+    correct: 4.0
+    wrong: -1.0
+    blank: 0.0
+    partial_rule: full_marks_if_any_accepted
+    dropped_rule: full_marks_all
+
+  neet_ug:
+    id: neet_ug
+    name: "NEET-UG Official (+4 / -1 / 0)"
+    correct: 4.0
+    wrong: -1.0
+    blank: 0.0
+    partial_rule: full_marks_if_any_accepted
+    dropped_rule: full_marks_all
+
+  internal_plus4_zero:
+    id: internal_plus4_zero
+    name: "Internal Foundation / No Negative (+4 / 0 / 0)"
+    correct: 4.0
+    wrong: 0.0
+    blank: 0.0
+    partial_rule: full_marks_if_any_accepted
+    dropped_rule: full_marks_all
+
+  internal_plus3_minus1:
+    id: internal_plus3_minus1
+    name: "Internal Chapter Quiz (+3 / -1 / 0)"
+    correct: 3.0
+    wrong: -1.0
+    blank: 0.0
+    partial_rule: proportional_no_negative
+    dropped_rule: full_marks_attempted_only

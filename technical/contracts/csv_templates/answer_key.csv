@@ -1,0 +1,7 @@
+# Purpose: Canonical clean CSV template for test answer keys supporting multi-correct pipe-delimited options, numeric tolerance, and dropped items.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §8 (answer_keys table) and §9 (Exam realism).
+question_no,q_type,subject,topic_id,accepted_answers,numeric_tolerance,dropped
+1,mcq_single,Physics,jee.phy.kinematics.projectile,A,0.0,false
+2,mcq_multi,Chemistry,jee.chem.atomic_structure.bohr_model,A|C,0.0,false
+3,numeric,Mathematics,jee.math.quadratic_equations.roots_nature,42.5,0.1,false

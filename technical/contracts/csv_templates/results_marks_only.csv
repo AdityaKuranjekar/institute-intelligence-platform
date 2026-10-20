@@ -1,0 +1,7 @@
+# Purpose: Canonical clean CSV template for marks-only institutes that upload aggregate test totals without item responses.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §8 (test_totals table), §12 (Marks-only files supported), and §17 (Edge cases).
+test_name,test_date,roll_no,raw_score,physics_score,chemistry_score,math_or_bio_score,absent_flag
+FT-01-JEE,2026-05-03,PAT26-001,184.0,68.0,62.0,54.0,false
+FT-01-JEE,2026-05-03,PAT26-002,142.0,45.0,52.0,45.0,false
+FT-01-JEE,2026-05-03,PAT26-003,,,,,true

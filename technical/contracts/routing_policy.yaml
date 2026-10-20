@@ -1,0 +1,171 @@
+# Purpose: Machine-readable purpose- and age-aware legal routing policy and deterministic fallback rules.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §1 #11, §10 (Deployment routing table), and §15 (Privacy, DPDP, well-being).
+#
+# Legal Citations:
+#   - DPDP Act 2023 s.9(1) & DPDP Rules 2025 Rule 10: Verifiable parental consent required before processing any personal data of a child (< 18 years).
+#   - DPDP Act 2023 s.9(3): "A Data Fiduciary shall not undertake tracking or behavioural monitoring of children or targeted advertising directed at children."
+#   - DPDP Rules 2025 Fourth Schedule, Part A, Item 3: Exempts educational institutions from s.9(1) & s.9(3) strictly to the extent processing is restricted to tracking and behavioural monitoring "(a) for the educational activities of such institution; or (b) in the interests of safety of children enrolled with such institution."
+#   - Ministry of Education (MoE) Coaching Centre Guidelines 2024 cl. 10.2(xi): Assessment results must be kept confidential and "used for regular analysis of performance of students and the student whose education performance is deteriorating, should be provided counselling".
+
+contract_version: "1.0.0"
+
+age_derivation:
+  adult_age_years: 18
+  formula: "age_years(student.dob, as_of) < 18"
+  reconsent_on_18th_birthday: true
+
+required_consents_by_target:
+  academic_support:
+    - analytics
+    - risk_alerts
+  retention:
+    - analytics
+    - risk_alerts
+  fee:
+    - analytics
+
+routing_matrix:
+  # 1. Under-18 Minor (default: minor_ml_risk_enabled = false)
+  - is_minor: true
+    minor_ml_risk_enabled: false
+    target: academic_support
+    method: ml
+    allowed_tiers: [A]
+    rationale: "Permitted educational activity under DPDP 4th Schedule Part A Item 3 and mandated by MoE 2024 cl. 10.2(xi)."
+
+  - is_minor: true
+    minor_ml_risk_enabled: false
+    target: retention
+    method: rules
+    allowed_tiers: [A, B]
+    rationale: "Predictive retention ML is gated off for minors by default under DPDP s.9(3); transparent rules on mandatory attendance/test registers apply."
+
+  - is_minor: true
+    minor_ml_risk_enabled: false
+    target: fee
+    method: rules
+    allowed_tiers: [C]
+    rationale: "Fee default ML is gated off for minors; deterministic overdue reminders apply to the paying guardian's fee schedule."
+
+  # 2. Under-18 Minor with Institute Legal Override (minor_ml_risk_enabled = true after documented legal opinion)
+  - is_minor: true
+    minor_ml_risk_enabled: true
+    target: academic_support
+    method: ml
+    allowed_tiers: [A]
+    rationale: "Academic support ML on test features."
+
+  - is_minor: true
+    minor_ml_risk_enabled: true
+    target: retention
+    method: ml
+    allowed_tiers: [A, B]
+    rationale: "Enabled per institute legal opinion (`legal_settings.legal_opinion_ref`); Tier D engagement remains strictly prohibited."
+
+  - is_minor: true
+    minor_ml_risk_enabled: true
+    target: fee
+    method: rules
+    allowed_tiers: [C]
+    rationale: "Fee alerts for minors always use transparent rules regardless of legal flag."
+
+  # 3. Adult Student (18+ Dropper / Class 12 who turned 18 and re-consented with verification_method = self_adult).
+  # Note: `minor_ml_risk_enabled` is irrelevant for adults (is_minor = false), but both false and true rows are
+  # included below so that the 2 x 2 x 3 lookup matrix (is_minor x minor_ml_risk_enabled x target) is total.
+  - is_minor: false
+    minor_ml_risk_enabled: false
+    target: academic_support
+    method: ml
+    allowed_tiers: [A, B, D]
+    rationale: "Adult student with own consent; Tiers [A, B] are used by default, plus Tier D only when engagement_tracking consent exists and institute active_feature_tier = D."
+
+  - is_minor: false
+    minor_ml_risk_enabled: false
+    target: retention
+    method: ml
+    allowed_tiers: [A, B, C, D]
+    rationale: "Adult student with own consent; full ML across consented feature tiers."
+
+  - is_minor: false
+    minor_ml_risk_enabled: false
+    target: fee
+    method: ml
+    allowed_tiers: [C]
+    rationale: "Adult student with own consent."
+
+  - is_minor: false
+    minor_ml_risk_enabled: true
+    target: academic_support
+    method: ml
+    allowed_tiers: [A, B, D]
+    rationale: "Adult student with own consent; Tiers [A, B] are used by default, plus Tier D only when engagement_tracking consent exists and institute active_feature_tier = D."
+
+  - is_minor: false
+    minor_ml_risk_enabled: true
+    target: retention
+    method: ml
+    allowed_tiers: [A, B, C, D]
+    rationale: "Adult student with own consent; full ML across consented feature tiers."
+
+  - is_minor: false
+    minor_ml_risk_enabled: true
+    target: fee
+    method: ml
+    allowed_tiers: [C]
+    rationale: "Adult student with own consent."
+
+rules:
+  - id: rule_retention_consecutive_absences
+    target: retention
+    feature: consecutive_absences
+    operator: ">="
+    threshold: 5
+    band: needs_support
+    reason_template_key: consecutive_absences_high
+    suggested_action: parent_call
+
+  - id: rule_retention_missed_mocks
+    target: retention
+    feature: tests_missed_28d
+    operator: ">="
+    threshold: 2
+    band: needs_support
+    reason_template_key: tests_missed_recent
+    suggested_action: mentoring
+
+  - id: rule_retention_low_attendance_window
+    target: retention
+    feature: attendance_rate_28d
+    operator: "<"
+    threshold: 0.75
+    band: watch
+    reason_template_key: attendance_window_low
+    suggested_action: mentoring
+
+  - id: rule_fee_overdue_30d
+    target: fee
+    feature: days_overdue
+    operator: ">="
+    threshold: 30
+    band: needs_support
+    reason_template_key: fee_days_overdue
+    suggested_action: fee_plan_discussion
+
+  - id: rule_fee_overdue_7d
+    target: fee
+    feature: days_overdue
+    operator: ">="
+    threshold: 7
+    band: watch
+    reason_template_key: fee_days_overdue
+    suggested_action: fee_plan_discussion
+
+  - id: rule_academic_score_drop
+    target: academic_support
+    feature: score_z_vs_batch_28d
+    operator: "<="
+    threshold: -1.0
+    band: needs_support
+    reason_template_key: score_z_drop
+    suggested_action: remedial_session

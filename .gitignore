@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.next/
+data/
+*.parquet
+.env
+.pytest_cache/
+*.log
+.DS_Store

@@ -1,0 +1,153 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for contracts/topics.yaml. contract_version: 1.0.0. Implements: TECH_PLAN \u00a71 #13, \u00a78, \u00a79.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/schemas/topics.schema.json",
+  "title": "TopicsContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "topics",
+    "topic_prereqs"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "topics": {
+      "type": "array",
+      "minItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "exam",
+          "exams",
+          "subject",
+          "chapter",
+          "topic",
+          "level",
+          "name_en",
+          "name_hi",
+          "name_hi_reviewed",
+          "parent_id",
+          "class_level",
+          "syllabus_year",
+          "weightage",
+          "source",
+          "verified"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(jee|neet)\\.[a-z0-9_.]+$"
+          },
+          "exam": {
+            "type": "string",
+            "enum": [
+              "jee_main",
+              "neet_ug"
+            ]
+          },
+          "exams": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "jee_main",
+                "neet_ug"
+              ]
+            }
+          },
+          "subject": {
+            "type": "string",
+            "minLength": 2
+          },
+          "chapter": {
+            "type": "string",
+            "minLength": 2
+          },
+          "topic": {
+            "type": "string",
+            "minLength": 2
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "subject",
+              "chapter",
+              "topic"
+            ]
+          },
+          "name_en": {
+            "type": "string",
+            "minLength": 2
+          },
+          "name_hi": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name_hi_reviewed": {
+            "type": "boolean"
+          },
+          "parent_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "class_level": {
+            "type": "string",
+            "enum": [
+              "class_11",
+              "class_12",
+              "dropper"
+            ]
+          },
+          "syllabus_year": {
+            "type": "integer",
+            "minimum": 2024
+          },
+          "weightage": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "source": {
+            "type": "string",
+            "minLength": 3
+          },
+          "verified": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "topic_prereqs": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "topic_id",
+          "prereq_topic_id"
+        ],
+        "properties": {
+          "topic_id": {
+            "type": "string"
+          },
+          "prereq_topic_id": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

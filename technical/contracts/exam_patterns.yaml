@@ -1,0 +1,110 @@
+# Purpose: Year-versioned examination structures and evaluation parameters for JEE Main, NEET-UG, and internal coaching assessments.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §1 #12, §9 (Exam realism), and §24 (D9, D10).
+
+contract_version: "1.0.0"
+
+global_rules:
+  dropped_question: full_marks_all
+  multi_correct: full_marks_if_any_accepted
+
+patterns:
+  jee_main_2026:
+    exam: jee_main
+    year: 2026
+    verified: true
+    source: "https://www.nta.ac.in/Download/Notice/Notice_20260120102259.pdf"
+    duration_min: 180
+    max_marks: 300
+    marking_scheme_id: jee_main
+    subjects:
+      - Physics
+      - Chemistry
+      - Mathematics
+    sections_per_subject:
+      - section_id: A
+        q_type: mcq_single
+        options_n: 4
+        total_questions: 20
+        questions_to_attempt: 20
+        correct_marks: 4
+        wrong_marks: -1
+        blank_marks: 0
+      - section_id: B
+        q_type: numeric
+        options_n: 0
+        total_questions: 5
+        questions_to_attempt: 5
+        correct_marks: 4
+        wrong_marks: -1
+        blank_marks: 0
+
+  neet_ug_2026:
+    exam: neet_ug
+    year: 2026
+    verified: false
+    source: "bulletin PDF extraction pending per TECH_PLAN §23/§24 (https://neet.nta.nic.in/document/information-bulletin-english/)"
+    default_variant: compulsory_180
+    marking_scheme_id: neet_ug
+    subjects:
+      - Physics
+      - Chemistry
+      - Botany
+      - Zoology
+    variants:
+      compulsory_180:
+        description: "Post-2025 reform pattern: 45 compulsory MCQs per subject (180 total), 180 minutes."
+        duration_min: 180
+        max_marks: 720
+        sections_per_subject:
+          - section_id: A
+            q_type: mcq_single
+            options_n: 4
+            total_questions: 45
+            questions_to_attempt: 45
+            correct_marks: 4
+            wrong_marks: -1
+            blank_marks: 0
+      sectioned_200:
+        description: "2021-2024 pattern reported in R4: Section A (35 compulsory) + Section B (15 offered, attempt 10) per subject, 200 minutes."
+        duration_min: 200
+        max_marks: 720
+        sections_per_subject:
+          - section_id: A
+            q_type: mcq_single
+            options_n: 4
+            total_questions: 35
+            questions_to_attempt: 35
+            correct_marks: 4
+            wrong_marks: -1
+            blank_marks: 0
+          - section_id: B
+            q_type: mcq_single
+            options_n: 4
+            total_questions: 15
+            questions_to_attempt: 10
+            correct_marks: 4
+            wrong_marks: -1
+            blank_marks: 0
+
+  internal_chapter_test:
+    exam: jee_main
+    year: 2026
+    verified: false
+    source: "assumption (ours)"
+    duration_min: 60
+    max_marks: 120
+    marking_scheme_id: jee_main
+    subjects:
+      - Physics
+      - Chemistry
+      - Mathematics
+    sections_per_subject:
+      - section_id: A
+        q_type: mcq_single
+        options_n: 4
+        total_questions: 10
+        questions_to_attempt: 10
+        correct_marks: 4
+        wrong_marks: -1
+        blank_marks: 0

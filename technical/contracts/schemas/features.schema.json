@@ -1,0 +1,102 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for contracts/features.yaml. contract_version: 1.0.0. Implements: TECH_PLAN \u00a71 #5, \u00a710, \u00a715.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/schemas/features.schema.json",
+  "title": "FeaturesContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "features"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "features": {
+      "type": "array",
+      "minItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "description",
+          "tier",
+          "dtype",
+          "source_tables",
+          "window",
+          "as_of_rule",
+          "batch_relative",
+          "purposes",
+          "allowed_for_minor",
+          "reason_template_key"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "dtype": {
+            "type": "string",
+            "enum": [
+              "float",
+              "integer",
+              "categorical",
+              "boolean"
+            ]
+          },
+          "source_tables": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "window": {
+            "type": "string"
+          },
+          "as_of_rule": {
+            "type": "string",
+            "pattern": "as_of"
+          },
+          "batch_relative": {
+            "type": "boolean"
+          },
+          "purposes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "academic_support",
+                "retention",
+                "fee"
+              ]
+            }
+          },
+          "allowed_for_minor": {
+            "type": "boolean"
+          },
+          "reason_template_key": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

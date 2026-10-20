@@ -1,0 +1,7 @@
+# Purpose: Canonical clean CSV template for student guardian and consent contact records.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §8 (guardians table) and §15 (DPDP verifiable parental consent).
+roll_no,guardian_name,phone,relation,lang_pref
+PAT26-001,Rajesh Test,9000000001,father,hi
+PAT26-002,Sunita Sample,9000000002,mother,hi
+PAT26-003,Rohan Demo,9000000003,self,en

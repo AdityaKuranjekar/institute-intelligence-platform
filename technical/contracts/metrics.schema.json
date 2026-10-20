@@ -1,0 +1,80 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for `ml/artifacts/vX/metrics.json` consumed by `scripts/deck_numbers.py` and `evaluate.py`. contract_version: 1.0.0. Implements: TECH_PLAN §4, §10, §18, and §19.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/metrics.schema.json",
+  "title": "ModelEvaluationMetrics",
+  "description": "Single source of truth for all validation metrics across synthetic, public, and real_photo datasets with bootstrap confidence intervals.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "model_version",
+    "evaluated_at",
+    "generator_seed",
+    "results"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "model_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "evaluated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generator_seed": {
+      "type": "integer"
+    },
+    "results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "metric_key",
+          "module",
+          "dataset_origin",
+          "value",
+          "ci_low",
+          "ci_high",
+          "passed_bar"
+        ],
+        "properties": {
+          "metric_key": { "type": "string", "minLength": 3 },
+          "module": {
+            "type": "string",
+            "enum": [
+              "irt",
+              "mastery",
+              "early_warning",
+              "falling_behind",
+              "fee_default",
+              "percentile_band",
+              "public_validation",
+              "robustness",
+              "genai",
+              "omr",
+              "tagging",
+              "cost_model",
+              "fairness"
+            ]
+          },
+          "dataset_origin": {
+            "type": "string",
+            "enum": ["synthetic", "public", "real_photo"]
+          },
+          "value": { "type": "number" },
+          "ci_low": { "type": ["number", "null"] },
+          "ci_high": { "type": ["number", "null"] },
+          "passed_bar": { "type": "boolean" },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

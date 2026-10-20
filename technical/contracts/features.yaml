@@ -1,0 +1,274 @@
+# Purpose: Complete feature catalog with privacy tiers (A-D), temporal as_of leakage rules, and minor eligibility flags.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §1 #5, §3 #2 (no feature leakage), §10 (ML modules & routing), and §15 (Privacy tiers).
+
+contract_version: "1.0.0"
+
+features:
+  # --- Tier A: Academic / Test-Result Features (allowed for minors under educational activities) ---
+  - name: score_z_vs_batch_14d
+    description: "Student mean test score z-score relative to their batch over tests in [as_of - 14d, as_of)."
+    tier: A
+    dtype: float
+    source_tables: [tests, test_totals, students]
+    window: "14d"
+    as_of_rule: "strictly_before_as_of (tests.test_date < as_of)"
+    batch_relative: true
+    purposes: [academic_support, retention]
+    allowed_for_minor: true
+    reason_template_key: score_z_drop
+
+  - name: score_z_vs_batch_28d
+    description: "Student mean test score z-score relative to their batch over tests in [as_of - 28d, as_of)."
+    tier: A
+    dtype: float
+    source_tables: [tests, test_totals, students]
+    window: "28d"
+    as_of_rule: "strictly_before_as_of (tests.test_date < as_of)"
+    batch_relative: true
+    purposes: [academic_support, retention]
+    allowed_for_minor: true
+    reason_template_key: score_z_drop
+
+  - name: score_z_vs_batch_56d
+    description: "Student mean test score z-score relative to their batch over tests in [as_of - 56d, as_of)."
+    tier: A
+    dtype: float
+    source_tables: [tests, test_totals, students]
+    window: "56d"
+    as_of_rule: "strictly_before_as_of (tests.test_date < as_of)"
+    batch_relative: true
+    purposes: [academic_support, retention]
+    allowed_for_minor: true
+    reason_template_key: score_z_drop
+
+  - name: score_z_slope_28d
+    description: "OLS linear trend slope of batch-relative test z-scores over [as_of - 28d, as_of)."
+    tier: A
+    dtype: float
+    source_tables: [tests, test_totals, students]
+    window: "28d"
+    as_of_rule: "strictly_before_as_of (tests.test_date < as_of)"
+    batch_relative: true
+    purposes: [academic_support, retention]
+    allowed_for_minor: true
+    reason_template_key: score_trend_negative
+
+  - name: mastery_theta_slope_28d
+    description: "Slope of student overall EAP ability theta across mastery snapshots in [as_of - 28d, as_of)."
+    tier: A
+    dtype: float
+    source_tables: [mastery_snapshots]
+    window: "28d"
+    as_of_rule: "strictly_before_as_of (mastery_snapshots.computed_at::date < as_of)"
+    batch_relative: true
+    purposes: [academic_support, retention]
+    allowed_for_minor: true
+    reason_template_key: mastery_slope_drop
+
+  - name: tests_missed_28d
+    description: "Count of scheduled batch assessments missed (absent_flag = true) in [as_of - 28d, as_of)."
+    tier: A
+    dtype: integer
+    source_tables: [tests, test_totals]
+    window: "28d"
+    as_of_rule: "strictly_before_as_of (tests.test_date < as_of)"
+    batch_relative: false
+    purposes: [academic_support, retention]
+    allowed_for_minor: true
+    reason_template_key: tests_missed_recent
+
+  - name: tests_missed_56d
+    description: "Count of scheduled batch assessments missed (absent_flag = true) in [as_of - 56d, as_of)."
+    tier: A
+    dtype: integer
+    source_tables: [tests, test_totals]
+    window: "56d"
+    as_of_rule: "strictly_before_as_of (tests.test_date < as_of)"
+    batch_relative: false
+    purposes: [academic_support, retention]
+    allowed_for_minor: true
+    reason_template_key: tests_missed_recent
+
+  - name: blank_rate_vs_batch_28d
+    description: "Difference between student blank response rate and batch mean blank rate over [as_of - 28d, as_of)."
+    tier: A
+    dtype: float
+    source_tables: [tests, responses]
+    window: "28d"
+    as_of_rule: "strictly_before_as_of (tests.test_date < as_of)"
+    batch_relative: true
+    purposes: [academic_support]
+    allowed_for_minor: true
+    reason_template_key: high_blank_rate
+
+  - name: tenure_month
+    description: "Elapsed months since student join_date as of as_of (captures month 3-4 transition stress)."
+    tier: A
+    dtype: integer
+    source_tables: [students]
+    window: "all_prior"
+    as_of_rule: "strictly_before_as_of (students.join_date <= as_of)"
+    batch_relative: false
+    purposes: [academic_support, retention]
+    allowed_for_minor: true
+    reason_template_key: cohort_transition_period
+
+  - name: student_class_level
+    description: "Encoded cohort class level (class_11, class_12, dropper) of the student's batch at as_of."
+    tier: A
+    dtype: categorical
+    source_tables: [students, batches, batch_changes]
+    window: "as_of_snapshot"
+    as_of_rule: "strictly_before_as_of (batch assignment effective at as_of)"
+    batch_relative: false
+    purposes: [academic_support, retention]
+    allowed_for_minor: true
+    reason_template_key: cohort_transition_period
+
+  # --- Tier B: Attendance Features (used in rules for minors; ML for adults or when legal flag enabled) ---
+  - name: attendance_rate_14d
+    description: "Fraction of scheduled classes attended in [as_of - 14d, as_of), normalized against batch festival/holiday schedule."
+    tier: B
+    dtype: float
+    source_tables: [attendance, students]
+    window: "14d"
+    as_of_rule: "strictly_before_as_of (attendance.attendance_date < as_of)"
+    batch_relative: true
+    purposes: [retention]
+    allowed_for_minor: true
+    reason_template_key: attendance_window_low
+
+  - name: attendance_rate_28d
+    description: "Fraction of scheduled classes attended in [as_of - 28d, as_of), normalized against batch mean."
+    tier: B
+    dtype: float
+    source_tables: [attendance, students]
+    window: "28d"
+    as_of_rule: "strictly_before_as_of (attendance.attendance_date < as_of)"
+    batch_relative: true
+    purposes: [retention]
+    allowed_for_minor: true
+    reason_template_key: attendance_window_low
+
+  - name: attendance_rate_56d
+    description: "Fraction of scheduled classes attended in [as_of - 56d, as_of), normalized against batch mean."
+    tier: B
+    dtype: float
+    source_tables: [attendance, students]
+    window: "56d"
+    as_of_rule: "strictly_before_as_of (attendance.attendance_date < as_of)"
+    batch_relative: true
+    purposes: [retention]
+    allowed_for_minor: true
+    reason_template_key: attendance_window_low
+
+  - name: attendance_slope_28d
+    description: "Change in batch-relative attendance rate between [as_of - 28d, as_of - 14d) and [as_of - 14d, as_of)."
+    tier: B
+    dtype: float
+    source_tables: [attendance, students]
+    window: "28d"
+    as_of_rule: "strictly_before_as_of (attendance.attendance_date < as_of)"
+    batch_relative: true
+    purposes: [retention]
+    allowed_for_minor: true
+    reason_template_key: attendance_slope_drop
+
+  - name: consecutive_absences
+    description: "Number of consecutive scheduled class days missed immediately preceding as_of."
+    tier: B
+    dtype: integer
+    source_tables: [attendance]
+    window: "28d"
+    as_of_rule: "strictly_before_as_of (attendance.attendance_date < as_of)"
+    batch_relative: false
+    purposes: [retention]
+    allowed_for_minor: true
+    reason_template_key: consecutive_absences_high
+
+  - name: batch_dropout_rate_56d
+    description: "Historical attrition rate in the student's batch over [as_of - 56d, as_of)."
+    tier: B
+    dtype: float
+    source_tables: [students, batches]
+    window: "56d"
+    as_of_rule: "strictly_before_as_of (students.left_date < as_of)"
+    batch_relative: true
+    purposes: [retention]
+    allowed_for_minor: true
+    reason_template_key: cohort_transition_period
+
+  # --- Tier C: Fee / Financial Features (rules only for minors; ML for 18+ adults) ---
+  - name: days_overdue
+    description: "Days elapsed since the earliest unpaid or partially paid instalment due_date prior to as_of (0 if current)."
+    tier: C
+    dtype: integer
+    source_tables: [fees]
+    window: "all_prior"
+    as_of_rule: "strictly_before_as_of (fees.due_date < as_of AND (fees.paid_date IS NULL OR fees.paid_date >= as_of))"
+    batch_relative: false
+    purposes: [retention, fee]
+    allowed_for_minor: false
+    reason_template_key: fee_days_overdue
+
+  - name: partial_payments_count
+    description: "Count of prior instalments before as_of where 0 < paid_amount_paise < amount_paise."
+    tier: C
+    dtype: integer
+    source_tables: [fees]
+    window: "all_prior"
+    as_of_rule: "strictly_before_as_of (fees.due_date < as_of)"
+    batch_relative: false
+    purposes: [retention, fee]
+    allowed_for_minor: false
+    reason_template_key: fee_partial_payment
+
+  - name: last_instalment_paid_ratio
+    description: "Ratio paid_amount_paise / amount_paise on the most recent due instalment prior to as_of."
+    tier: C
+    dtype: float
+    source_tables: [fees]
+    window: "all_prior"
+    as_of_rule: "strictly_before_as_of (fees.due_date < as_of)"
+    batch_relative: false
+    purposes: [fee]
+    allowed_for_minor: false
+    reason_template_key: fee_partial_payment
+
+  # --- Tier D: Digital / App Engagement Features (off by default; NEVER allowed for minors per DPDP s.9(3)) ---
+  - name: doubts_asked_14d
+    description: "Count of doubts submitted on the app over [as_of - 14d, as_of)."
+    tier: D
+    dtype: integer
+    source_tables: [engagement]
+    window: "14d"
+    as_of_rule: "strictly_before_as_of (engagement.activity_date < as_of)"
+    batch_relative: true
+    purposes: [academic_support, retention]
+    allowed_for_minor: false
+    reason_template_key: engagement_activity_dip
+
+  - name: homework_submitted_rate_14d
+    description: "Fraction of assigned digital homework sets submitted in [as_of - 14d, as_of)."
+    tier: D
+    dtype: float
+    source_tables: [engagement]
+    window: "14d"
+    as_of_rule: "strictly_before_as_of (engagement.activity_date < as_of)"
+    batch_relative: true
+    purposes: [academic_support, retention]
+    allowed_for_minor: false
+    reason_template_key: engagement_activity_dip
+
+  - name: app_logins_14d
+    description: "Number of student portal/app login days in [as_of - 14d, as_of)."
+    tier: D
+    dtype: integer
+    source_tables: [engagement]
+    window: "14d"
+    as_of_rule: "strictly_before_as_of (engagement.activity_date < as_of)"
+    batch_relative: true
+    purposes: [retention]
+    allowed_for_minor: false
+    reason_template_key: engagement_activity_dip

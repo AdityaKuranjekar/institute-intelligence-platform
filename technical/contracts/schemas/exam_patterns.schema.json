@@ -1,0 +1,187 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for contracts/exam_patterns.yaml. contract_version: 1.0.0. Implements: TECH_PLAN \u00a71 #12, \u00a79, \u00a724.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/schemas/exam_patterns.schema.json",
+  "title": "ExamPatternsContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "global_rules",
+    "patterns"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "global_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dropped_question",
+        "multi_correct"
+      ],
+      "properties": {
+        "dropped_question": {
+          "type": "string",
+          "enum": [
+            "full_marks_all",
+            "full_marks_attempted_only"
+          ]
+        },
+        "multi_correct": {
+          "type": "string",
+          "enum": [
+            "none",
+            "full_marks_if_any_accepted",
+            "proportional_no_negative"
+          ]
+        }
+      }
+    },
+    "patterns": {
+      "type": "object",
+      "required": [
+        "jee_main_2026",
+        "neet_ug_2026",
+        "internal_chapter_test"
+      ],
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "exam",
+          "year",
+          "verified",
+          "source",
+          "marking_scheme_id",
+          "subjects"
+        ],
+        "properties": {
+          "exam": {
+            "type": "string",
+            "enum": [
+              "jee_main",
+              "neet_ug"
+            ]
+          },
+          "year": {
+            "type": "integer"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "string"
+          },
+          "marking_scheme_id": {
+            "type": "string"
+          },
+          "subjects": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "duration_min": {
+            "type": "integer",
+            "minimum": 15
+          },
+          "max_marks": {
+            "type": "number",
+            "minimum": 1
+          },
+          "default_variant": {
+            "type": "string"
+          },
+          "sections_per_subject": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/section_spec"
+            }
+          },
+          "variants": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "description",
+                "duration_min",
+                "max_marks",
+                "sections_per_subject"
+              ],
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "duration_min": {
+                  "type": "integer"
+                },
+                "max_marks": {
+                  "type": "number"
+                },
+                "sections_per_subject": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/section_spec"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "section_spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section_id",
+        "q_type",
+        "options_n",
+        "total_questions",
+        "questions_to_attempt",
+        "correct_marks",
+        "wrong_marks",
+        "blank_marks"
+      ],
+      "properties": {
+        "section_id": {
+          "type": "string"
+        },
+        "q_type": {
+          "type": "string",
+          "enum": [
+            "mcq_single",
+            "mcq_multi",
+            "numeric"
+          ]
+        },
+        "options_n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_questions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "questions_to_attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "correct_marks": {
+          "type": "number"
+        },
+        "wrong_marks": {
+          "type": "number"
+        },
+        "blank_marks": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

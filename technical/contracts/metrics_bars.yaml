@@ -1,0 +1,208 @@
+# Purpose: Quantitative acceptance bars and CI/report gate rules for all ML, GenAI, OMR, and cost modules.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §4.2 (Notebooks & headline metrics), §10 (ML modules & acceptance bars), and §18 (Testing strategy).
+
+contract_version: "1.0.0"
+
+bars:
+  # --- NB02: IRT Difficulty & Wrong-Key Detection ---
+  - metric_key: irt_difficulty_recovery_r_n200
+    module: irt
+    dataset_origin: synthetic
+    description: "Pearson correlation r(b_hat, b_true) for items with >= 200 responses."
+    operator: ">="
+    target: 0.90
+    gate: blocking
+
+  - metric_key: irt_difficulty_recovery_r_n60
+    module: irt
+    dataset_origin: synthetic
+    description: "Pearson correlation r(b_hat, b_true) at small batch size (n = 60 responses) with hierarchical priors."
+    operator: ">="
+    target: 0.75
+    gate: blocking
+
+  - metric_key: irt_wrong_key_recall
+    module: irt
+    dataset_origin: synthetic
+    description: "Recall on injected wrong answer keys (>= 4/5 caught)."
+    operator: ">="
+    target: 0.80
+    gate: blocking
+
+  - metric_key: irt_wrong_key_false_flags_per_300
+    module: irt
+    dataset_origin: synthetic
+    description: "Maximum false suspect_wrong_key flags per 300 valid items."
+    operator: "<="
+    target: 2.0
+    gate: blocking
+
+  # --- NB03: Topic Mastery ---
+  - metric_key: mastery_theta_recovery_r
+    module: mastery
+    dataset_origin: synthetic
+    description: "Pearson correlation between shrunk EAP topic theta and true_theta."
+    operator: ">="
+    target: 0.80
+    gate: blocking
+
+  - metric_key: mastery_next_test_auc_gain_over_baselines
+    module: mastery
+    dataset_origin: synthetic
+    description: "Next-test response ROC-AUC gain over both raw % correct and pyBKT baselines (non-overlapping CI)."
+    operator: ">"
+    target: 0.0
+    gate: blocking
+
+  # --- NB04: Early Warning (Dropout / Falling Behind / Fee) ---
+  - metric_key: ew_auc_pr_rel_gain_over_institute_rule
+    module: early_warning
+    dataset_origin: synthetic
+    description: "Relative AUC-PR improvement over the institute baseline rule (attendance < 75% or last test < 40%)."
+    operator: ">="
+    target: 0.30
+    gate: blocking
+
+  - metric_key: ew_median_lead_time_days
+    module: early_warning
+    dataset_origin: synthetic
+    description: "Median lead time in days before dropout event (>= 3 weeks = 21 days)."
+    operator: ">="
+    target: 21.0
+    gate: blocking
+
+  - metric_key: ew_calibration_ece
+    module: early_warning
+    dataset_origin: synthetic
+    description: "Expected Calibration Error (ECE) after isotonic calibration."
+    operator: "<"
+    target: 0.05
+    gate: blocking
+
+  - metric_key: ew_gradual_dropout_recall_at_capacity
+    module: early_warning
+    dataset_origin: synthetic
+    description: "Recall on gradual dropouts at top-k = mentor_capacity_per_week."
+    operator: ">="
+    target: 0.60
+    gate: blocking
+
+  - metric_key: falling_behind_auc_pr_gain_over_rule
+    module: falling_behind
+    dataset_origin: synthetic
+    description: "AUC-PR improvement over last-test drop rule for academic_support target."
+    operator: ">"
+    target: 0.0
+    gate: blocking
+
+  - metric_key: fee_default_auc_pr_gain_over_rule
+    module: fee_default
+    dataset_origin: synthetic
+    description: "AUC-PR improvement over last-payment-late rule for adult fee target."
+    operator: ">"
+    target: 0.0
+    gate: blocking
+
+  - metric_key: fairness_max_slice_recall_gap
+    module: fairness
+    dataset_origin: synthetic
+    description: "Maximum recall gap across gender, class_level, city_tier, and fee_plan slices at operating point."
+    operator: "<="
+    target: 0.10
+    gate: report
+
+  # --- NB05: Percentile Band (Conformal Prediction) ---
+  - metric_key: conformal_80_coverage
+    module: percentile_band
+    dataset_origin: synthetic
+    description: "Empirical coverage of nominal 80% conformalized quantile regression band [0.77, 0.83]."
+    operator: "between"
+    min_target: 0.77
+    max_target: 0.83
+    gate: blocking
+
+  - metric_key: conformal_band_width_monotone_shrink
+    module: percentile_band
+    dataset_origin: synthetic
+    description: "Boolean indicator (1.0 = true) that mean band width shrinks monotonically as months progress."
+    operator: ">="
+    target: 1.0
+    gate: blocking
+
+  # --- NB06: Public Validation (OULAD & ASSISTments2009) ---
+  - metric_key: public_oulad_roc_auc_day28
+    module: public_validation
+    dataset_origin: public
+    description: "OULAD withdrawal ROC-AUC at day-28 observation window (compared against PLOS ONE 2026 anchor 0.794)."
+    operator: ">="
+    target: 0.70
+    gate: report
+
+  - metric_key: public_assistments2009_kt_auc
+    module: public_validation
+    dataset_origin: public
+    description: "ASSISTments2009 next-response ROC-AUC under pyKT 5-fold student-held-out protocol (compared against DKT 0.7541)."
+    operator: ">="
+    target: 0.65
+    gate: report
+
+  # --- NB08: GenAI Reports & Verifier ---
+  - metric_key: genai_verifier_injected_error_catch_rate
+    module: genai
+    dataset_origin: synthetic
+    description: "Fraction of 500 fuzz-injected wrong numbers or topics caught by the deterministic verifier (must be 100%)."
+    operator: ">="
+    target: 1.0
+    gate: blocking
+
+  - metric_key: genai_unverified_reports_shipped
+    module: genai
+    dataset_origin: synthetic
+    description: "Number of unverified reports delivered to parents (must be 0)."
+    operator: "<="
+    target: 0.0
+    gate: blocking
+
+  # --- NB09: Cost Model ---
+  - metric_key: cost_per_student_month_inr
+    module: cost_model
+    dataset_origin: synthetic
+    description: "Estimated production infrastructure + messaging + LLM cost in INR per active student per month [3.0, 10.0]."
+    operator: "between"
+    min_target: 3.0
+    max_target: 10.0
+    gate: report
+
+  # --- NB11 & Round 1 Data Prep: OMR & Topic Tagging ---
+  - metric_key: omr_bubble_accuracy_synthetic
+    module: omr
+    dataset_origin: synthetic
+    description: "Per-bubble classification accuracy on synthetic augmented OMR sheets."
+    operator: ">="
+    target: 0.99
+    gate: blocking
+
+  - metric_key: omr_bubble_accuracy_real_photo
+    module: omr
+    dataset_origin: real_photo
+    description: "Per-bubble classification accuracy on real hand-filled phone photos."
+    operator: ">="
+    target: 0.98
+    gate: report
+
+  - metric_key: omr_uncertain_cell_flag_recall
+    module: omr
+    dataset_origin: synthetic
+    description: "Fraction of ambiguous/low-confidence cells flagged for human review."
+    operator: ">="
+    target: 1.0
+    gate: blocking
+
+  - metric_key: tagging_auto_accepted_precision
+    module: tagging
+    dataset_origin: public
+    description: "Precision on auto-accepted topic tags evaluated on the 150-question hand-labelled JEEBench gold set."
+    operator: ">="
+    target: 0.95
+    gate: blocking

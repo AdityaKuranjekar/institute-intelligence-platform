@@ -1,0 +1,7 @@
+# Purpose: Canonical clean CSV template for student tuition fee instalments and pro-rata refund ledger (in integer paise).
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §8 (fees table) and §15 (MoE cl. 8(iv) pro-rata refund).
+roll_no,instalment_no,due_date,amount_paise,paid_date,paid_amount_paise,refund_due_paise,refund_paid_date
+PAT26-001,1,2026-04-15,3500000,2026-04-15,3500000,0,
+PAT26-001,2,2026-07-15,3250000,2026-07-18,3250000,0,
+PAT26-002,1,2026-04-16,2500000,2026-04-16,2500000,0,

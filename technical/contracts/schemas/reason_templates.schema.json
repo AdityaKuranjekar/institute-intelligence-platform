@@ -1,0 +1,120 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for contracts/reason_templates.yaml. contract_version: 1.0.0. Implements: TECH_PLAN \u00a710, \u00a711, \u00a715.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/schemas/reason_templates.schema.json",
+  "title": "ReasonTemplatesContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "banned_words",
+    "templates"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "banned_words": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "en",
+        "hi"
+      ],
+      "properties": {
+        "en": {
+          "type": "array",
+          "minItems": 10,
+          "items": {
+            "type": "string"
+          }
+        },
+        "hi": {
+          "type": "array",
+          "minItems": 10,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "templates": {
+      "type": "object",
+      "minProperties": 8,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slots",
+          "en",
+          "hi",
+          "suggested_action",
+          "action_text"
+        ],
+        "properties": {
+          "slots": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "type"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "integer",
+                    "number",
+                    "string"
+                  ]
+                }
+              }
+            }
+          },
+          "en": {
+            "type": "string",
+            "minLength": 10
+          },
+          "hi": {
+            "type": "string",
+            "minLength": 10
+          },
+          "suggested_action": {
+            "type": "string",
+            "enum": [
+              "mentoring",
+              "counselling_referral",
+              "remedial_session",
+              "fee_plan_discussion",
+              "parent_call"
+            ]
+          },
+          "action_text": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "en",
+              "hi"
+            ],
+            "properties": {
+              "en": {
+                "type": "string",
+                "minLength": 10
+              },
+              "hi": {
+                "type": "string",
+                "minLength": 10
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

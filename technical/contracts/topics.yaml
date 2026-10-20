@@ -1,0 +1,6703 @@
+# Purpose: Bilingual (EN/HI) syllabus topic graph and prerequisite DAG for JEE Main and NEET-UG.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §1 #13, §8 (topics & topic_prereqs tables), §9, and §11 (Bilingual topic names).
+# Note: All nodes are marked verified: false and weightage: null pending direct check against official NTA syllabus PDFs.
+
+contract_version: 1.0.0
+topics:
+- id: jee.phy
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Physics
+  topic: Physics
+  level: subject
+  name_en: Physics
+  name_hi: भौतिक विज्ञान
+  name_hi_reviewed: false
+  parent_id: null
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.units_measurements
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Units and Measurements
+  topic: Units and Measurements
+  level: chapter
+  name_en: Units and Measurements
+  name_hi: मापन और मात्रक
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.units_measurements.si_units
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Units and Measurements
+  topic: SI Units and Fundamental Quantities
+  level: topic
+  name_en: SI Units and Fundamental Quantities
+  name_hi: एसआई मात्रक और मूल राशियाँ
+  name_hi_reviewed: false
+  parent_id: jee.phy.units_measurements
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.units_measurements.error_analysis
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Units and Measurements
+  topic: Errors in Measurement and Significant Figures
+  level: topic
+  name_en: Errors in Measurement and Significant Figures
+  name_hi: मापन में त्रुटियाँ और सार्थक अंक
+  name_hi_reviewed: false
+  parent_id: jee.phy.units_measurements
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.units_measurements.dimensional_analysis
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Units and Measurements
+  topic: Dimensional Analysis and Applications
+  level: topic
+  name_en: Dimensional Analysis and Applications
+  name_hi: विमीय विश्लेषण और अनुप्रयोग
+  name_hi_reviewed: false
+  parent_id: jee.phy.units_measurements
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.kinematics
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Kinematics
+  topic: Kinematics
+  level: chapter
+  name_en: Kinematics
+  name_hi: शुद्धगतिकी
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.kinematics.motion_1d
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Kinematics
+  topic: Motion in a Straight Line
+  level: topic
+  name_en: Motion in a Straight Line
+  name_hi: सरल रेखा में गति
+  name_hi_reviewed: false
+  parent_id: jee.phy.kinematics
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.kinematics.relative_velocity
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Kinematics
+  topic: Relative Velocity in 1D and 2D
+  level: topic
+  name_en: Relative Velocity in 1D and 2D
+  name_hi: एक और द्वि-विमीय सापेक्ष वेग
+  name_hi_reviewed: false
+  parent_id: jee.phy.kinematics
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.kinematics.projectile
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Kinematics
+  topic: Projectile Motion
+  level: topic
+  name_en: Projectile Motion
+  name_hi: प्रक्षेप्य गति
+  name_hi_reviewed: false
+  parent_id: jee.phy.kinematics
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.kinematics.circular_kinematics
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Kinematics
+  topic: Uniform Circular Motion
+  level: topic
+  name_en: Uniform Circular Motion
+  name_hi: एकसमान वृत्तीय गति
+  name_hi_reviewed: false
+  parent_id: jee.phy.kinematics
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.laws_of_motion
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Laws of Motion
+  topic: Laws of Motion
+  level: chapter
+  name_en: Laws of Motion
+  name_hi: गति के नियम
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.laws_of_motion.newtons_laws
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Laws of Motion
+  topic: Newton's Laws and Impulse
+  level: topic
+  name_en: Newton's Laws and Impulse
+  name_hi: न्यूटन के नियम और आवेग
+  name_hi_reviewed: false
+  parent_id: jee.phy.laws_of_motion
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.laws_of_motion.friction
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Laws of Motion
+  topic: Static and Kinetic Friction
+  level: topic
+  name_en: Static and Kinetic Friction
+  name_hi: स्थैतिक और गतिज घर्षण
+  name_hi_reviewed: false
+  parent_id: jee.phy.laws_of_motion
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.laws_of_motion.circular_dynamics
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Laws of Motion
+  topic: Dynamics of Circular Motion and Banking
+  level: topic
+  name_en: Dynamics of Circular Motion and Banking
+  name_hi: वृत्तीय गति की गतिकी और बंकन
+  name_hi_reviewed: false
+  parent_id: jee.phy.laws_of_motion
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.work_energy_power
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Work, Energy and Power
+  topic: Work, Energy and Power
+  level: chapter
+  name_en: Work, Energy and Power
+  name_hi: कार्य, ऊर्जा और शक्ति
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.work_energy_power.work_kinetic_theorem
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Work, Energy and Power
+  topic: Work-Energy Theorem
+  level: topic
+  name_en: Work-Energy Theorem
+  name_hi: कार्य-ऊर्जा प्रमेय
+  name_hi_reviewed: false
+  parent_id: jee.phy.work_energy_power
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.work_energy_power.conservative_forces
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Work, Energy and Power
+  topic: Conservative Forces and Potential Energy
+  level: topic
+  name_en: Conservative Forces and Potential Energy
+  name_hi: संरक्षी बल और स्थितिज ऊर्जा
+  name_hi_reviewed: false
+  parent_id: jee.phy.work_energy_power
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.work_energy_power.collisions
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Work, Energy and Power
+  topic: Elastic and Inelastic Collisions
+  level: topic
+  name_en: Elastic and Inelastic Collisions
+  name_hi: प्रत्यास्थ और अप्रत्यास्थ संघट्ट
+  name_hi_reviewed: false
+  parent_id: jee.phy.work_energy_power
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.rotational_motion
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Rotational Motion
+  topic: Rotational Motion
+  level: chapter
+  name_en: Rotational Motion
+  name_hi: घूर्णी गति
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.rotational_motion.center_of_mass
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Rotational Motion
+  topic: Centre of Mass and Rigid Body
+  level: topic
+  name_en: Centre of Mass and Rigid Body
+  name_hi: द्रव्यमान केंद्र और दृढ़ पिंड
+  name_hi_reviewed: false
+  parent_id: jee.phy.rotational_motion
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.rotational_motion.moment_of_inertia
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Rotational Motion
+  topic: Moment of Inertia and Theorems
+  level: topic
+  name_en: Moment of Inertia and Theorems
+  name_hi: जड़त्व आघूर्ण और प्रमेय
+  name_hi_reviewed: false
+  parent_id: jee.phy.rotational_motion
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.rotational_motion.torque_angular_momentum
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Rotational Motion
+  topic: Torque and Conservation of Angular Momentum
+  level: topic
+  name_en: Torque and Conservation of Angular Momentum
+  name_hi: बल आघूर्ण और कोणीय संवेग संरक्षण
+  name_hi_reviewed: false
+  parent_id: jee.phy.rotational_motion
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.rotational_motion.rolling_motion
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Rotational Motion
+  topic: Rolling Motion on Inclined Plane
+  level: topic
+  name_en: Rolling Motion on Inclined Plane
+  name_hi: नत समतल पर लोटनिक गति
+  name_hi_reviewed: false
+  parent_id: jee.phy.rotational_motion
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.gravitation
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Gravitation
+  topic: Gravitation
+  level: chapter
+  name_en: Gravitation
+  name_hi: गुरुत्वाकर्षण
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.gravitation.universal_law
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Gravitation
+  topic: Universal Law of Gravitation and Acceleration
+  level: topic
+  name_en: Universal Law of Gravitation and Acceleration
+  name_hi: गुरुत्वाकर्षण का सार्वत्रिक नियम और त्वरण
+  name_hi_reviewed: false
+  parent_id: jee.phy.gravitation
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.gravitation.gravitational_potential
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Gravitation
+  topic: Gravitational Potential and Escape Velocity
+  level: topic
+  name_en: Gravitational Potential and Escape Velocity
+  name_hi: गुरुत्वीय विभव और पलायन वेग
+  name_hi_reviewed: false
+  parent_id: jee.phy.gravitation
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.gravitation.satellite_orbits
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Gravitation
+  topic: Orbital Velocity and Kepler's Laws
+  level: topic
+  name_en: Orbital Velocity and Kepler's Laws
+  name_hi: कक्षीय वेग और केप्लर के नियम
+  name_hi_reviewed: false
+  parent_id: jee.phy.gravitation
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.properties_of_solids_liquids
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Properties of Solids and Liquids
+  topic: Properties of Solids and Liquids
+  level: chapter
+  name_en: Properties of Solids and Liquids
+  name_hi: ठोसों और द्रवों के गुण
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.properties_of_solids_liquids.elasticity
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Properties of Solids and Liquids
+  topic: Stress, Strain and Hooke's Law
+  level: topic
+  name_en: Stress, Strain and Hooke's Law
+  name_hi: प्रतिबल, विकृति और हुक का नियम
+  name_hi_reviewed: false
+  parent_id: jee.phy.properties_of_solids_liquids
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.properties_of_solids_liquids.fluid_statics_viscosity
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Properties of Solids and Liquids
+  topic: Pascal's Law, Viscosity and Stokes' Law
+  level: topic
+  name_en: Pascal's Law, Viscosity and Stokes' Law
+  name_hi: पास्कल का नियम, श्यानता और स्टोक्स का नियम
+  name_hi_reviewed: false
+  parent_id: jee.phy.properties_of_solids_liquids
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.properties_of_solids_liquids.bernoulli_surface_tension
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Properties of Solids and Liquids
+  topic: Bernoulli's Principle and Surface Tension
+  level: topic
+  name_en: Bernoulli's Principle and Surface Tension
+  name_hi: बरनौली का प्रमेय और पृष्ठ तनाव
+  name_hi_reviewed: false
+  parent_id: jee.phy.properties_of_solids_liquids
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.thermodynamics_phy
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Thermodynamics
+  topic: Thermodynamics
+  level: chapter
+  name_en: Thermodynamics
+  name_hi: ऊष्मागतिकी
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.thermodynamics_phy.thermal_equilibrium
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Thermodynamics
+  topic: Thermal Equilibrium and Zeroth Law
+  level: topic
+  name_en: Thermal Equilibrium and Zeroth Law
+  name_hi: तापीय साम्य और शून्यवाँ नियम
+  name_hi_reviewed: false
+  parent_id: jee.phy.thermodynamics_phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.thermodynamics_phy.first_law_processes
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Thermodynamics
+  topic: First Law of Thermodynamics and Processes
+  level: topic
+  name_en: First Law of Thermodynamics and Processes
+  name_hi: ऊष्मागतिकी का प्रथम नियम और प्रक्रम
+  name_hi_reviewed: false
+  parent_id: jee.phy.thermodynamics_phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.thermodynamics_phy.second_law_entropy
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Thermodynamics
+  topic: Second Law of Thermodynamics and Carnot Engine
+  level: topic
+  name_en: Second Law of Thermodynamics and Carnot Engine
+  name_hi: ऊष्मागतिकी का द्वितीय नियम और कार्नो इंजन
+  name_hi_reviewed: false
+  parent_id: jee.phy.thermodynamics_phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.kinetic_theory_gases
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Kinetic Theory of Gases
+  topic: Kinetic Theory of Gases
+  level: chapter
+  name_en: Kinetic Theory of Gases
+  name_hi: गैसों का अणुगति सिद्धांत
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.kinetic_theory_gases.ideal_gas_pressure
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Kinetic Theory of Gases
+  topic: Kinetic Interpretation of Temperature and Pressure
+  level: topic
+  name_en: Kinetic Interpretation of Temperature and Pressure
+  name_hi: ताप और दाब की अणुगतिक व्याख्या
+  name_hi_reviewed: false
+  parent_id: jee.phy.kinetic_theory_gases
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.kinetic_theory_gases.degrees_of_freedom
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Kinetic Theory of Gases
+  topic: Degrees of Freedom and Law of Equipartition
+  level: topic
+  name_en: Degrees of Freedom and Law of Equipartition
+  name_hi: स्वतंत्रता की कोटि और ऊर्जा समविभाजन नियम
+  name_hi_reviewed: false
+  parent_id: jee.phy.kinetic_theory_gases
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.kinetic_theory_gases.rms_speed_mean_free_path
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Kinetic Theory of Gases
+  topic: RMS Speed and Mean Free Path
+  level: topic
+  name_en: RMS Speed and Mean Free Path
+  name_hi: वर्ग माध्य मूल चाल और माध्य मुक्त पथ
+  name_hi_reviewed: false
+  parent_id: jee.phy.kinetic_theory_gases
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.oscillations_waves
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Oscillations and Waves
+  topic: Oscillations and Waves
+  level: chapter
+  name_en: Oscillations and Waves
+  name_hi: दोलन और तरंगें
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.oscillations_waves.shm
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Oscillations and Waves
+  topic: Simple Harmonic Motion and Energy
+  level: topic
+  name_en: Simple Harmonic Motion and Energy
+  name_hi: सरल आवर्त गति और ऊर्जा
+  name_hi_reviewed: false
+  parent_id: jee.phy.oscillations_waves
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.oscillations_waves.pendulum_springs
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Oscillations and Waves
+  topic: Spring Combinations and Simple Pendulum
+  level: topic
+  name_en: Spring Combinations and Simple Pendulum
+  name_hi: स्प्रिंग संयोजन और सरल लोलक
+  name_hi_reviewed: false
+  parent_id: jee.phy.oscillations_waves
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.oscillations_waves.wave_motion_superposition
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Oscillations and Waves
+  topic: Travelling Waves and Superposition
+  level: topic
+  name_en: Travelling Waves and Superposition
+  name_hi: प्रगामी तरंगें और अध्यारोपण
+  name_hi_reviewed: false
+  parent_id: jee.phy.oscillations_waves
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.oscillations_waves.standing_waves_beats
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Oscillations and Waves
+  topic: Standing Waves in Strings, Organ Pipes and Beats
+  level: topic
+  name_en: Standing Waves in Strings, Organ Pipes and Beats
+  name_hi: डोरियों व आर्गन पाइपों में अप्रगामी तरंगें और विस्पंद
+  name_hi_reviewed: false
+  parent_id: jee.phy.oscillations_waves
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electrostatics
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electrostatics
+  topic: Electrostatics
+  level: chapter
+  name_en: Electrostatics
+  name_hi: स्थिरवैद्युतिकी
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electrostatics.coulombs_law_field
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electrostatics
+  topic: Coulomb's Law and Electric Field
+  level: topic
+  name_en: Coulomb's Law and Electric Field
+  name_hi: कूलॉम का नियम और विद्युत क्षेत्र
+  name_hi_reviewed: false
+  parent_id: jee.phy.electrostatics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electrostatics.gauss_law_flux
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electrostatics
+  topic: Electric Flux and Gauss's Law
+  level: topic
+  name_en: Electric Flux and Gauss's Law
+  name_hi: विद्युत फ्लक्स और गाउस का नियम
+  name_hi_reviewed: false
+  parent_id: jee.phy.electrostatics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electrostatics.electric_potential_dipole
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electrostatics
+  topic: Electric Potential and Dipole
+  level: topic
+  name_en: Electric Potential and Dipole
+  name_hi: विद्युत विभव और द्विध्रुव
+  name_hi_reviewed: false
+  parent_id: jee.phy.electrostatics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electrostatics.capacitors_dielectrics
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electrostatics
+  topic: Capacitors and Dielectrics
+  level: topic
+  name_en: Capacitors and Dielectrics
+  name_hi: संधारित्र और परावैद्युत
+  name_hi_reviewed: false
+  parent_id: jee.phy.electrostatics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.current_electricity
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Current Electricity
+  topic: Current Electricity
+  level: chapter
+  name_en: Current Electricity
+  name_hi: विद्युत धारा
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.current_electricity.ohms_law_drift
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Current Electricity
+  topic: Drift Velocity, Ohm's Law and Resistivity
+  level: topic
+  name_en: Drift Velocity, Ohm's Law and Resistivity
+  name_hi: अपवाह वेग, ओम का नियम और प्रतिरोधकता
+  name_hi_reviewed: false
+  parent_id: jee.phy.current_electricity
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.current_electricity.kirchhoffs_laws
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Current Electricity
+  topic: Kirchhoff's Rules and Combination of Cells
+  level: topic
+  name_en: Kirchhoff's Rules and Combination of Cells
+  name_hi: किरचॉफ के नियम और सेलों का संयोजन
+  name_hi_reviewed: false
+  parent_id: jee.phy.current_electricity
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.current_electricity.wheatstone_bridge
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Current Electricity
+  topic: Wheatstone Bridge and Meter Bridge
+  level: topic
+  name_en: Wheatstone Bridge and Meter Bridge
+  name_hi: व्हीटस्टोन सेतु और मीटर सेतु
+  name_hi_reviewed: false
+  parent_id: jee.phy.current_electricity
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.magnetic_effects_current
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Magnetic Effects of Current and Magnetism
+  topic: Magnetic Effects of Current and Magnetism
+  level: chapter
+  name_en: Magnetic Effects of Current and Magnetism
+  name_hi: धारा का चुंबकीय प्रभाव और चुंबकत्व
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.magnetic_effects_current.biot_savart_ampere
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Magnetic Effects of Current and Magnetism
+  topic: Biot-Savart Law and Ampere's Law
+  level: topic
+  name_en: Biot-Savart Law and Ampere's Law
+  name_hi: बायो-सावर्ट नियम और एम्पीयर का नियम
+  name_hi_reviewed: false
+  parent_id: jee.phy.magnetic_effects_current
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.magnetic_effects_current.lorentz_force
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Magnetic Effects of Current and Magnetism
+  topic: Force on Moving Charge and Current Conductor
+  level: topic
+  name_en: Force on Moving Charge and Current Conductor
+  name_hi: गतिमान आवेश और धारावाही चालक पर बल
+  name_hi_reviewed: false
+  parent_id: jee.phy.magnetic_effects_current
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.magnetic_effects_current.moving_coil_galvanometer
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Magnetic Effects of Current and Magnetism
+  topic: Torque on Current Loop and Galvanometer
+  level: topic
+  name_en: Torque on Current Loop and Galvanometer
+  name_hi: धारा लूप पर बल आघूर्ण और गैल्वेनोमीटर
+  name_hi_reviewed: false
+  parent_id: jee.phy.magnetic_effects_current
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.magnetic_effects_current.magnetic_materials
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Magnetic Effects of Current and Magnetism
+  topic: Bar Magnet and Para-, Dia-, Ferromagnetism
+  level: topic
+  name_en: Bar Magnet and Para-, Dia-, Ferromagnetism
+  name_hi: दंड चुंबक तथा अनुचुंबकीय, प्रतिचुंबकीय और लौहचुंबकीय पदार्थ
+  name_hi_reviewed: false
+  parent_id: jee.phy.magnetic_effects_current
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electromagnetic_induction_ac
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electromagnetic Induction and Alternating Currents
+  topic: Electromagnetic Induction and Alternating Currents
+  level: chapter
+  name_en: Electromagnetic Induction and Alternating Currents
+  name_hi: वैद्युतचुंबकीय प्रेरण और प्रत्यावर्ती धारा
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electromagnetic_induction_ac.faradays_law_lenz
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electromagnetic Induction and Alternating Currents
+  topic: Faraday's Law and Lenz's Law
+  level: topic
+  name_en: Faraday's Law and Lenz's Law
+  name_hi: फैराडे का नियम और लेंज का नियम
+  name_hi_reviewed: false
+  parent_id: jee.phy.electromagnetic_induction_ac
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electromagnetic_induction_ac.self_mutual_inductance
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electromagnetic Induction and Alternating Currents
+  topic: Self and Mutual Inductance
+  level: topic
+  name_en: Self and Mutual Inductance
+  name_hi: स्वप्रेरण और अन्योन्य प्रेरण
+  name_hi_reviewed: false
+  parent_id: jee.phy.electromagnetic_induction_ac
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electromagnetic_induction_ac.lcr_series_resonance
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electromagnetic Induction and Alternating Currents
+  topic: LCR Series Circuit and Resonance
+  level: topic
+  name_en: LCR Series Circuit and Resonance
+  name_hi: एलसीआर श्रेणी परिपथ और अनुनाद
+  name_hi_reviewed: false
+  parent_id: jee.phy.electromagnetic_induction_ac
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electromagnetic_induction_ac.power_ac_transformer
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electromagnetic Induction and Alternating Currents
+  topic: AC Power Factor and Transformer
+  level: topic
+  name_en: AC Power Factor and Transformer
+  name_hi: प्रत्यावर्ती धारा शक्ति गुणांक और ट्रांसफॉर्मर
+  name_hi_reviewed: false
+  parent_id: jee.phy.electromagnetic_induction_ac
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electromagnetic_waves
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electromagnetic Waves
+  topic: Electromagnetic Waves
+  level: chapter
+  name_en: Electromagnetic Waves
+  name_hi: वैद्युतचुंबकीय तरंगें
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electromagnetic_waves.displacement_current
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electromagnetic Waves
+  topic: Displacement Current and Maxwell's Equations
+  level: topic
+  name_en: Displacement Current and Maxwell's Equations
+  name_hi: विस्थापन धारा और मैक्सवेल के समीकरण
+  name_hi_reviewed: false
+  parent_id: jee.phy.electromagnetic_waves
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electromagnetic_waves.em_spectrum
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electromagnetic Waves
+  topic: Electromagnetic Spectrum and Properties
+  level: topic
+  name_en: Electromagnetic Spectrum and Properties
+  name_hi: वैद्युतचुंबकीय स्पेक्ट्रम और गुण
+  name_hi_reviewed: false
+  parent_id: jee.phy.electromagnetic_waves
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electromagnetic_waves.em_wave_energy
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electromagnetic Waves
+  topic: Energy Density and Momentum of EM Waves
+  level: topic
+  name_en: Energy Density and Momentum of EM Waves
+  name_hi: वैद्युतचुंबकीय तरंगों का ऊर्जा घनत्व और संवेग
+  name_hi_reviewed: false
+  parent_id: jee.phy.electromagnetic_waves
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.optics
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Optics
+  topic: Optics
+  level: chapter
+  name_en: Optics
+  name_hi: प्रकाशिकी
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.optics.reflection_refraction_tir
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Optics
+  topic: Reflection, Refraction and Total Internal Reflection
+  level: topic
+  name_en: Reflection, Refraction and Total Internal Reflection
+  name_hi: परावर्तन, अपवर्तन और पूर्ण आंतरिक परावर्तन
+  name_hi_reviewed: false
+  parent_id: jee.phy.optics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.optics.lenses_prisms_instruments
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Optics
+  topic: Thin Lenses, Prism and Optical Instruments
+  level: topic
+  name_en: Thin Lenses, Prism and Optical Instruments
+  name_hi: पतले लेंस, प्रिज्म और प्रकाशिक यंत्र
+  name_hi_reviewed: false
+  parent_id: jee.phy.optics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.optics.interference_ydse
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Optics
+  topic: Huygens Principle and Young's Double Slit
+  level: topic
+  name_en: Huygens Principle and Young's Double Slit
+  name_hi: हाइगेंस का सिद्धांत और यंग का द्विक रेखाछिद्र प्रयोग
+  name_hi_reviewed: false
+  parent_id: jee.phy.optics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.optics.diffraction_polarization
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Optics
+  topic: Single Slit Diffraction and Polarization
+  level: topic
+  name_en: Single Slit Diffraction and Polarization
+  name_hi: एकल झिरी विवर्तन और ध्रुवण
+  name_hi_reviewed: false
+  parent_id: jee.phy.optics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.dual_nature_matter
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Dual Nature of Matter and Radiation
+  topic: Dual Nature of Matter and Radiation
+  level: chapter
+  name_en: Dual Nature of Matter and Radiation
+  name_hi: द्रव्य और विकिरण की द्वैत प्रकृति
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.dual_nature_matter.photoelectric_effect
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Dual Nature of Matter and Radiation
+  topic: Photoelectric Effect and Einstein's Equation
+  level: topic
+  name_en: Photoelectric Effect and Einstein's Equation
+  name_hi: प्रकाश-विद्युत प्रभाव और आइंस्टीन का समीकरण
+  name_hi_reviewed: false
+  parent_id: jee.phy.dual_nature_matter
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.dual_nature_matter.photon_momentum
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Dual Nature of Matter and Radiation
+  topic: Particle Nature of Light and Photon Momentum
+  level: topic
+  name_en: Particle Nature of Light and Photon Momentum
+  name_hi: प्रकाश की कण प्रकृति और फोटॉन संवेग
+  name_hi_reviewed: false
+  parent_id: jee.phy.dual_nature_matter
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.dual_nature_matter.de_broglie_waves
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Dual Nature of Matter and Radiation
+  topic: Matter Waves and de Broglie Wavelength
+  level: topic
+  name_en: Matter Waves and de Broglie Wavelength
+  name_hi: द्रव्य तरंगें और दे ब्रॉग्ली तरंगदैर्ध्य
+  name_hi_reviewed: false
+  parent_id: jee.phy.dual_nature_matter
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.atoms_nuclei
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Atoms and Nuclei
+  topic: Atoms and Nuclei
+  level: chapter
+  name_en: Atoms and Nuclei
+  name_hi: परमाणु और नाभिक
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.atoms_nuclei.rutherford_bohr_model
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Atoms and Nuclei
+  topic: Alpha Scattering and Bohr Model of Hydrogen
+  level: topic
+  name_en: Alpha Scattering and Bohr Model of Hydrogen
+  name_hi: अल्फा प्रकीर्णन और हाइड्रोजन का बोर मॉडल
+  name_hi_reviewed: false
+  parent_id: jee.phy.atoms_nuclei
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.atoms_nuclei.atomic_spectra
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Atoms and Nuclei
+  topic: Hydrogen Line Spectra and Energy Levels
+  level: topic
+  name_en: Hydrogen Line Spectra and Energy Levels
+  name_hi: हाइड्रोजन रेखा स्पेक्ट्रम और ऊर्जा स्तर
+  name_hi_reviewed: false
+  parent_id: jee.phy.atoms_nuclei
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.atoms_nuclei.nuclear_binding_energy
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Atoms and Nuclei
+  topic: Mass Defect, Binding Energy and Fission/Fusion
+  level: topic
+  name_en: Mass Defect, Binding Energy and Fission/Fusion
+  name_hi: द्रव्यमान क्षति, बंधन ऊर्जा तथा विखंडन और संलयन
+  name_hi_reviewed: false
+  parent_id: jee.phy.atoms_nuclei
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electronic_devices
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electronic Devices
+  topic: Electronic Devices
+  level: chapter
+  name_en: Electronic Devices
+  name_hi: इलेक्ट्रॉनिक युक्तियाँ
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electronic_devices.semiconductors_pn
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electronic Devices
+  topic: Intrinsic and Extrinsic Semiconductors and PN Junction
+  level: topic
+  name_en: Intrinsic and Extrinsic Semiconductors and PN Junction
+  name_hi: नैज व अपद्रव्यी अर्धचालक और पी-एन संधि
+  name_hi_reviewed: false
+  parent_id: jee.phy.electronic_devices
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electronic_devices.diodes_rectifiers
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electronic Devices
+  topic: Semiconductor Diode, Zener Diode and Rectifiers
+  level: topic
+  name_en: Semiconductor Diode, Zener Diode and Rectifiers
+  name_hi: अर्धचालक डायोड, जेनर डायोड और दिष्टकारी
+  name_hi_reviewed: false
+  parent_id: jee.phy.electronic_devices
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.electronic_devices.logic_gates
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Electronic Devices
+  topic: Logic Gates (OR, AND, NOT, NAND, NOR)
+  level: topic
+  name_en: Logic Gates (OR, AND, NOT, NAND, NOR)
+  name_hi: लॉजिक गेट (ओआर, एंड, नॉट, नैन्ड, नॉर)
+  name_hi_reviewed: false
+  parent_id: jee.phy.electronic_devices
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.experimental_physics
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Experimental Skills in Physics
+  topic: Experimental Skills in Physics
+  level: chapter
+  name_en: Experimental Skills in Physics
+  name_hi: प्रायोगिक भौतिकी कौशल
+  name_hi_reviewed: false
+  parent_id: jee.phy
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.experimental_physics.vernier_screw_gauge
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Experimental Skills in Physics
+  topic: Vernier Callipers and Screw Gauge
+  level: topic
+  name_en: Vernier Callipers and Screw Gauge
+  name_hi: वर्नियर कैलिपर्स और स्क्रू गेज
+  name_hi_reviewed: false
+  parent_id: jee.phy.experimental_physics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.experimental_physics.pendulum_youngs_modulus
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Experimental Skills in Physics
+  topic: Simple Pendulum and Young's Modulus Experiments
+  level: topic
+  name_en: Simple Pendulum and Young's Modulus Experiments
+  name_hi: सरल लोलक और यंग प्रत्यास्थता गुणांक प्रयोग
+  name_hi_reviewed: false
+  parent_id: jee.phy.experimental_physics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.phy.experimental_physics.optics_electrical_expts
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Physics
+  chapter: Experimental Skills in Physics
+  topic: Focal Length and Ohm's Law / Resistivity Experiments
+  level: topic
+  name_en: Focal Length and Ohm's Law / Resistivity Experiments
+  name_hi: फोकस दूरी और ओम का नियम / प्रतिरोधकता प्रयोग
+  name_hi_reviewed: false
+  parent_id: jee.phy.experimental_physics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemistry
+  topic: Chemistry
+  level: subject
+  name_en: Chemistry
+  name_hi: रसायन विज्ञान
+  name_hi_reviewed: false
+  parent_id: null
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.basic_concepts_chem
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Some Basic Concepts in Chemistry
+  topic: Some Basic Concepts in Chemistry
+  level: chapter
+  name_en: Some Basic Concepts in Chemistry
+  name_hi: रसायन विज्ञान की कुछ मूल अवधारणाएँ
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.basic_concepts_chem.mole_concept
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Some Basic Concepts in Chemistry
+  topic: Mole Concept and Molar Mass
+  level: topic
+  name_en: Mole Concept and Molar Mass
+  name_hi: मोल अवधारणा और मोलर द्रव्यमान
+  name_hi_reviewed: false
+  parent_id: jee.chem.basic_concepts_chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.basic_concepts_chem.stoichiometry_limiting
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Some Basic Concepts in Chemistry
+  topic: Stoichiometry and Limiting Reagent
+  level: topic
+  name_en: Stoichiometry and Limiting Reagent
+  name_hi: रससमीकरणमिति और सीमांत अभिकर्मक
+  name_hi_reviewed: false
+  parent_id: jee.chem.basic_concepts_chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.basic_concepts_chem.concentration_terms
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Some Basic Concepts in Chemistry
+  topic: Molarity, Molality and Mole Fraction
+  level: topic
+  name_en: Molarity, Molality and Mole Fraction
+  name_hi: मोलरता, मोललता और मोल अंश
+  name_hi_reviewed: false
+  parent_id: jee.chem.basic_concepts_chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.atomic_structure
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Atomic Structure
+  topic: Atomic Structure
+  level: chapter
+  name_en: Atomic Structure
+  name_hi: परमाणु संरचना
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.atomic_structure.bohr_model
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Atomic Structure
+  topic: Bohr's Atomic Model and Spectra
+  level: topic
+  name_en: Bohr's Atomic Model and Spectra
+  name_hi: बोर का परमाणु मॉडल और स्पेक्ट्रम
+  name_hi_reviewed: false
+  parent_id: jee.chem.atomic_structure
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.atomic_structure.quantum_numbers
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Atomic Structure
+  topic: Quantum Mechanical Model and Quantum Numbers
+  level: topic
+  name_en: Quantum Mechanical Model and Quantum Numbers
+  name_hi: क्वांटम यांत्रिकीय मॉडल और क्वांटम संख्याएँ
+  name_hi_reviewed: false
+  parent_id: jee.chem.atomic_structure
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.atomic_structure.electronic_configuration
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Atomic Structure
+  topic: Aufbau Principle, Pauli Exclusion and Hund's Rule
+  level: topic
+  name_en: Aufbau Principle, Pauli Exclusion and Hund's Rule
+  name_hi: आउफबाऊ सिद्धांत, पाउली अपवर्जन और हुंड का नियम
+  name_hi_reviewed: false
+  parent_id: jee.chem.atomic_structure
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_bonding
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Bonding and Molecular Structure
+  topic: Chemical Bonding and Molecular Structure
+  level: chapter
+  name_en: Chemical Bonding and Molecular Structure
+  name_hi: रासायनिक आबंधन और आण्विक संरचना
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_bonding.ionic_covalent_fajans
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Bonding and Molecular Structure
+  topic: Ionic and Covalent Bonding and Fajans' Rule
+  level: topic
+  name_en: Ionic and Covalent Bonding and Fajans' Rule
+  name_hi: आयनिक व सहसंयोजक आबंधन और फाजान का नियम
+  name_hi_reviewed: false
+  parent_id: jee.chem.chemical_bonding
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_bonding.vsepr_hybridization
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Bonding and Molecular Structure
+  topic: VSEPR Theory and Hybridization
+  level: topic
+  name_en: VSEPR Theory and Hybridization
+  name_hi: वीएसईपीआर सिद्धांत और संकरण
+  name_hi_reviewed: false
+  parent_id: jee.chem.chemical_bonding
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_bonding.molecular_orbital_theory
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Bonding and Molecular Structure
+  topic: Molecular Orbital Theory and Hydrogen Bonding
+  level: topic
+  name_en: Molecular Orbital Theory and Hydrogen Bonding
+  name_hi: आण्विक कक्षक सिद्धांत और हाइड्रोजन आबंधन
+  name_hi_reviewed: false
+  parent_id: jee.chem.chemical_bonding
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_thermodynamics
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Thermodynamics
+  topic: Chemical Thermodynamics
+  level: chapter
+  name_en: Chemical Thermodynamics
+  name_hi: रासायनिक ऊष्मागतिकी
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_thermodynamics.enthalpy_hess_law
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Thermodynamics
+  topic: Internal Energy, Enthalpy and Hess's Law
+  level: topic
+  name_en: Internal Energy, Enthalpy and Hess's Law
+  name_hi: आंतरिक ऊर्जा, एन्थैल्पी और हेस का नियम
+  name_hi_reviewed: false
+  parent_id: jee.chem.chemical_thermodynamics
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_thermodynamics.entropy_gibbs_energy
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Thermodynamics
+  topic: Entropy and Gibbs Free Energy Spontaneity
+  level: topic
+  name_en: Entropy and Gibbs Free Energy Spontaneity
+  name_hi: एन्ट्रॉपी और गिब्स मुक्त ऊर्जा स्वतःप्रवर्तिता
+  name_hi_reviewed: false
+  parent_id: jee.chem.chemical_thermodynamics
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_thermodynamics.thermochemistry_bonds
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Thermodynamics
+  topic: Bond Dissociation and Combustion Enthalpies
+  level: topic
+  name_en: Bond Dissociation and Combustion Enthalpies
+  name_hi: आबंध वियोजन और दहन एन्थैल्पी
+  name_hi_reviewed: false
+  parent_id: jee.chem.chemical_thermodynamics
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.solutions
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Solutions
+  topic: Solutions
+  level: chapter
+  name_en: Solutions
+  name_hi: विलयन
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.solutions.raoults_law_vapour
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Solutions
+  topic: Raoult's Law and Ideal/Non-Ideal Solutions
+  level: topic
+  name_en: Raoult's Law and Ideal/Non-Ideal Solutions
+  name_hi: राउल्ट का नियम और आदर्श/अनादर्श विलयन
+  name_hi_reviewed: false
+  parent_id: jee.chem.solutions
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.solutions.colligative_properties
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Solutions
+  topic: Colligative Properties and Molar Mass Determination
+  level: topic
+  name_en: Colligative Properties and Molar Mass Determination
+  name_hi: अणुसंख्य गुणधर्म और मोलर द्रव्यमान निर्धारण
+  name_hi_reviewed: false
+  parent_id: jee.chem.solutions
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.solutions.vant_hoff_factor
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Solutions
+  topic: Van't Hoff Factor and Abnormal Molar Mass
+  level: topic
+  name_en: Van't Hoff Factor and Abnormal Molar Mass
+  name_hi: वान्ट हॉफ गुणांक और असामान्य मोलर द्रव्यमान
+  name_hi_reviewed: false
+  parent_id: jee.chem.solutions
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.equilibrium
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Equilibrium
+  topic: Equilibrium
+  level: chapter
+  name_en: Equilibrium
+  name_hi: साम्यावस्था
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.equilibrium.law_of_mass_action
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Equilibrium
+  topic: Equilibrium Constant Kp, Kc and Le Chatelier's Principle
+  level: topic
+  name_en: Equilibrium Constant Kp, Kc and Le Chatelier's Principle
+  name_hi: साम्य स्थिरांक Kp, Kc और ला शातेलिए का सिद्धांत
+  name_hi_reviewed: false
+  parent_id: jee.chem.equilibrium
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.equilibrium.acid_base_ph
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Equilibrium
+  topic: Ionic Equilibrium, pH and Buffer Solutions
+  level: topic
+  name_en: Ionic Equilibrium, pH and Buffer Solutions
+  name_hi: आयनिक साम्य, पीएच और बफर विलयन
+  name_hi_reviewed: false
+  parent_id: jee.chem.equilibrium
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.equilibrium.solubility_product
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Equilibrium
+  topic: Solubility Product and Common Ion Effect
+  level: topic
+  name_en: Solubility Product and Common Ion Effect
+  name_hi: विलेयता गुणनफल और सम-आयन प्रभाव
+  name_hi_reviewed: false
+  parent_id: jee.chem.equilibrium
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.redox_electrochemistry
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Redox Reactions and Electrochemistry
+  topic: Redox Reactions and Electrochemistry
+  level: chapter
+  name_en: Redox Reactions and Electrochemistry
+  name_hi: अपचयोपचय अभिक्रियाएँ और वैद्युतरसायन
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.redox_electrochemistry.oxidation_number_balancing
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Redox Reactions and Electrochemistry
+  topic: Oxidation Number and Balancing Redox Equations
+  level: topic
+  name_en: Oxidation Number and Balancing Redox Equations
+  name_hi: ऑक्सीकरण संख्या और रेडॉक्स समीकरण संतुलन
+  name_hi_reviewed: false
+  parent_id: jee.chem.redox_electrochemistry
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.redox_electrochemistry.conductance_kohlrausch
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Redox Reactions and Electrochemistry
+  topic: Electrolytic Conductance and Kohlrausch's Law
+  level: topic
+  name_en: Electrolytic Conductance and Kohlrausch's Law
+  name_hi: वैद्युतअपघटनी चालकता और कोलराउश का नियम
+  name_hi_reviewed: false
+  parent_id: jee.chem.redox_electrochemistry
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.redox_electrochemistry.nernst_equation_cells
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Redox Reactions and Electrochemistry
+  topic: Galvanic Cells, EMF and Nernst Equation
+  level: topic
+  name_en: Galvanic Cells, EMF and Nernst Equation
+  name_hi: गैल्वेनिक सेल, ईएमएफ और नर्न्स्ट समीकरण
+  name_hi_reviewed: false
+  parent_id: jee.chem.redox_electrochemistry
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_kinetics
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Kinetics
+  topic: Chemical Kinetics
+  level: chapter
+  name_en: Chemical Kinetics
+  name_hi: रासायनिक बलगतिकी
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_kinetics.rate_law_order
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Kinetics
+  topic: Rate of Reaction, Order and Molecularity
+  level: topic
+  name_en: Rate of Reaction, Order and Molecularity
+  name_hi: अभिक्रिया का वेग, कोटि और आण्विकता
+  name_hi_reviewed: false
+  parent_id: jee.chem.chemical_kinetics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_kinetics.integrated_rate_equations
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Kinetics
+  topic: Zero and First Order Integrated Rate Laws and Half-Life
+  level: topic
+  name_en: Zero and First Order Integrated Rate Laws and Half-Life
+  name_hi: शून्य व प्रथम कोटि समाकलित वेग नियम और अर्ध-आयु
+  name_hi_reviewed: false
+  parent_id: jee.chem.chemical_kinetics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.chemical_kinetics.arrhenius_equation
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Chemical Kinetics
+  topic: Activation Energy and Arrhenius Equation
+  level: topic
+  name_en: Activation Energy and Arrhenius Equation
+  name_hi: सक्रियण ऊर्जा और आरहेनियस समीकरण
+  name_hi_reviewed: false
+  parent_id: jee.chem.chemical_kinetics
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.periodic_table
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Classification of Elements and Periodicity
+  topic: Classification of Elements and Periodicity
+  level: chapter
+  name_en: Classification of Elements and Periodicity
+  name_hi: तत्वों का वर्गीकरण और आवर्तिता
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.periodic_table.periodic_trends_radii
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Classification of Elements and Periodicity
+  topic: Modern Periodic Law and Atomic/Ionic Radii
+  level: topic
+  name_en: Modern Periodic Law and Atomic/Ionic Radii
+  name_hi: आधुनिक आवर्त नियम और परमाण्वीय/आयनिक त्रिज्या
+  name_hi_reviewed: false
+  parent_id: jee.chem.periodic_table
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.periodic_table.ionization_enthalpy
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Classification of Elements and Periodicity
+  topic: Ionization Enthalpy and Electron Gain Enthalpy
+  level: topic
+  name_en: Ionization Enthalpy and Electron Gain Enthalpy
+  name_hi: आयनन एन्थैल्पी और इलेक्ट्रॉन लब्धि एन्थैल्पी
+  name_hi_reviewed: false
+  parent_id: jee.chem.periodic_table
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.periodic_table.electronegativity_valency
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Classification of Elements and Periodicity
+  topic: Electronegativity and Periodic Trends in Valency
+  level: topic
+  name_en: Electronegativity and Periodic Trends in Valency
+  name_hi: विद्युतऋणात्मकता और संयोजकता में आवर्त प्रवृत्तियाँ
+  name_hi_reviewed: false
+  parent_id: jee.chem.periodic_table
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.p_block_elements
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: p-Block Elements
+  topic: p-Block Elements
+  level: chapter
+  name_en: p-Block Elements
+  name_hi: पी-ब्लॉक के तत्व
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.p_block_elements.group_13_14
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: p-Block Elements
+  topic: Group 13 and 14 Elements and Anomalous Behaviour
+  level: topic
+  name_en: Group 13 and 14 Elements and Anomalous Behaviour
+  name_hi: वर्ग 13 और 14 के तत्व तथा असंगत व्यवहार
+  name_hi_reviewed: false
+  parent_id: jee.chem.p_block_elements
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.p_block_elements.group_15_16
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: p-Block Elements
+  topic: Group 15 and 16 Elements and Reactivity Trends
+  level: topic
+  name_en: Group 15 and 16 Elements and Reactivity Trends
+  name_hi: वर्ग 15 और 16 के तत्व तथा अभिक्रियाशीलता प्रवृत्तियाँ
+  name_hi_reviewed: false
+  parent_id: jee.chem.p_block_elements
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.p_block_elements.group_17_18
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: p-Block Elements
+  topic: Halogens and Noble Gases Properties
+  level: topic
+  name_en: Halogens and Noble Gases Properties
+  name_hi: हैलोजन और उत्कृष्ट गैसों के गुणधर्म
+  name_hi_reviewed: false
+  parent_id: jee.chem.p_block_elements
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.d_and_f_block
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: d- and f-Block Elements
+  topic: d- and f-Block Elements
+  level: chapter
+  name_en: d- and f-Block Elements
+  name_hi: डी- और एफ-ब्लॉक के तत्व
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.d_and_f_block.transition_metals_trends
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: d- and f-Block Elements
+  topic: Electronic Configuration, Oxidation States and Colour
+  level: topic
+  name_en: Electronic Configuration, Oxidation States and Colour
+  name_hi: इलेक्ट्रॉनिक विन्यास, ऑक्सीकरण अवस्थाएँ और रंग
+  name_hi_reviewed: false
+  parent_id: jee.chem.d_and_f_block
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.d_and_f_block.kmno4_k2cr2o7
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: d- and f-Block Elements
+  topic: Preparation and Properties of K2Cr2O7 and KMnO4
+  level: topic
+  name_en: Preparation and Properties of K2Cr2O7 and KMnO4
+  name_hi: K2Cr2O7 और KMnO4 का विरचन और गुणधर्म
+  name_hi_reviewed: false
+  parent_id: jee.chem.d_and_f_block
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.d_and_f_block.lanthanoids_actinoids
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: d- and f-Block Elements
+  topic: Lanthanoid Contraction and Actinoids
+  level: topic
+  name_en: Lanthanoid Contraction and Actinoids
+  name_hi: लैन्थेनॉइड आकुंचन और ऐक्टिनॉइड
+  name_hi_reviewed: false
+  parent_id: jee.chem.d_and_f_block
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.coordination_compounds
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Coordination Compounds
+  topic: Coordination Compounds
+  level: chapter
+  name_en: Coordination Compounds
+  name_hi: उपसहसंयोजन यौगिक
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.coordination_compounds.iupac_isomerism_coord
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Coordination Compounds
+  topic: Werner's Theory, IUPAC Nomenclature and Isomerism
+  level: topic
+  name_en: Werner's Theory, IUPAC Nomenclature and Isomerism
+  name_hi: वर्नर सिद्धांत, आईयूपीएसी नामकरण और समावयता
+  name_hi_reviewed: false
+  parent_id: jee.chem.coordination_compounds
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.coordination_compounds.valence_bond_crystal_field
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Coordination Compounds
+  topic: Valence Bond Theory and Crystal Field Splitting
+  level: topic
+  name_en: Valence Bond Theory and Crystal Field Splitting
+  name_hi: संयोजकता आबंध सिद्धांत और क्रिस्टल क्षेत्र विपाटन
+  name_hi_reviewed: false
+  parent_id: jee.chem.coordination_compounds
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.coordination_compounds.metal_carbonyls_bonding
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Coordination Compounds
+  topic: Bonding in Metal Carbonyls and Stability
+  level: topic
+  name_en: Bonding in Metal Carbonyls and Stability
+  name_hi: धातु कार्बोनिलों में आबंधन और स्थायित्व
+  name_hi_reviewed: false
+  parent_id: jee.chem.coordination_compounds
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.purification_organic
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Purification and Characterisation of Organic Compounds
+  topic: Purification and Characterisation of Organic Compounds
+  level: chapter
+  name_en: Purification and Characterisation of Organic Compounds
+  name_hi: कार्बनिक यौगिकों का शोधन और अभिलक्षणन
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.purification_organic.crystallization_distillation
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Purification and Characterisation of Organic Compounds
+  topic: Crystallization, Sublimation and Distillation
+  level: topic
+  name_en: Crystallization, Sublimation and Distillation
+  name_hi: क्रिस्टलन, उर्ध्वपातन और आसवन
+  name_hi_reviewed: false
+  parent_id: jee.chem.purification_organic
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.purification_organic.chromatography
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Purification and Characterisation of Organic Compounds
+  topic: Differential Extraction and Chromatography
+  level: topic
+  name_en: Differential Extraction and Chromatography
+  name_hi: विभेदी निष्कर्षण और वर्णलेखिकी (क्रोमैटोग्राफी)
+  name_hi_reviewed: false
+  parent_id: jee.chem.purification_organic
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.purification_organic.qualitative_quantitative_analysis
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Purification and Characterisation of Organic Compounds
+  topic: Lassaigne's Test and Quantitative Elemental Analysis
+  level: topic
+  name_en: Lassaigne's Test and Quantitative Elemental Analysis
+  name_hi: लैसेन परीक्षण और मात्रात्मक तत्व विश्लेषण
+  name_hi_reviewed: false
+  parent_id: jee.chem.purification_organic
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.basic_organic_chemistry
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Some Basic Principles of Organic Chemistry
+  topic: Some Basic Principles of Organic Chemistry
+  level: chapter
+  name_en: Some Basic Principles of Organic Chemistry
+  name_hi: कार्बनिक रसायन के कुछ मूल सिद्धांत
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.basic_organic_chemistry.iupac_nomenclature_organic
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Some Basic Principles of Organic Chemistry
+  topic: IUPAC Nomenclature and Homologous Series
+  level: topic
+  name_en: IUPAC Nomenclature and Homologous Series
+  name_hi: आईयूपीएसी नामकरण और सजातीय श्रेणी
+  name_hi_reviewed: false
+  parent_id: jee.chem.basic_organic_chemistry
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.basic_organic_chemistry.structural_stereoisomerism
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Some Basic Principles of Organic Chemistry
+  topic: Structural and Geometrical/Optical Isomerism
+  level: topic
+  name_en: Structural and Geometrical/Optical Isomerism
+  name_hi: संरचनात्मक और ज्यामितीय/ध्रुवण समावयता
+  name_hi_reviewed: false
+  parent_id: jee.chem.basic_organic_chemistry
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.basic_organic_chemistry.electronic_effects_intermediates
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Some Basic Principles of Organic Chemistry
+  topic: Inductive, Resonance, Hyperconjugation and Intermediates
+  level: topic
+  name_en: Inductive, Resonance, Hyperconjugation and Intermediates
+  name_hi: प्रेरणिक प्रभाव, अनुनाद, अतिसंयुग्मन और मध्यवर्ती
+  name_hi_reviewed: false
+  parent_id: jee.chem.basic_organic_chemistry
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.hydrocarbons
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Hydrocarbons
+  topic: Hydrocarbons
+  level: chapter
+  name_en: Hydrocarbons
+  name_hi: हाइड्रोकार्बन
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.hydrocarbons.alkanes_conformations
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Hydrocarbons
+  topic: Alkanes, Free Radical Halogenation and Conformations
+  level: topic
+  name_en: Alkanes, Free Radical Halogenation and Conformations
+  name_hi: ऐल्केन, मुक्त मूलक हैलोजनन और संरूपण
+  name_hi_reviewed: false
+  parent_id: jee.chem.hydrocarbons
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.hydrocarbons.alkenes_alkynes_addition
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Hydrocarbons
+  topic: Alkenes and Alkynes, Markovnikov Rule and Ozonolysis
+  level: topic
+  name_en: Alkenes and Alkynes, Markovnikov Rule and Ozonolysis
+  name_hi: ऐल्कीन व ऐल्काइन, मार्कोवनिकोव नियम और ओजोनोलिसिस
+  name_hi_reviewed: false
+  parent_id: jee.chem.hydrocarbons
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.hydrocarbons.aromatic_electrophilic
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Hydrocarbons
+  topic: Benzene, Aromaticity and Electrophilic Substitution
+  level: topic
+  name_en: Benzene, Aromaticity and Electrophilic Substitution
+  name_hi: बेंजीन, ऐरोमैटिकता और इलेक्ट्रॉनरागी प्रतिस्थापन
+  name_hi_reviewed: false
+  parent_id: jee.chem.hydrocarbons
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.haloalkanes_haloarenes
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Halogens
+  topic: Organic Compounds Containing Halogens
+  level: chapter
+  name_en: Organic Compounds Containing Halogens
+  name_hi: हैलोजन युक्त कार्बनिक यौगिक
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.haloalkanes_haloarenes.sn1_sn2_mechanisms
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Halogens
+  topic: Nucleophilic Substitution SN1 and SN2 Mechanisms
+  level: topic
+  name_en: Nucleophilic Substitution SN1 and SN2 Mechanisms
+  name_hi: नाभिकरागी प्रतिस्थापन SN1 और SN2 क्रियाविधि
+  name_hi_reviewed: false
+  parent_id: jee.chem.haloalkanes_haloarenes
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.haloalkanes_haloarenes.elimination_grignard
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Halogens
+  topic: Elimination Reactions and Grignard Reagents
+  level: topic
+  name_en: Elimination Reactions and Grignard Reagents
+  name_hi: विलोपन अभिक्रियाएँ और ग्रिग्नार्ड अभिकर्मक
+  name_hi_reviewed: false
+  parent_id: jee.chem.haloalkanes_haloarenes
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.haloalkanes_haloarenes.haloarenes_polyhalogen
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Halogens
+  topic: Reactivity of Haloarenes and Polyhalogen Compounds
+  level: topic
+  name_en: Reactivity of Haloarenes and Polyhalogen Compounds
+  name_hi: हैलोऐरीन की अभिक्रियाशीलता और पॉलीहैलोजन यौगिक
+  name_hi_reviewed: false
+  parent_id: jee.chem.haloalkanes_haloarenes
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.alcohols_phenols_ethers
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Oxygen (Alcohols, Phenols, Ethers)
+  topic: Organic Compounds Containing Oxygen (Alcohols, Phenols, Ethers)
+  level: chapter
+  name_en: Organic Compounds Containing Oxygen (Alcohols, Phenols, Ethers)
+  name_hi: ऑक्सीजन युक्त कार्बनिक यौगिक (ऐल्कोहॉल, फीनॉल, ईथर)
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.alcohols_phenols_ethers.alcohols_preparation_reactions
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Oxygen (Alcohols, Phenols, Ethers)
+  topic: Preparation, Dehydration and Oxidation of Alcohols
+  level: topic
+  name_en: Preparation, Dehydration and Oxidation of Alcohols
+  name_hi: ऐल्कोहॉल का विरचन, निर्जलीकरण और ऑक्सीकरण
+  name_hi_reviewed: false
+  parent_id: jee.chem.alcohols_phenols_ethers
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.alcohols_phenols_ethers.phenols_acidity_reactions
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Oxygen (Alcohols, Phenols, Ethers)
+  topic: Acidity of Phenols, Reimer-Tiemann and Kolbe Reactions
+  level: topic
+  name_en: Acidity of Phenols, Reimer-Tiemann and Kolbe Reactions
+  name_hi: फीनॉल की अम्लता, राइमर-टीमान और कोल्बे अभिक्रियाएँ
+  name_hi_reviewed: false
+  parent_id: jee.chem.alcohols_phenols_ethers
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.alcohols_phenols_ethers.ethers_williamson
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Oxygen (Alcohols, Phenols, Ethers)
+  topic: Williamson Synthesis and Cleavage of Ethers
+  level: topic
+  name_en: Williamson Synthesis and Cleavage of Ethers
+  name_hi: विलियमसन संश्लेषण और ईथर का विदलन
+  name_hi_reviewed: false
+  parent_id: jee.chem.alcohols_phenols_ethers
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.aldehydes_ketones_acids
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Aldehydes, Ketones and Carboxylic Acids
+  topic: Aldehydes, Ketones and Carboxylic Acids
+  level: chapter
+  name_en: Aldehydes, Ketones and Carboxylic Acids
+  name_hi: ऐल्डिहाइड, कीटोन और कार्बोक्सिलिक अम्ल
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.aldehydes_ketones_acids.nucleophilic_addition_carbonyl
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Aldehydes, Ketones and Carboxylic Acids
+  topic: Nucleophilic Addition and Reduction of Carbonyls
+  level: topic
+  name_en: Nucleophilic Addition and Reduction of Carbonyls
+  name_hi: कार्बोनिल यौगिकों में नाभिकरागी योगज और अपचयन
+  name_hi_reviewed: false
+  parent_id: jee.chem.aldehydes_ketones_acids
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.aldehydes_ketones_acids.aldol_cannizzaro
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Aldehydes, Ketones and Carboxylic Acids
+  topic: Aldol Condensation and Cannizzaro Reaction
+  level: topic
+  name_en: Aldol Condensation and Cannizzaro Reaction
+  name_hi: ऐल्डोल संघनन और कैनिजारो अभिक्रिया
+  name_hi_reviewed: false
+  parent_id: jee.chem.aldehydes_ketones_acids
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.aldehydes_ketones_acids.carboxylic_acids_acidity
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Aldehydes, Ketones and Carboxylic Acids
+  topic: Carboxylic Acids Preparation, Acidity and Reactions
+  level: topic
+  name_en: Carboxylic Acids Preparation, Acidity and Reactions
+  name_hi: कार्बोक्सिलिक अम्ल विरचन, अम्लता और अभिक्रियाएँ
+  name_hi_reviewed: false
+  parent_id: jee.chem.aldehydes_ketones_acids
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.organic_nitrogen
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Nitrogen
+  topic: Organic Compounds Containing Nitrogen
+  level: chapter
+  name_en: Organic Compounds Containing Nitrogen
+  name_hi: नाइट्रोजन युक्त कार्बनिक यौगिक
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.organic_nitrogen.amines_basicity
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Nitrogen
+  topic: Classification, Preparation and Basicity of Amines
+  level: topic
+  name_en: Classification, Preparation and Basicity of Amines
+  name_hi: ऐमीन का वर्गीकरण, विरचन और क्षारकता
+  name_hi_reviewed: false
+  parent_id: jee.chem.organic_nitrogen
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.organic_nitrogen.hinsberg_hoffmann
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Nitrogen
+  topic: Hoffmann Bromamide Degradation and Hinsberg Test
+  level: topic
+  name_en: Hoffmann Bromamide Degradation and Hinsberg Test
+  name_hi: हॉफमान ब्रोमामाइड निम्नीकरण और हिन्सबर्ग परीक्षण
+  name_hi_reviewed: false
+  parent_id: jee.chem.organic_nitrogen
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.organic_nitrogen.diazonium_salts
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Organic Compounds Containing Nitrogen
+  topic: Benzene Diazonium Salts and Coupling Reactions
+  level: topic
+  name_en: Benzene Diazonium Salts and Coupling Reactions
+  name_hi: बेंजीन डाइऐजोनियम लवण और युग्मन अभिक्रियाएँ
+  name_hi_reviewed: false
+  parent_id: jee.chem.organic_nitrogen
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.biomolecules_practical
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Biomolecules and Principles Related to Practical Chemistry
+  topic: Biomolecules and Principles Related to Practical Chemistry
+  level: chapter
+  name_en: Biomolecules and Principles Related to Practical Chemistry
+  name_hi: जैव-अणु और प्रायोगिक रसायन के सिद्धांत
+  name_hi_reviewed: false
+  parent_id: jee.chem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.biomolecules_practical.carbohydrates_proteins
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Biomolecules and Principles Related to Practical Chemistry
+  topic: Carbohydrates, Amino Acids and Protein Structure
+  level: topic
+  name_en: Carbohydrates, Amino Acids and Protein Structure
+  name_hi: कार्बोहाइड्रेट, ऐमीनो अम्ल और प्रोटीन संरचना
+  name_hi_reviewed: false
+  parent_id: jee.chem.biomolecules_practical
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.biomolecules_practical.nucleic_acids_vitamins
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Biomolecules and Principles Related to Practical Chemistry
+  topic: Nucleic Acids (DNA/RNA), Enzymes and Vitamins
+  level: topic
+  name_en: Nucleic Acids (DNA/RNA), Enzymes and Vitamins
+  name_hi: न्यूक्लिक अम्ल (डीएनए/आरएनए), एंजाइम और विटामिन
+  name_hi_reviewed: false
+  parent_id: jee.chem.biomolecules_practical
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.chem.biomolecules_practical.salt_analysis_titration
+  exam: jee_main
+  exams:
+  - jee_main
+  - neet_ug
+  subject: Chemistry
+  chapter: Biomolecules and Principles Related to Practical Chemistry
+  topic: Functional Group Detection, Titration and Salt Analysis
+  level: topic
+  name_en: Functional Group Detection, Titration and Salt Analysis
+  name_hi: प्रक्रियात्मक समूह परीक्षण, अनुमापन और लवण विश्लेषण
+  name_hi_reviewed: false
+  parent_id: jee.chem.biomolecules_practical
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Mathematics
+  topic: Mathematics
+  level: subject
+  name_en: Mathematics
+  name_hi: गणित
+  name_hi_reviewed: false
+  parent_id: null
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.sets_relations_functions
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Sets, Relations and Functions
+  topic: Sets, Relations and Functions
+  level: chapter
+  name_en: Sets, Relations and Functions
+  name_hi: समुच्चय, संबंध और फलन
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.sets_relations_functions.sets_operations
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Sets, Relations and Functions
+  topic: Sets, Union, Intersection and Power Set
+  level: topic
+  name_en: Sets, Union, Intersection and Power Set
+  name_hi: समुच्चय, सम्मिलन, सर्वनिष्ठ और घात समुच्चय
+  name_hi_reviewed: false
+  parent_id: jee.math.sets_relations_functions
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.sets_relations_functions.equivalence_relations
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Sets, Relations and Functions
+  topic: Reflexive, Symmetric, Transitive and Equivalence Relations
+  level: topic
+  name_en: Reflexive, Symmetric, Transitive and Equivalence Relations
+  name_hi: स्वतुल्य, सममित, संक्रामक और तुल्यता संबंध
+  name_hi_reviewed: false
+  parent_id: jee.math.sets_relations_functions
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.sets_relations_functions.one_one_onto_composition
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Sets, Relations and Functions
+  topic: Injective, Surjective and Composition of Functions
+  level: topic
+  name_en: Injective, Surjective and Composition of Functions
+  name_hi: एकैकी, आच्छादक और फलनों का संयोजन
+  name_hi_reviewed: false
+  parent_id: jee.math.sets_relations_functions
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.complex_numbers
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Complex Numbers
+  topic: Complex Numbers
+  level: chapter
+  name_en: Complex Numbers
+  name_hi: सम्मिश्र संख्याएँ
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.complex_numbers.algebra_complex_argand
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Complex Numbers
+  topic: Algebra of Complex Numbers, Conjugate and Argand Plane
+  level: topic
+  name_en: Algebra of Complex Numbers, Conjugate and Argand Plane
+  name_hi: सम्मिश्र संख्याओं का बीजगणित, संयुग्मी और आर्गंड तल
+  name_hi_reviewed: false
+  parent_id: jee.math.complex_numbers
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.complex_numbers.polar_form_modulus
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Complex Numbers
+  topic: Modulus, Argument and Triangle Inequality
+  level: topic
+  name_en: Modulus, Argument and Triangle Inequality
+  name_hi: मापांक, कोणांक और त्रिभुज असमिका
+  name_hi_reviewed: false
+  parent_id: jee.math.complex_numbers
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.complex_numbers.roots_of_unity
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Complex Numbers
+  topic: Square Root of Complex Number and Cube Roots of Unity
+  level: topic
+  name_en: Square Root of Complex Number and Cube Roots of Unity
+  name_hi: सम्मिश्र संख्या का वर्गमूल और इकाई के घनमूल
+  name_hi_reviewed: false
+  parent_id: jee.math.complex_numbers
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.quadratic_equations
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Quadratic Equations
+  topic: Quadratic Equations
+  level: chapter
+  name_en: Quadratic Equations
+  name_hi: द्विघात समीकरण
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.quadratic_equations.roots_nature
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Quadratic Equations
+  topic: Nature of Roots and Discriminant
+  level: topic
+  name_en: Nature of Roots and Discriminant
+  name_hi: मूलों की प्रकृति और विविक्तकर
+  name_hi_reviewed: false
+  parent_id: jee.math.quadratic_equations
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.quadratic_equations.relation_roots_coeffs
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Quadratic Equations
+  topic: Symmetric Functions of Roots and Coefficients
+  level: topic
+  name_en: Symmetric Functions of Roots and Coefficients
+  name_hi: मूलों के सममित फलन और गुणांक संबंध
+  name_hi_reviewed: false
+  parent_id: jee.math.quadratic_equations
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.quadratic_equations.equation_formation
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Quadratic Equations
+  topic: Formation of Quadratic Equations with Given Roots
+  level: topic
+  name_en: Formation of Quadratic Equations with Given Roots
+  name_hi: दिए गए मूलों से द्विघात समीकरण का निर्माण
+  name_hi_reviewed: false
+  parent_id: jee.math.quadratic_equations
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.matrices_determinants
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Matrices and Determinants
+  topic: Matrices and Determinants
+  level: chapter
+  name_en: Matrices and Determinants
+  name_hi: आव्यूह और सारणिक
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.matrices_determinants.matrix_algebra_transpose
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Matrices and Determinants
+  topic: Types of Matrices, Multiplication and Transpose
+  level: topic
+  name_en: Types of Matrices, Multiplication and Transpose
+  name_hi: आव्यूहों के प्रकार, गुणन और परिवर्त
+  name_hi_reviewed: false
+  parent_id: jee.math.matrices_determinants
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.matrices_determinants.determinants_properties
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Matrices and Determinants
+  topic: Evaluation of Determinants and Area of Triangle
+  level: topic
+  name_en: Evaluation of Determinants and Area of Triangle
+  name_hi: सारणिकों का मान और त्रिभुज का क्षेत्रफल
+  name_hi_reviewed: false
+  parent_id: jee.math.matrices_determinants
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.matrices_determinants.adjoint_inverse_linear_sys
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Matrices and Determinants
+  topic: Adjoint, Inverse of a Matrix and Linear Equations
+  level: topic
+  name_en: Adjoint, Inverse of a Matrix and Linear Equations
+  name_hi: सहखंडज, प्रतिलोम आव्यूह और रैखिक समीकरण निकाय
+  name_hi_reviewed: false
+  parent_id: jee.math.matrices_determinants
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.permutations_combinations
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Permutations and Combinations
+  topic: Permutations and Combinations
+  level: chapter
+  name_en: Permutations and Combinations
+  name_hi: क्रमचय और संचय
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.permutations_combinations.fundamental_counting
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Permutations and Combinations
+  topic: Fundamental Principle of Counting and Factorial
+  level: topic
+  name_en: Fundamental Principle of Counting and Factorial
+  name_hi: गणना का आधारभूत सिद्धांत और क्रमगुणित
+  name_hi_reviewed: false
+  parent_id: jee.math.permutations_combinations
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.permutations_combinations.circular_restricted_perm
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Permutations and Combinations
+  topic: Permutations with Repetition and Circular Permutations
+  level: topic
+  name_en: Permutations with Repetition and Circular Permutations
+  name_hi: पुनरावृत्ति सहित क्रमचय और वृत्तीय क्रमचय
+  name_hi_reviewed: false
+  parent_id: jee.math.permutations_combinations
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.permutations_combinations.combinations_division
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Permutations and Combinations
+  topic: Combinations and Division into Groups
+  level: topic
+  name_en: Combinations and Division into Groups
+  name_hi: संचय और समूहों में विभाजन
+  name_hi_reviewed: false
+  parent_id: jee.math.permutations_combinations
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.binomial_theorem
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Binomial Theorem and Its Simple Applications
+  topic: Binomial Theorem and Its Simple Applications
+  level: chapter
+  name_en: Binomial Theorem and Its Simple Applications
+  name_hi: द्विपद प्रमेय और इसके साधारण अनुप्रयोग
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.binomial_theorem.general_middle_term
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Binomial Theorem and Its Simple Applications
+  topic: Binomial Expansion, General and Middle Terms
+  level: topic
+  name_en: Binomial Expansion, General and Middle Terms
+  name_hi: द्विपद प्रसार, व्यापक और मध्य पद
+  name_hi_reviewed: false
+  parent_id: jee.math.binomial_theorem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.binomial_theorem.binomial_coefficients
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Binomial Theorem and Its Simple Applications
+  topic: Properties of Binomial Coefficients
+  level: topic
+  name_en: Properties of Binomial Coefficients
+  name_hi: द्विपद गुणांकों के गुणधर्म
+  name_hi_reviewed: false
+  parent_id: jee.math.binomial_theorem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.binomial_theorem.remainder_approximations
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Binomial Theorem and Its Simple Applications
+  topic: Remainder Problems and Simple Approximations
+  level: topic
+  name_en: Remainder Problems and Simple Approximations
+  name_hi: शेषफल प्रश्न और सरल सन्निकटन
+  name_hi_reviewed: false
+  parent_id: jee.math.binomial_theorem
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.sequences_series
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Sequences and Series
+  topic: Sequences and Series
+  level: chapter
+  name_en: Sequences and Series
+  name_hi: अनुक्रम और श्रेणी
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.sequences_series.arithmetic_progression
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Sequences and Series
+  topic: Arithmetic Progression and Arithmetic Means
+  level: topic
+  name_en: Arithmetic Progression and Arithmetic Means
+  name_hi: समांतर श्रेणी और समांतर माध्य
+  name_hi_reviewed: false
+  parent_id: jee.math.sequences_series
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.sequences_series.geometric_progression
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Sequences and Series
+  topic: Geometric Progression, Infinite GP and Geometric Means
+  level: topic
+  name_en: Geometric Progression, Infinite GP and Geometric Means
+  name_hi: गुणोत्तर श्रेणी, अनंत गुणोत्तर श्रेणी और गुणोत्तर माध्य
+  name_hi_reviewed: false
+  parent_id: jee.math.sequences_series
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.sequences_series.am_gm_inequality
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Sequences and Series
+  topic: Relation between A.M. and G.M.
+  level: topic
+  name_en: Relation between A.M. and G.M.
+  name_hi: समांतर माध्य और गुणोत्तर माध्य के बीच संबंध
+  name_hi_reviewed: false
+  parent_id: jee.math.sequences_series
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.limits_continuity
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Limits and Continuity
+  topic: Limits and Continuity
+  level: chapter
+  name_en: Limits and Continuity
+  name_hi: सीमा और सांतत्य
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.limits_continuity.algebraic_trig_limits
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Limits and Continuity
+  topic: Evaluation of Algebraic and Trigonometric Limits
+  level: topic
+  name_en: Evaluation of Algebraic and Trigonometric Limits
+  name_hi: बीजीय और त्रिकोणमितीय सीमाओं का मूल्यांकन
+  name_hi_reviewed: false
+  parent_id: jee.math.limits_continuity
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.limits_continuity.exponential_log_limits
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Limits and Continuity
+  topic: Exponential, Logarithmic Limits and L'Hospital's Rule
+  level: topic
+  name_en: Exponential, Logarithmic Limits and L'Hospital's Rule
+  name_hi: चरघातांकी, लघुगणकीय सीमाएँ और एल-हॉस्पिटल नियम
+  name_hi_reviewed: false
+  parent_id: jee.math.limits_continuity
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.limits_continuity.continuity_functions
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Limits and Continuity
+  topic: Left/Right Hand Limits and Continuity of Functions
+  level: topic
+  name_en: Left/Right Hand Limits and Continuity of Functions
+  name_hi: वाम/दक्षिण पक्ष सीमा और फलनों का सांतत्य
+  name_hi_reviewed: false
+  parent_id: jee.math.limits_continuity
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.differentiability_derivatives
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Differentiability and Differentiation
+  topic: Differentiability and Differentiation
+  level: chapter
+  name_en: Differentiability and Differentiation
+  name_hi: अवकलनीयता और अवकलन
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.differentiability_derivatives.differentiability_chain_rule
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Differentiability and Differentiation
+  topic: Differentiability and Chain Rule
+  level: topic
+  name_en: Differentiability and Chain Rule
+  name_hi: अवकलनीयता और श्रृंखला नियम
+  name_hi_reviewed: false
+  parent_id: jee.math.differentiability_derivatives
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.differentiability_derivatives.implicit_parametric_diff
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Differentiability and Differentiation
+  topic: Derivatives of Implicit, Parametric and Inverse Functions
+  level: topic
+  name_en: Derivatives of Implicit, Parametric and Inverse Functions
+  name_hi: अस्पष्ट, प्राचलिक और प्रतिलोम फलनों के अवकलज
+  name_hi_reviewed: false
+  parent_id: jee.math.differentiability_derivatives
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.differentiability_derivatives.higher_order_derivatives
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Differentiability and Differentiation
+  topic: Logarithmic Differentiation and Second Order Derivatives
+  level: topic
+  name_en: Logarithmic Differentiation and Second Order Derivatives
+  name_hi: लघुगणकीय अवकलन और द्वितीय कोटि के अवकलज
+  name_hi_reviewed: false
+  parent_id: jee.math.differentiability_derivatives
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.applications_of_derivatives
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Applications of Derivatives
+  topic: Applications of Derivatives
+  level: chapter
+  name_en: Applications of Derivatives
+  name_hi: अवकलजों के अनुप्रयोग
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.applications_of_derivatives.rate_of_change
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Applications of Derivatives
+  topic: Rate of Change of Quantities
+  level: topic
+  name_en: Rate of Change of Quantities
+  name_hi: राशियों के परिवर्तन की दर
+  name_hi_reviewed: false
+  parent_id: jee.math.applications_of_derivatives
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.applications_of_derivatives.monotonicity_increasing
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Applications of Derivatives
+  topic: Increasing and Decreasing Functions
+  level: topic
+  name_en: Increasing and Decreasing Functions
+  name_hi: वर्धमान और ह्रासमान फलन
+  name_hi_reviewed: false
+  parent_id: jee.math.applications_of_derivatives
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.applications_of_derivatives.maxima_minima
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Applications of Derivatives
+  topic: Maxima and Minima of Functions
+  level: topic
+  name_en: Maxima and Minima of Functions
+  name_hi: फलनों के उच्चिष्ठ और निम्निष्ठ
+  name_hi_reviewed: false
+  parent_id: jee.math.applications_of_derivatives
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.indefinite_integrals
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Indefinite Integrals
+  topic: Indefinite Integrals
+  level: chapter
+  name_en: Indefinite Integrals
+  name_hi: अनिश्चित समाकलन
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.indefinite_integrals.integration_substitution
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Indefinite Integrals
+  topic: Integration by Substitution and Trigonometric Identities
+  level: topic
+  name_en: Integration by Substitution and Trigonometric Identities
+  name_hi: प्रतिस्थापन और त्रिकोणमितीय सर्वसमिकाओं द्वारा समाकलन
+  name_hi_reviewed: false
+  parent_id: jee.math.indefinite_integrals
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.indefinite_integrals.partial_fractions_integral
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Indefinite Integrals
+  topic: Integration by Partial Fractions
+  level: topic
+  name_en: Integration by Partial Fractions
+  name_hi: आंशिक भिन्नों द्वारा समाकलन
+  name_hi_reviewed: false
+  parent_id: jee.math.indefinite_integrals
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.indefinite_integrals.integration_by_parts
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Indefinite Integrals
+  topic: Integration by Parts and Special Forms
+  level: topic
+  name_en: Integration by Parts and Special Forms
+  name_hi: खंडशः समाकलन और विशिष्ट रूप
+  name_hi_reviewed: false
+  parent_id: jee.math.indefinite_integrals
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.definite_integrals_area
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Definite Integrals and Area Under Curves
+  topic: Definite Integrals and Area Under Curves
+  level: chapter
+  name_en: Definite Integrals and Area Under Curves
+  name_hi: निश्चित समाकलन और वक्रों के अंतर्गत क्षेत्रफल
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.definite_integrals_area.fundamental_theorem_calc
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Definite Integrals and Area Under Curves
+  topic: Fundamental Theorem of Calculus and Evaluation
+  level: topic
+  name_en: Fundamental Theorem of Calculus and Evaluation
+  name_hi: कलन की आधारभूत प्रमेय और मूल्यांकन
+  name_hi_reviewed: false
+  parent_id: jee.math.definite_integrals_area
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.definite_integrals_area.definite_integral_properties
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Definite Integrals and Area Under Curves
+  topic: Properties of Definite Integrals (King's Rule, Periodicity)
+  level: topic
+  name_en: Properties of Definite Integrals (King's Rule, Periodicity)
+  name_hi: निश्चित समाकलनों के गुणधर्म
+  name_hi_reviewed: false
+  parent_id: jee.math.definite_integrals_area
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.definite_integrals_area.area_bounded_regions
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Definite Integrals and Area Under Curves
+  topic: Area Bounded by Standard Curves and Lines
+  level: topic
+  name_en: Area Bounded by Standard Curves and Lines
+  name_hi: मानक वक्रों और रेखाओं से घिरा क्षेत्रफल
+  name_hi_reviewed: false
+  parent_id: jee.math.definite_integrals_area
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.differential_equations
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Differential Equations
+  topic: Differential Equations
+  level: chapter
+  name_en: Differential Equations
+  name_hi: अवकल समीकरण
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.differential_equations.order_degree_de
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Differential Equations
+  topic: Order and Degree of Differential Equations
+  level: topic
+  name_en: Order and Degree of Differential Equations
+  name_hi: अवकल समीकरण की कोटि और घात
+  name_hi_reviewed: false
+  parent_id: jee.math.differential_equations
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.differential_equations.variable_separable_homogeneous
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Differential Equations
+  topic: Variable Separable and Homogeneous Differential Equations
+  level: topic
+  name_en: Variable Separable and Homogeneous Differential Equations
+  name_hi: चर पृथक्करणीय और समघातीय अवकल समीकरण
+  name_hi_reviewed: false
+  parent_id: jee.math.differential_equations
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.differential_equations.linear_differential_equations
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Differential Equations
+  topic: First Order Linear Differential Equations and Integrating Factor
+  level: topic
+  name_en: First Order Linear Differential Equations and Integrating Factor
+  name_hi: प्रथम कोटि रैखिक अवकल समीकरण और समाकलन गुणक
+  name_hi_reviewed: false
+  parent_id: jee.math.differential_equations
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.straight_lines
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: 'Coordinate Geometry: Straight Lines'
+  topic: 'Coordinate Geometry: Straight Lines'
+  level: chapter
+  name_en: 'Coordinate Geometry: Straight Lines'
+  name_hi: 'निर्देशांक ज्यामिति: सरल रेखाएँ'
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.straight_lines.distance_section_area
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: 'Coordinate Geometry: Straight Lines'
+  topic: Distance Formula, Section Formula and Special Points of Triangle
+  level: topic
+  name_en: Distance Formula, Section Formula and Special Points of Triangle
+  name_hi: दूरी सूत्र, विभाजन सूत्र और त्रिभुज के विशिष्ट बिंदु
+  name_hi_reviewed: false
+  parent_id: jee.math.straight_lines
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.straight_lines.forms_of_line
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: 'Coordinate Geometry: Straight Lines'
+  topic: Slope, Various Forms of Equations of a Line
+  level: topic
+  name_en: Slope, Various Forms of Equations of a Line
+  name_hi: ढाल और रेखा के समीकरण के विभिन्न रूप
+  name_hi_reviewed: false
+  parent_id: jee.math.straight_lines
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.straight_lines.angle_distance_concurrency
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: 'Coordinate Geometry: Straight Lines'
+  topic: Angle Between Lines, Distance from a Point and Concurrency
+  level: topic
+  name_en: Angle Between Lines, Distance from a Point and Concurrency
+  name_hi: रेखाओं के बीच कोण, बिंदु से दूरी और संगामी रेखाएँ
+  name_hi_reviewed: false
+  parent_id: jee.math.straight_lines
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.circles
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Circles
+  topic: Circles
+  level: chapter
+  name_en: Circles
+  name_hi: वृत्त
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.circles.standard_general_circle
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Circles
+  topic: Standard, General and Diametric Equations of a Circle
+  level: topic
+  name_en: Standard, General and Diametric Equations of a Circle
+  name_hi: वृत्त का मानक, व्यापक और व्यास रूप समीकरण
+  name_hi_reviewed: false
+  parent_id: jee.math.circles
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.circles.line_and_circle
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Circles
+  topic: Intersection of a Line and a Circle, Chord Length
+  level: topic
+  name_en: Intersection of a Line and a Circle, Chord Length
+  name_hi: रेखा और वृत्त का प्रतिच्छेदन तथा जीवा की लंबाई
+  name_hi_reviewed: false
+  parent_id: jee.math.circles
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.circles.family_of_circles
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Circles
+  topic: Equations of Circles through Points of Intersection
+  level: topic
+  name_en: Equations of Circles through Points of Intersection
+  name_hi: प्रतिच्छेदन बिंदुओं से गुजरने वाले वृत्तों का कुल
+  name_hi_reviewed: false
+  parent_id: jee.math.circles
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.conic_sections
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Conic Sections (Parabola, Ellipse, Hyperbola)
+  topic: Conic Sections (Parabola, Ellipse, Hyperbola)
+  level: chapter
+  name_en: Conic Sections (Parabola, Ellipse, Hyperbola)
+  name_hi: शंकु परिच्छेद (परवलय, दीर्घवृत्त, अतिपरवलय)
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.conic_sections.parabola_standard
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Conic Sections (Parabola, Ellipse, Hyperbola)
+  topic: Standard Equations and Focal Properties of Parabola
+  level: topic
+  name_en: Standard Equations and Focal Properties of Parabola
+  name_hi: परवलय के मानक समीकरण और नाभीय गुणधर्म
+  name_hi_reviewed: false
+  parent_id: jee.math.conic_sections
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.conic_sections.ellipse_eccentricity
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Conic Sections (Parabola, Ellipse, Hyperbola)
+  topic: Standard Equations, Eccentricity and Latus Rectum of Ellipse
+  level: topic
+  name_en: Standard Equations, Eccentricity and Latus Rectum of Ellipse
+  name_hi: दीर्घवृत्त के मानक समीकरण, उत्केंद्रता और नाभिलंब
+  name_hi_reviewed: false
+  parent_id: jee.math.conic_sections
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.conic_sections.hyperbola_properties
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Conic Sections (Parabola, Ellipse, Hyperbola)
+  topic: Standard Equations, Foci and Directrices of Hyperbola
+  level: topic
+  name_en: Standard Equations, Foci and Directrices of Hyperbola
+  name_hi: अतिपरवलय के मानक समीकरण, नाभियाँ और नियता
+  name_hi_reviewed: false
+  parent_id: jee.math.conic_sections
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.three_dimensional_geometry
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Three Dimensional Geometry
+  topic: Three Dimensional Geometry
+  level: chapter
+  name_en: Three Dimensional Geometry
+  name_hi: त्रि-विमीय ज्यामिति
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.three_dimensional_geometry.direction_cosines_ratios
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Three Dimensional Geometry
+  topic: Coordinates in Space, Direction Cosines and Direction Ratios
+  level: topic
+  name_en: Coordinates in Space, Direction Cosines and Direction Ratios
+  name_hi: आकाश में निर्देशांक, दिक्-कोसाइन और दिक्-अनुपात
+  name_hi_reviewed: false
+  parent_id: jee.math.three_dimensional_geometry
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.three_dimensional_geometry.line_in_space
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Three Dimensional Geometry
+  topic: Cartesian and Vector Equations of a Line in Space
+  level: topic
+  name_en: Cartesian and Vector Equations of a Line in Space
+  name_hi: आकाश में रेखा का कार्तीय और सदिश समीकरण
+  name_hi_reviewed: false
+  parent_id: jee.math.three_dimensional_geometry
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.three_dimensional_geometry.skew_lines_shortest_dist
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Three Dimensional Geometry
+  topic: Angle between Two Lines and Shortest Distance between Skew Lines
+  level: topic
+  name_en: Angle between Two Lines and Shortest Distance between Skew Lines
+  name_hi: दो रेखाओं के बीच कोण और विषमतलीय रेखाओं के बीच न्यूनतम दूरी
+  name_hi_reviewed: false
+  parent_id: jee.math.three_dimensional_geometry
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.vector_algebra
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Vector Algebra
+  topic: Vector Algebra
+  level: chapter
+  name_en: Vector Algebra
+  name_hi: सदिश बीजगणित
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.vector_algebra.vectors_addition_components
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Vector Algebra
+  topic: Scalars and Vectors, Addition and Position Vector
+  level: topic
+  name_en: Scalars and Vectors, Addition and Position Vector
+  name_hi: अदिश और सदिश, योग और स्थिति सदिश
+  name_hi_reviewed: false
+  parent_id: jee.math.vector_algebra
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.vector_algebra.dot_product_projection
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Vector Algebra
+  topic: Scalar (Dot) Product and Projection of a Vector
+  level: topic
+  name_en: Scalar (Dot) Product and Projection of a Vector
+  name_hi: अदिश (डॉट) गुणनफल और सदिश का प्रक्षेप
+  name_hi_reviewed: false
+  parent_id: jee.math.vector_algebra
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.vector_algebra.cross_product_area
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Vector Algebra
+  topic: Vector (Cross) Product and Geometrical Interpretation
+  level: topic
+  name_en: Vector (Cross) Product and Geometrical Interpretation
+  name_hi: सदिश (क्रॉस) गुणनफल और ज्यामितीय व्याख्या
+  name_hi_reviewed: false
+  parent_id: jee.math.vector_algebra
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.statistics_probability
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Statistics and Probability
+  topic: Statistics and Probability
+  level: chapter
+  name_en: Statistics and Probability
+  name_hi: सांख्यिकी और प्रायिकता
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.statistics_probability.dispersion_variance_sd
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Statistics and Probability
+  topic: Mean, Median, Mode, Variance and Standard Deviation
+  level: topic
+  name_en: Mean, Median, Mode, Variance and Standard Deviation
+  name_hi: माध्य, माध्यिका, बहुलक, प्रसरण और मानक विचलन
+  name_hi_reviewed: false
+  parent_id: jee.math.statistics_probability
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.statistics_probability.conditional_prob_bayes
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Statistics and Probability
+  topic: Conditional Probability, Multiplication Theorem and Bayes' Theorem
+  level: topic
+  name_en: Conditional Probability, Multiplication Theorem and Bayes' Theorem
+  name_hi: सप्रतिबंध प्रायिकता, गुणन प्रमेय और बेज प्रमेय
+  name_hi_reviewed: false
+  parent_id: jee.math.statistics_probability
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.statistics_probability.random_variables_dist
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Statistics and Probability
+  topic: Random Variables and Probability Distributions
+  level: topic
+  name_en: Random Variables and Probability Distributions
+  name_hi: यादृच्छिक चर और प्रायिकता बंटन
+  name_hi_reviewed: false
+  parent_id: jee.math.statistics_probability
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.trigonometry
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Trigonometry
+  topic: Trigonometry
+  level: chapter
+  name_en: Trigonometry
+  name_hi: त्रिकोणमिति
+  name_hi_reviewed: false
+  parent_id: jee.math
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.trigonometry.compound_multiple_angles
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Trigonometry
+  topic: Trigonometric Identities, Compound and Multiple Angles
+  level: topic
+  name_en: Trigonometric Identities, Compound and Multiple Angles
+  name_hi: त्रिकोणमितीय सर्वसमिकाएँ, संयुक्त और अपवर्त्य कोण
+  name_hi_reviewed: false
+  parent_id: jee.math.trigonometry
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.trigonometry.trigonometric_functions
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Trigonometry
+  topic: Domain, Range and Graphs of Trigonometric Functions
+  level: topic
+  name_en: Domain, Range and Graphs of Trigonometric Functions
+  name_hi: त्रिकोणमितीय फलनों का प्रांत, परिसर और आलेख
+  name_hi_reviewed: false
+  parent_id: jee.math.trigonometry
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: jee.math.trigonometry.inverse_trig_functions
+  exam: jee_main
+  exams:
+  - jee_main
+  subject: Mathematics
+  chapter: Trigonometry
+  topic: Inverse Trigonometric Functions and Principal Values
+  level: topic
+  name_en: Inverse Trigonometric Functions and Principal Values
+  name_hi: प्रतिलोम त्रिकोणमितीय फलन और मुख्य मान
+  name_hi_reviewed: false
+  parent_id: jee.math.trigonometry
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Botany
+  topic: Botany
+  level: subject
+  name_en: Botany
+  name_hi: वनस्पति विज्ञान
+  name_hi_reviewed: false
+  parent_id: null
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.living_world
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: The Living World
+  topic: The Living World
+  level: chapter
+  name_en: The Living World
+  name_hi: जीव जगत
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.living_world.biodiversity_nomenclature
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: The Living World
+  topic: Biodiversity and Binomial Nomenclature
+  level: topic
+  name_en: Biodiversity and Binomial Nomenclature
+  name_hi: जैव विविधता और द्विपद नामपद्धति
+  name_hi_reviewed: false
+  parent_id: neet.bot.living_world
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.living_world.taxonomic_categories
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: The Living World
+  topic: Taxonomic Hierarchy and Categories
+  level: topic
+  name_en: Taxonomic Hierarchy and Categories
+  name_hi: वर्गीकरण पदानुक्रम और संवर्ग
+  name_hi_reviewed: false
+  parent_id: neet.bot.living_world
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.living_world.species_concept
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: The Living World
+  topic: Concept of Species, Genus and Family
+  level: topic
+  name_en: Concept of Species, Genus and Family
+  name_hi: जाति, वंश और कुल की अवधारणा
+  name_hi_reviewed: false
+  parent_id: neet.bot.living_world
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.biological_classification
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Biological Classification
+  topic: Biological Classification
+  level: chapter
+  name_en: Biological Classification
+  name_hi: जीव जगत का वर्गीकरण
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.biological_classification.five_kingdom_system
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Biological Classification
+  topic: Five Kingdom Classification and Monera
+  level: topic
+  name_en: Five Kingdom Classification and Monera
+  name_hi: पाँच जगत वर्गीकरण और मोनेरा
+  name_hi_reviewed: false
+  parent_id: neet.bot.biological_classification
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.biological_classification.protista_fungi
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Biological Classification
+  topic: Kingdom Protista and Kingdom Fungi
+  level: topic
+  name_en: Kingdom Protista and Kingdom Fungi
+  name_hi: प्रोटिस्टा जगत और कवक (फंजाई) जगत
+  name_hi_reviewed: false
+  parent_id: neet.bot.biological_classification
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.biological_classification.viruses_viroids_lichens
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Biological Classification
+  topic: Viruses, Viroids, Prions and Lichens
+  level: topic
+  name_en: Viruses, Viroids, Prions and Lichens
+  name_hi: विषाणु (वायरस), वायरोइड, प्रायॉन और लाइकेन
+  name_hi_reviewed: false
+  parent_id: neet.bot.biological_classification
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.plant_kingdom
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Plant Kingdom
+  topic: Plant Kingdom
+  level: chapter
+  name_en: Plant Kingdom
+  name_hi: वनस्पति जगत
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.plant_kingdom.algae_bryophytes
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Plant Kingdom
+  topic: Algae and Bryophytes
+  level: topic
+  name_en: Algae and Bryophytes
+  name_hi: शैवाल और ब्रायोफाइट
+  name_hi_reviewed: false
+  parent_id: neet.bot.plant_kingdom
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.plant_kingdom.pteridophytes
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Plant Kingdom
+  topic: Pteridophytes and Heterospory
+  level: topic
+  name_en: Pteridophytes and Heterospory
+  name_hi: टेरिडोफाइट और विषमबीजाणुकता
+  name_hi_reviewed: false
+  parent_id: neet.bot.plant_kingdom
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.plant_kingdom.gymnosperms_classification
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Plant Kingdom
+  topic: Gymnosperms and Classification Systems
+  level: topic
+  name_en: Gymnosperms and Classification Systems
+  name_hi: जिम्नोस्पर्म (अनावृतबीजी) और वर्गीकरण प्रणालियाँ
+  name_hi_reviewed: false
+  parent_id: neet.bot.plant_kingdom
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.morphology_flowering_plants
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Morphology of Flowering Plants
+  topic: Morphology of Flowering Plants
+  level: chapter
+  name_en: Morphology of Flowering Plants
+  name_hi: पुष्पी पादपों की आकारिकी
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.morphology_flowering_plants.root_stem_leaf
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Morphology of Flowering Plants
+  topic: Root, Stem, Leaf Venation and Phyllotaxy
+  level: topic
+  name_en: Root, Stem, Leaf Venation and Phyllotaxy
+  name_hi: मूल, तना, पत्ती शिराविन्यास और पर्णविन्यास
+  name_hi_reviewed: false
+  parent_id: neet.bot.morphology_flowering_plants
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.morphology_flowering_plants.inflorescence_flower_fruit
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Morphology of Flowering Plants
+  topic: Inflorescence, Flower, Placentation, Fruit and Seed
+  level: topic
+  name_en: Inflorescence, Flower, Placentation, Fruit and Seed
+  name_hi: पुष्पक्रम, पुष्प, बीजांडन्यास, फल और बीज
+  name_hi_reviewed: false
+  parent_id: neet.bot.morphology_flowering_plants
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.morphology_flowering_plants.plant_families
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Morphology of Flowering Plants
+  topic: Solanaceae, Fabaceae, Liliaceae, Malvaceae, Cruciferae, Compositae, Gramineae
+  level: topic
+  name_en: Solanaceae, Fabaceae, Liliaceae, Malvaceae, Cruciferae, Compositae, Gramineae
+  name_hi: प्रमुख पादप कुल (सोलेनेसी, फाबेसी, मालवेसी, ग्रैमिनी आदि)
+  name_hi_reviewed: false
+  parent_id: neet.bot.morphology_flowering_plants
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.anatomy_flowering_plants
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Anatomy of Flowering Plants
+  topic: Anatomy of Flowering Plants
+  level: chapter
+  name_en: Anatomy of Flowering Plants
+  name_hi: पुष्पी पादपों का शारीर
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.anatomy_flowering_plants.meristematic_permanent_tissues
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Anatomy of Flowering Plants
+  topic: Meristematic and Permanent Tissue Systems
+  level: topic
+  name_en: Meristematic and Permanent Tissue Systems
+  name_hi: विभज्योतकी और स्थायी ऊतक तंत्र
+  name_hi_reviewed: false
+  parent_id: neet.bot.anatomy_flowering_plants
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.anatomy_flowering_plants.dicot_monocot_root_stem
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Anatomy of Flowering Plants
+  topic: Anatomy of Dicot and Monocot Root and Stem
+  level: topic
+  name_en: Anatomy of Dicot and Monocot Root and Stem
+  name_hi: द्विबीजपत्री और एकबीजपत्री मूल व तने का शारीर
+  name_hi_reviewed: false
+  parent_id: neet.bot.anatomy_flowering_plants
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.anatomy_flowering_plants.leaf_anatomy_stomata
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Anatomy of Flowering Plants
+  topic: Dorsiventral and Isobilateral Leaf and Stomatal Apparatus
+  level: topic
+  name_en: Dorsiventral and Isobilateral Leaf and Stomatal Apparatus
+  name_hi: पृष्ठाधारी व समद्विपार्श्विक पत्ती और रंध्रीय तंत्र
+  name_hi_reviewed: false
+  parent_id: neet.bot.anatomy_flowering_plants
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.cell_unit_of_life
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: 'Cell: The Unit of Life'
+  topic: 'Cell: The Unit of Life'
+  level: chapter
+  name_en: 'Cell: The Unit of Life'
+  name_hi: 'कोशिका: जीवन की इकाई'
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.cell_unit_of_life.prokaryotic_eukaryotic_cell
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: 'Cell: The Unit of Life'
+  topic: Cell Theory, Prokaryotic and Eukaryotic Cells
+  level: topic
+  name_en: Cell Theory, Prokaryotic and Eukaryotic Cells
+  name_hi: कोशिका सिद्धांत, प्रोकैरियोटिक और यूकैरियोटिक कोशिकाएँ
+  name_hi_reviewed: false
+  parent_id: neet.bot.cell_unit_of_life
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.cell_unit_of_life.endomembrane_organelles
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: 'Cell: The Unit of Life'
+  topic: Cell Membrane, Endomembrane System, Mitochondria and Plastids
+  level: topic
+  name_en: Cell Membrane, Endomembrane System, Mitochondria and Plastids
+  name_hi: कोशिका झिल्ली, अंतःझिल्लिका तंत्र, सूत्रकणिका और लवक
+  name_hi_reviewed: false
+  parent_id: neet.bot.cell_unit_of_life
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.cell_unit_of_life.nucleus_chromosomes_cilia
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: 'Cell: The Unit of Life'
+  topic: Ribosomes, Cytoskeleton, Cilia, Flagella and Nucleus
+  level: topic
+  name_en: Ribosomes, Cytoskeleton, Cilia, Flagella and Nucleus
+  name_hi: राइबोसोम, साइटोस्केलेटन, पक्ष्माभ, कशाभिका और केंद्रक
+  name_hi_reviewed: false
+  parent_id: neet.bot.cell_unit_of_life
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.cell_cycle_division
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Cell Cycle and Cell Division
+  topic: Cell Cycle and Cell Division
+  level: chapter
+  name_en: Cell Cycle and Cell Division
+  name_hi: कोशिका चक्र और कोशिका विभाजन
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.cell_cycle_division.interphase_cell_cycle
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Cell Cycle and Cell Division
+  topic: Phases of Cell Cycle (G1, S, G2, M)
+  level: topic
+  name_en: Phases of Cell Cycle (G1, S, G2, M)
+  name_hi: कोशिका चक्र की प्रावस्थाएँ (G1, S, G2, M)
+  name_hi_reviewed: false
+  parent_id: neet.bot.cell_cycle_division
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.cell_cycle_division.mitosis_significance
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Cell Cycle and Cell Division
+  topic: Mitosis Stages and Significance
+  level: topic
+  name_en: Mitosis Stages and Significance
+  name_hi: समसूत्री विभाजन की अवस्थाएँ और महत्व
+  name_hi_reviewed: false
+  parent_id: neet.bot.cell_cycle_division
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.cell_cycle_division.meiosis_recombination
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Cell Cycle and Cell Division
+  topic: Meiosis I and II, Crossing Over and Significance
+  level: topic
+  name_en: Meiosis I and II, Crossing Over and Significance
+  name_hi: अर्धसूत्री विभाजन I व II, जीन विनिमय और महत्व
+  name_hi_reviewed: false
+  parent_id: neet.bot.cell_cycle_division
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.photosynthesis
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Photosynthesis in Higher Plants
+  topic: Photosynthesis in Higher Plants
+  level: chapter
+  name_en: Photosynthesis in Higher Plants
+  name_hi: उच्च पादपों में प्रकाश-संश्लेषण
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.photosynthesis.pigments_light_reaction
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Photosynthesis in Higher Plants
+  topic: Photosynthetic Pigments, Light Reaction and Photophosphorylation
+  level: topic
+  name_en: Photosynthetic Pigments, Light Reaction and Photophosphorylation
+  name_hi: प्रकाश-संश्लेषी वर्णक, प्रकाश अभिक्रिया और फोटोफॉस्फोरिलेशन
+  name_hi_reviewed: false
+  parent_id: neet.bot.photosynthesis
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.photosynthesis.calvin_cycle_c4_pathway
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Photosynthesis in Higher Plants
+  topic: Calvin Cycle (C3), Hatch and Slack Pathway (C4)
+  level: topic
+  name_en: Calvin Cycle (C3), Hatch and Slack Pathway (C4)
+  name_hi: केल्विन चक्र (C3) और हैच-स्लैक पथ (C4)
+  name_hi_reviewed: false
+  parent_id: neet.bot.photosynthesis
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.photosynthesis.photorespiration_factors
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Photosynthesis in Higher Plants
+  topic: Photorespiration and Blackman's Law of Limiting Factors
+  level: topic
+  name_en: Photorespiration and Blackman's Law of Limiting Factors
+  name_hi: प्रकाश-श्वसन और ब्लैकमैन का सीमाकारी कारकों का नियम
+  name_hi_reviewed: false
+  parent_id: neet.bot.photosynthesis
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.respiration_in_plants
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Respiration in Plants
+  topic: Respiration in Plants
+  level: chapter
+  name_en: Respiration in Plants
+  name_hi: पादप में श्वसन
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.respiration_in_plants.glycolysis_fermentation
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Respiration in Plants
+  topic: Glycolysis and Anaerobic Fermentation
+  level: topic
+  name_en: Glycolysis and Anaerobic Fermentation
+  name_hi: ग्लाइकोलिसिस और अवायवीय किण्वन
+  name_hi_reviewed: false
+  parent_id: neet.bot.respiration_in_plants
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.respiration_in_plants.tca_cycle_ets
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Respiration in Plants
+  topic: TCA (Krebs) Cycle, Electron Transport System and ATP Yield
+  level: topic
+  name_en: TCA (Krebs) Cycle, Electron Transport System and ATP Yield
+  name_hi: टीसीए (क्रेब्स) चक्र, इलेक्ट्रॉन परिवहन तंत्र और एटीपी लब्धि
+  name_hi_reviewed: false
+  parent_id: neet.bot.respiration_in_plants
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.respiration_in_plants.amphibolic_rq
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Respiration in Plants
+  topic: Amphibolic Pathway and Respiratory Quotient (RQ)
+  level: topic
+  name_en: Amphibolic Pathway and Respiratory Quotient (RQ)
+  name_hi: एम्फीबोलिक पथ और श्वसन गुणांक (RQ)
+  name_hi_reviewed: false
+  parent_id: neet.bot.respiration_in_plants
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.plant_growth_development
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Plant Growth and Development
+  topic: Plant Growth and Development
+  level: chapter
+  name_en: Plant Growth and Development
+  name_hi: पादप वृद्धि एवं परिवर्धन
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.plant_growth_development.growth_phases_differentiation
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Plant Growth and Development
+  topic: Phases of Growth, Growth Rate, Differentiation and Dedifferentiation
+  level: topic
+  name_en: Phases of Growth, Growth Rate, Differentiation and Dedifferentiation
+  name_hi: वृद्धि की प्रावस्थाएँ, वृद्धि दर, विभेदन और निर्विभेदन
+  name_hi_reviewed: false
+  parent_id: neet.bot.plant_growth_development
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.plant_growth_development.auxins_gibberellins_cytokinins
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Plant Growth and Development
+  topic: 'Plant Growth Promoters: Auxins, Gibberellins, Cytokinins'
+  level: topic
+  name_en: 'Plant Growth Promoters: Auxins, Gibberellins, Cytokinins'
+  name_hi: 'पादप वृद्धि प्रवर्धक: ऑक्सिन, जिबरेलिन, साइटोकाइनिन'
+  name_hi_reviewed: false
+  parent_id: neet.bot.plant_growth_development
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.plant_growth_development.ethylene_aba
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Plant Growth and Development
+  topic: Ethylene and Abscisic Acid (ABA) Physiological Effects
+  level: topic
+  name_en: Ethylene and Abscisic Acid (ABA) Physiological Effects
+  name_hi: एथिलीन और एब्सिसिक अम्ल (ABA) के कार्यिकीय प्रभाव
+  name_hi_reviewed: false
+  parent_id: neet.bot.plant_growth_development
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.sexual_reproduction_plants
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Sexual Reproduction in Flowering Plants
+  topic: Sexual Reproduction in Flowering Plants
+  level: chapter
+  name_en: Sexual Reproduction in Flowering Plants
+  name_hi: पुष्पी पादपों में लैंगिक प्रजनन
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.sexual_reproduction_plants.micro_megasporogenesis
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Sexual Reproduction in Flowering Plants
+  topic: Microsporogenesis, Pollen Grain and Megasporogenesis
+  level: topic
+  name_en: Microsporogenesis, Pollen Grain and Megasporogenesis
+  name_hi: लघुबीजाणुजनन, परागकण और गुरुबीजाणुजनन
+  name_hi_reviewed: false
+  parent_id: neet.bot.sexual_reproduction_plants
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.sexual_reproduction_plants.pollination_double_fertilization
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Sexual Reproduction in Flowering Plants
+  topic: Pollination, Outbreeding Devices and Double Fertilization
+  level: topic
+  name_en: Pollination, Outbreeding Devices and Double Fertilization
+  name_hi: परागण, बहिःप्रजनन युक्तियाँ और दोहरा निषेचन
+  name_hi_reviewed: false
+  parent_id: neet.bot.sexual_reproduction_plants
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.sexual_reproduction_plants.endosperm_embryo_apomixis
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Sexual Reproduction in Flowering Plants
+  topic: Endosperm, Embryo, Seed Development, Apomixis and Polyembryony
+  level: topic
+  name_en: Endosperm, Embryo, Seed Development, Apomixis and Polyembryony
+  name_hi: भ्रूणपोष, भ्रूण, बीज विकास, असंगजनन और बहुभ्रूणता
+  name_hi_reviewed: false
+  parent_id: neet.bot.sexual_reproduction_plants
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.inheritance_variation
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Principles of Inheritance and Variation
+  topic: Principles of Inheritance and Variation
+  level: chapter
+  name_en: Principles of Inheritance and Variation
+  name_hi: वंशागति और विविधता के सिद्धांत
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.inheritance_variation.mendelian_inheritance
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Principles of Inheritance and Variation
+  topic: Mendel's Laws, Incomplete Dominance, Codominance and Multiple Alleles
+  level: topic
+  name_en: Mendel's Laws, Incomplete Dominance, Codominance and Multiple Alleles
+  name_hi: मेंडल के नियम, अपूर्ण प्रभाविता, सहप्रभाविता और बहुविकल्पी
+  name_hi_reviewed: false
+  parent_id: neet.bot.inheritance_variation
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.inheritance_variation.chromosomal_theory_linkage
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Principles of Inheritance and Variation
+  topic: Chromosomal Theory, Linkage, Recombination and Sex Determination
+  level: topic
+  name_en: Chromosomal Theory, Linkage, Recombination and Sex Determination
+  name_hi: वंशागति का गुणसूत्री सिद्धांत, सहलग्नता, पुनर्योजन और लिंग निर्धारण
+  name_hi_reviewed: false
+  parent_id: neet.bot.inheritance_variation
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.inheritance_variation.genetic_disorders_pedigree
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Principles of Inheritance and Variation
+  topic: Pedigree Analysis, Mendelian and Chromosomal Disorders
+  level: topic
+  name_en: Pedigree Analysis, Mendelian and Chromosomal Disorders
+  name_hi: वंशावली विश्लेषण, मेंडलीय और गुणसूत्रीय विकार
+  name_hi_reviewed: false
+  parent_id: neet.bot.inheritance_variation
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.molecular_basis_inheritance
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Molecular Basis of Inheritance
+  topic: Molecular Basis of Inheritance
+  level: chapter
+  name_en: Molecular Basis of Inheritance
+  name_hi: वंशागति का आण्विक आधार
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.molecular_basis_inheritance.dna_structure_replication
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Molecular Basis of Inheritance
+  topic: Structure of DNA/RNA, Packaging, Search for Genetic Material and Replication
+  level: topic
+  name_en: Structure of DNA/RNA, Packaging, Search for Genetic Material and Replication
+  name_hi: डीएनए/आरएनए संरचना, पैकेजिंग और प्रतिकृतियन
+  name_hi_reviewed: false
+  parent_id: neet.bot.molecular_basis_inheritance
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.molecular_basis_inheritance.transcription_genetic_code
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Molecular Basis of Inheritance
+  topic: Transcription, Genetic Code and Translation
+  level: topic
+  name_en: Transcription, Genetic Code and Translation
+  name_hi: अनुलेखन, आनुवंशिक कूट और रूपांतरण (स्थानांतरण)
+  name_hi_reviewed: false
+  parent_id: neet.bot.molecular_basis_inheritance
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.molecular_basis_inheritance.lac_operon_hgp_fingerprinting
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Molecular Basis of Inheritance
+  topic: Gene Regulation (Lac Operon), Human Genome Project and DNA Fingerprinting
+  level: topic
+  name_en: Gene Regulation (Lac Operon), Human Genome Project and DNA Fingerprinting
+  name_hi: जीन नियमन (लैक ओपेरॉन), मानव जीनोम परियोजना और डीएनए फिंगरप्रिंटिंग
+  name_hi_reviewed: false
+  parent_id: neet.bot.molecular_basis_inheritance
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.microbes_human_welfare
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Microbes in Human Welfare
+  topic: Microbes in Human Welfare
+  level: chapter
+  name_en: Microbes in Human Welfare
+  name_hi: मानव कल्याण में सूक्ष्मजीव
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.microbes_human_welfare.household_industrial_microbes
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Microbes in Human Welfare
+  topic: Microbes in Household Products, Fermented Beverages, Antibiotics and Enzymes
+  level: topic
+  name_en: Microbes in Household Products, Fermented Beverages, Antibiotics and Enzymes
+  name_hi: घरेलू उत्पादों, किण्वित पेय, प्रतिजैविकों और एंजाइमों में सूक्ष्मजीव
+  name_hi_reviewed: false
+  parent_id: neet.bot.microbes_human_welfare
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.microbes_human_welfare.sewage_biogas
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Microbes in Human Welfare
+  topic: Microbes in Sewage Treatment and Biogas Production
+  level: topic
+  name_en: Microbes in Sewage Treatment and Biogas Production
+  name_hi: वाहितमल उपचार और बायोगैस उत्पादन में सूक्ष्मजीव
+  name_hi_reviewed: false
+  parent_id: neet.bot.microbes_human_welfare
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.microbes_human_welfare.biocontrol_biofertilizers
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Microbes in Human Welfare
+  topic: Microbes as Biocontrol Agents and Biofertilizers
+  level: topic
+  name_en: Microbes as Biocontrol Agents and Biofertilizers
+  name_hi: जैव-नियंत्रण कारक और जैव-उर्वरक के रूप में सूक्ष्मजीव
+  name_hi_reviewed: false
+  parent_id: neet.bot.microbes_human_welfare
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.organisms_and_populations
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Organisms and Populations
+  topic: Organisms and Populations
+  level: chapter
+  name_en: Organisms and Populations
+  name_hi: जीव और समष्टियाँ
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.organisms_and_populations.population_attributes_growth
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Organisms and Populations
+  topic: Population Attributes, Age Pyramids, Exponential and Logistic Growth
+  level: topic
+  name_en: Population Attributes, Age Pyramids, Exponential and Logistic Growth
+  name_hi: समष्टि गुण, आयु पिरामिड, चरघातांकी और संभार तंत्र वृद्धि
+  name_hi_reviewed: false
+  parent_id: neet.bot.organisms_and_populations
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.organisms_and_populations.population_interactions_predation
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Organisms and Populations
+  topic: Predation, Competition and Parasitism
+  level: topic
+  name_en: Predation, Competition and Parasitism
+  name_hi: परभक्षण, स्पर्धा और परजीविता
+  name_hi_reviewed: false
+  parent_id: neet.bot.organisms_and_populations
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.organisms_and_populations.commensalism_mutualism
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Organisms and Populations
+  topic: Commensalism, Mutualism and Amensalism
+  level: topic
+  name_en: Commensalism, Mutualism and Amensalism
+  name_hi: सहभोजिता, सहोपकारिता और अंतरजातीय परजीविता
+  name_hi_reviewed: false
+  parent_id: neet.bot.organisms_and_populations
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.ecosystem
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Ecosystem
+  topic: Ecosystem
+  level: chapter
+  name_en: Ecosystem
+  name_hi: पारितंत्र
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.ecosystem.ecosystem_structure_productivity
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Ecosystem
+  topic: Ecosystem Components, Primary and Secondary Productivity
+  level: topic
+  name_en: Ecosystem Components, Primary and Secondary Productivity
+  name_hi: पारितंत्र के घटक, प्राथमिक और द्वितीयक उत्पादकता
+  name_hi_reviewed: false
+  parent_id: neet.bot.ecosystem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.ecosystem.decomposition
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Ecosystem
+  topic: 'Decomposition Processes: Fragmentation, Leaching, Catabolism, Humification'
+  level: topic
+  name_en: 'Decomposition Processes: Fragmentation, Leaching, Catabolism, Humification'
+  name_hi: 'अपघटन की प्रक्रियाएँ: खंडन, निक्षालन, अपचय, ह्यूमस भवन'
+  name_hi_reviewed: false
+  parent_id: neet.bot.ecosystem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.ecosystem.energy_flow_pyramids
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Ecosystem
+  topic: Energy Flow, 10% Law and Ecological Pyramids
+  level: topic
+  name_en: Energy Flow, 10% Law and Ecological Pyramids
+  name_hi: ऊर्जा प्रवाह, 10% नियम और पारिस्थितिक पिरामिड
+  name_hi_reviewed: false
+  parent_id: neet.bot.ecosystem
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.biodiversity_conservation
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Biodiversity and Conservation
+  topic: Biodiversity and Conservation
+  level: chapter
+  name_en: Biodiversity and Conservation
+  name_hi: जैव-विविधता एवं संरक्षण
+  name_hi_reviewed: false
+  parent_id: neet.bot
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.biodiversity_conservation.levels_patterns_biodiversity
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Biodiversity and Conservation
+  topic: Genetic, Species, Ecological Diversity and Latitudinal Gradients
+  level: topic
+  name_en: Genetic, Species, Ecological Diversity and Latitudinal Gradients
+  name_hi: आनुवंशिक, जातीय व पारिस्थितिक विविधता और अक्षांशीय प्रवणता
+  name_hi_reviewed: false
+  parent_id: neet.bot.biodiversity_conservation
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.biodiversity_conservation.loss_of_biodiversity
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Biodiversity and Conservation
+  topic: Species-Area Relationship and Causes of Biodiversity Loss (Evil Quartet)
+  level: topic
+  name_en: Species-Area Relationship and Causes of Biodiversity Loss (Evil Quartet)
+  name_hi: जाति-क्षेत्र संबंध और जैव-विविधता क्षति के कारण
+  name_hi_reviewed: false
+  parent_id: neet.bot.biodiversity_conservation
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.bot.biodiversity_conservation.in_situ_ex_situ_conservation
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Botany
+  chapter: Biodiversity and Conservation
+  topic: In-situ (Hotspots, Biosphere Reserves) and Ex-situ Conservation
+  level: topic
+  name_en: In-situ (Hotspots, Biosphere Reserves) and Ex-situ Conservation
+  name_hi: स्वस्थाने (हॉटस्पॉट, जीवमंडल आरक्षित क्षेत्र) और बाह्यस्थाने संरक्षण
+  name_hi_reviewed: false
+  parent_id: neet.bot.biodiversity_conservation
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Zoology
+  topic: Zoology
+  level: subject
+  name_en: Zoology
+  name_hi: जंतु विज्ञान
+  name_hi_reviewed: false
+  parent_id: null
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.animal_kingdom
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Animal Kingdom
+  topic: Animal Kingdom
+  level: chapter
+  name_en: Animal Kingdom
+  name_hi: प्राणि जगत
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.animal_kingdom.basis_of_classification
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Animal Kingdom
+  topic: Levels of Organisation, Symmetry, Coelom and Segmentation
+  level: topic
+  name_en: Levels of Organisation, Symmetry, Coelom and Segmentation
+  name_hi: संगठन के स्तर, सममिति, प्रगुहा और खंडीभवन
+  name_hi_reviewed: false
+  parent_id: neet.zoo.animal_kingdom
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.animal_kingdom.non_chordates
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Animal Kingdom
+  topic: Classification of Non-Chordates (Porifera to Echinodermata, Hemichordata)
+  level: topic
+  name_en: Classification of Non-Chordates (Porifera to Echinodermata, Hemichordata)
+  name_hi: नॉन-कॉर्डेट्स का वर्गीकरण (पोरिफेरा से इकाइनोडर्मेटा)
+  name_hi_reviewed: false
+  parent_id: neet.zoo.animal_kingdom
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.animal_kingdom.chordates_vertebrates
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Animal Kingdom
+  topic: Classification of Chordates (Urochordata to Mammalia)
+  level: topic
+  name_en: Classification of Chordates (Urochordata to Mammalia)
+  name_hi: कॉर्डेट्स का वर्गीकरण (यूरोकॉर्डेटा से स्तनधारी वर्ग तक)
+  name_hi_reviewed: false
+  parent_id: neet.zoo.animal_kingdom
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.structural_organisation_animals
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Structural Organisation in Animals
+  topic: Structural Organisation in Animals
+  level: chapter
+  name_en: Structural Organisation in Animals
+  name_hi: प्राणियों में संरचनात्मक संगठन
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.structural_organisation_animals.animal_tissues
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Structural Organisation in Animals
+  topic: Epithelial, Connective, Muscular and Neural Tissues
+  level: topic
+  name_en: Epithelial, Connective, Muscular and Neural Tissues
+  name_hi: उपकला, संयोजी, पेशी और तंत्रिका ऊतक
+  name_hi_reviewed: false
+  parent_id: neet.zoo.structural_organisation_animals
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.structural_organisation_animals.frog_morphology_anatomy
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Structural Organisation in Animals
+  topic: Morphology and Anatomy of Frog (Digestive, Circulatory, Nervous, Reproductive)
+  level: topic
+  name_en: Morphology and Anatomy of Frog (Digestive, Circulatory, Nervous, Reproductive)
+  name_hi: मेंढक की आकारिकी और आंतरिक संरचना
+  name_hi_reviewed: false
+  parent_id: neet.zoo.structural_organisation_animals
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.structural_organisation_animals.cockroach_morphology_anatomy
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Structural Organisation in Animals
+  topic: Morphology and Anatomy of Cockroach
+  level: topic
+  name_en: Morphology and Anatomy of Cockroach
+  name_hi: तिलचट्टे (कॉकरोच) की आकारिकी और शारीर
+  name_hi_reviewed: false
+  parent_id: neet.zoo.structural_organisation_animals
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biomolecules_zoo
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Biomolecules and Enzymes
+  topic: Biomolecules and Enzymes
+  level: chapter
+  name_en: Biomolecules and Enzymes
+  name_hi: जैव-अणु और एंजाइम
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biomolecules_zoo.primary_secondary_metabolites
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Biomolecules and Enzymes
+  topic: Amino Acids, Lipids, Sugars and Secondary Metabolites
+  level: topic
+  name_en: Amino Acids, Lipids, Sugars and Secondary Metabolites
+  name_hi: ऐमीनो अम्ल, लिपिड, शर्करा और द्वितीयक उपापचयज
+  name_hi_reviewed: false
+  parent_id: neet.zoo.biomolecules_zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biomolecules_zoo.proteins_nucleic_acids_bio
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Biomolecules and Enzymes
+  topic: Structure of Proteins, Polysaccharides and Nucleic Acids
+  level: topic
+  name_en: Structure of Proteins, Polysaccharides and Nucleic Acids
+  name_hi: प्रोटीन, पॉलीसैकेराइड और न्यूक्लिक अम्लों की संरचना
+  name_hi_reviewed: false
+  parent_id: neet.zoo.biomolecules_zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biomolecules_zoo.enzyme_action_kinetics
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Biomolecules and Enzymes
+  topic: Nature of Enzyme Action, Factors Affecting Activity, Inhibition and Co-factors
+  level: topic
+  name_en: Nature of Enzyme Action, Factors Affecting Activity, Inhibition and Co-factors
+  name_hi: एंजाइम क्रियाविधि, प्रभावित करने वाले कारक, संदमन और सह-कारक
+  name_hi_reviewed: false
+  parent_id: neet.zoo.biomolecules_zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.breathing_exchange_gases
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Breathing and Exchange of Gases
+  topic: Breathing and Exchange of Gases
+  level: chapter
+  name_en: Breathing and Exchange of Gases
+  name_hi: श्वसन और गैसों का विनिमय
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.breathing_exchange_gases.mechanism_of_breathing
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Breathing and Exchange of Gases
+  topic: Human Respiratory System, Mechanism of Breathing and Respiratory Volumes
+  level: topic
+  name_en: Human Respiratory System, Mechanism of Breathing and Respiratory Volumes
+  name_hi: मानव श्वसन तंत्र, श्वसन की क्रियाविधि और श्वसन आयतन
+  name_hi_reviewed: false
+  parent_id: neet.zoo.breathing_exchange_gases
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.breathing_exchange_gases.exchange_transport_gases
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Breathing and Exchange of Gases
+  topic: Alveolar Gas Exchange, Oxygen Dissociation Curve and CO2 Transport
+  level: topic
+  name_en: Alveolar Gas Exchange, Oxygen Dissociation Curve and CO2 Transport
+  name_hi: कूपिका गैस विनिमय, ऑक्सीजन वियोजन वक्र और कार्बन डाइऑक्साइड परिवहन
+  name_hi_reviewed: false
+  parent_id: neet.zoo.breathing_exchange_gases
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.breathing_exchange_gases.regulation_respiratory_disorders
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Breathing and Exchange of Gases
+  topic: Regulation of Respiration and Disorders (Asthma, Emphysema)
+  level: topic
+  name_en: Regulation of Respiration and Disorders (Asthma, Emphysema)
+  name_hi: श्वसन का नियमन और श्वसन विकार (दमा, वातस्फीति)
+  name_hi_reviewed: false
+  parent_id: neet.zoo.breathing_exchange_gases
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.body_fluids_circulation
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Body Fluids and Circulation
+  topic: Body Fluids and Circulation
+  level: chapter
+  name_en: Body Fluids and Circulation
+  name_hi: शरीर द्रव तथा परिसंचरण
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.body_fluids_circulation.blood_groups_coagulation
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Body Fluids and Circulation
+  topic: Composition of Blood, ABO/Rh Grouping, Coagulation and Lymph
+  level: topic
+  name_en: Composition of Blood, ABO/Rh Grouping, Coagulation and Lymph
+  name_hi: रक्त की संरचना, एबीओ/आरएच समूह, स्कंदन और लसीका
+  name_hi_reviewed: false
+  parent_id: neet.zoo.body_fluids_circulation
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.body_fluids_circulation.cardiac_cycle_ecg
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Body Fluids and Circulation
+  topic: Human Heart Structure, Cardiac Cycle, Cardiac Output and ECG
+  level: topic
+  name_en: Human Heart Structure, Cardiac Cycle, Cardiac Output and ECG
+  name_hi: मानव हृदय संरचना, हृदय चक्र, कार्डियक आउटपुट और ईसीजी
+  name_hi_reviewed: false
+  parent_id: neet.zoo.body_fluids_circulation
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.body_fluids_circulation.double_circulation_disorders
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Body Fluids and Circulation
+  topic: Double Circulation, Regulation of Cardiac Activity and Disorders
+  level: topic
+  name_en: Double Circulation, Regulation of Cardiac Activity and Disorders
+  name_hi: दोहरा परिसंचरण, हृदय क्रिया का नियमन और विकार
+  name_hi_reviewed: false
+  parent_id: neet.zoo.body_fluids_circulation
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.excretory_products_elimination
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Excretory Products and Their Elimination
+  topic: Excretory Products and Their Elimination
+  level: chapter
+  name_en: Excretory Products and Their Elimination
+  name_hi: उत्सर्जी उत्पाद एवं उनका निष्कासन
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.excretory_products_elimination.nephron_urine_formation
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Excretory Products and Their Elimination
+  topic: Modes of Excretion, Human Excretory System, Nephron and Urine Formation
+  level: topic
+  name_en: Modes of Excretion, Human Excretory System, Nephron and Urine Formation
+  name_hi: उत्सर्जन की विधियाँ, मानव उत्सर्जन तंत्र, वृक्काणु और मूत्र निर्माण
+  name_hi_reviewed: false
+  parent_id: neet.zoo.excretory_products_elimination
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.excretory_products_elimination.counter_current_mechanism
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Excretory Products and Their Elimination
+  topic: Function of Tubules and Counter-Current Mechanism of Concentration
+  level: topic
+  name_en: Function of Tubules and Counter-Current Mechanism of Concentration
+  name_hi: नलिकाओं के कार्य और सांद्रण की प्रतिधारा क्रियाविधि
+  name_hi_reviewed: false
+  parent_id: neet.zoo.excretory_products_elimination
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.excretory_products_elimination.regulation_kidney_function
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Excretory Products and Their Elimination
+  topic: Regulation of Kidney Function (ADH, RAAS, ANF) and Disorders
+  level: topic
+  name_en: Regulation of Kidney Function (ADH, RAAS, ANF) and Disorders
+  name_hi: वृक्क क्रिया का नियमन (ADH, RAAS, ANF) और विकार
+  name_hi_reviewed: false
+  parent_id: neet.zoo.excretory_products_elimination
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.locomotion_movement
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Locomotion and Movement
+  topic: Locomotion and Movement
+  level: chapter
+  name_en: Locomotion and Movement
+  name_hi: गमन एवं संचलन
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.locomotion_movement.muscle_contraction_sliding
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Locomotion and Movement
+  topic: Skeletal Muscle Structure, Contractile Proteins and Sliding Filament Theory
+  level: topic
+  name_en: Skeletal Muscle Structure, Contractile Proteins and Sliding Filament Theory
+  name_hi: कंकाल पेशी संरचना, संकुचनशील प्रोटीन और सर्पी तंतु सिद्धांत
+  name_hi_reviewed: false
+  parent_id: neet.zoo.locomotion_movement
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.locomotion_movement.skeletal_system_bones
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Locomotion and Movement
+  topic: Human Axial and Appendicular Skeleton
+  level: topic
+  name_en: Human Axial and Appendicular Skeleton
+  name_hi: मानव अक्षीय और उपांगीय कंकाल तंत्र
+  name_hi_reviewed: false
+  parent_id: neet.zoo.locomotion_movement
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.locomotion_movement.joints_muscular_disorders
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Locomotion and Movement
+  topic: Types of Joints and Disorders of Muscular/Skeletal System
+  level: topic
+  name_en: Types of Joints and Disorders of Muscular/Skeletal System
+  name_hi: संधियों के प्रकार और पेशीय व कंकालीय विकार
+  name_hi_reviewed: false
+  parent_id: neet.zoo.locomotion_movement
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.neural_control_coordination
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Neural Control and Coordination
+  topic: Neural Control and Coordination
+  level: chapter
+  name_en: Neural Control and Coordination
+  name_hi: तंत्रिकीय नियंत्रण एवं समन्वय
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.neural_control_coordination.neuron_impulse_conduction
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Neural Control and Coordination
+  topic: Neuron Structure, Generation and Conduction of Nerve Impulse
+  level: topic
+  name_en: Neuron Structure, Generation and Conduction of Nerve Impulse
+  name_hi: तंत्रिका कोशिका संरचना, तंत्रिका आवेग की उत्पत्ति और संवहन
+  name_hi_reviewed: false
+  parent_id: neet.zoo.neural_control_coordination
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.neural_control_coordination.synaptic_transmission
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Neural Control and Coordination
+  topic: Electrical and Chemical Synaptic Transmission
+  level: topic
+  name_en: Electrical and Chemical Synaptic Transmission
+  name_hi: विद्युत और रासायनिक सिनेप्टिक संचरण
+  name_hi_reviewed: false
+  parent_id: neet.zoo.neural_control_coordination
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.neural_control_coordination.central_nervous_system
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Neural Control and Coordination
+  topic: 'Central Nervous System: Forebrain, Midbrain and Hindbrain'
+  level: topic
+  name_en: 'Central Nervous System: Forebrain, Midbrain and Hindbrain'
+  name_hi: 'केंद्रीय तंत्रिका तंत्र: अग्रमस्तिष्क, मध्यमस्तिष्क और पश्चमस्तिष्क'
+  name_hi_reviewed: false
+  parent_id: neet.zoo.neural_control_coordination
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.chemical_coordination_integration
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Chemical Coordination and Integration
+  topic: Chemical Coordination and Integration
+  level: chapter
+  name_en: Chemical Coordination and Integration
+  name_hi: रासायनिक समन्वय तथा एकीकरण
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.chemical_coordination_integration.hypothalamus_pituitary_thyroid
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Chemical Coordination and Integration
+  topic: Hypothalamus, Pituitary, Pineal, Thyroid and Parathyroid Glands
+  level: topic
+  name_en: Hypothalamus, Pituitary, Pineal, Thyroid and Parathyroid Glands
+  name_hi: हाइपोथैलेमस, पीयूष, पीनियल, थायरॉइड और पैराथायरॉइड ग्रंथियाँ
+  name_hi_reviewed: false
+  parent_id: neet.zoo.chemical_coordination_integration
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.chemical_coordination_integration.adrenal_pancreas_gonads
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Chemical Coordination and Integration
+  topic: Thymus, Adrenal, Pancreas and Gonadal Hormones
+  level: topic
+  name_en: Thymus, Adrenal, Pancreas and Gonadal Hormones
+  name_hi: थाइमस, अधिवृक्क, अग्न्याशय और जनद हार्मोन
+  name_hi_reviewed: false
+  parent_id: neet.zoo.chemical_coordination_integration
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.chemical_coordination_integration.hormone_action_disorders
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Chemical Coordination and Integration
+  topic: Mechanism of Hormone Action and Endocrine Disorders
+  level: topic
+  name_en: Mechanism of Hormone Action and Endocrine Disorders
+  name_hi: हार्मोन क्रिया की क्रियाविधि और अंतःस्रावी विकार
+  name_hi_reviewed: false
+  parent_id: neet.zoo.chemical_coordination_integration
+  class_level: class_11
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.human_reproduction
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Human Reproduction
+  topic: Human Reproduction
+  level: chapter
+  name_en: Human Reproduction
+  name_hi: मानव जनन
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.human_reproduction.male_female_reproductive_sys
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Human Reproduction
+  topic: Male and Female Reproductive Systems and Gametogenesis
+  level: topic
+  name_en: Male and Female Reproductive Systems and Gametogenesis
+  name_hi: नर एवं मादा जनन तंत्र और युग्मकजनन
+  name_hi_reviewed: false
+  parent_id: neet.zoo.human_reproduction
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.human_reproduction.menstrual_cycle_fertilization
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Human Reproduction
+  topic: Menstrual Cycle, Fertilization and Implantation
+  level: topic
+  name_en: Menstrual Cycle, Fertilization and Implantation
+  name_hi: आर्तव चक्र, निषेचन और अंतर्रोपण
+  name_hi_reviewed: false
+  parent_id: neet.zoo.human_reproduction
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.human_reproduction.pregnancy_parturition_lactation
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Human Reproduction
+  topic: Pregnancy, Embryonic Development, Parturition and Lactation
+  level: topic
+  name_en: Pregnancy, Embryonic Development, Parturition and Lactation
+  name_hi: सगर्भता, भ्रूणीय परिवर्धन, प्रसव और दुग्धस्रवण
+  name_hi_reviewed: false
+  parent_id: neet.zoo.human_reproduction
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.reproductive_health
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Reproductive Health
+  topic: Reproductive Health
+  level: chapter
+  name_en: Reproductive Health
+  name_hi: जनन स्वास्थ्य
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.reproductive_health.contraceptive_methods_mtp
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Reproductive Health
+  topic: Birth Control / Contraceptive Methods and Medical Termination of Pregnancy
+  level: topic
+  name_en: Birth Control / Contraceptive Methods and Medical Termination of Pregnancy
+  name_hi: गर्भनिरोधक विधियाँ और सगर्भता का चिकित्सीय समापन (MTP)
+  name_hi_reviewed: false
+  parent_id: neet.zoo.reproductive_health
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.reproductive_health.stds_prevention
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Reproductive Health
+  topic: Sexually Transmitted Infections (STIs) and Prevention
+  level: topic
+  name_en: Sexually Transmitted Infections (STIs) and Prevention
+  name_hi: यौन संचारित संक्रमण (STI) और रोकथाम
+  name_hi_reviewed: false
+  parent_id: neet.zoo.reproductive_health
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.reproductive_health.infertility_art
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Reproductive Health
+  topic: Infertility and Assisted Reproductive Technologies (IVF, ZIFT, GIFT, ICSI)
+  level: topic
+  name_en: Infertility and Assisted Reproductive Technologies (IVF, ZIFT, GIFT, ICSI)
+  name_hi: बंध्यता और सहायक जनन प्रौद्योगिकियाँ (IVF, ZIFT, GIFT, ICSI)
+  name_hi_reviewed: false
+  parent_id: neet.zoo.reproductive_health
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.evolution
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Evolution
+  topic: Evolution
+  level: chapter
+  name_en: Evolution
+  name_hi: विकास
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.evolution.origin_of_life_evidences
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Evolution
+  topic: Origin of Life, Homologous/Analogous Organs and Adaptive Radiation
+  level: topic
+  name_en: Origin of Life, Homologous/Analogous Organs and Adaptive Radiation
+  name_hi: जीवन की उत्पत्ति, समजात/समवृत्ति अंग और अनुकूली विकिरण
+  name_hi_reviewed: false
+  parent_id: neet.zoo.evolution
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.evolution.natural_selection_hardy_weinberg
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Evolution
+  topic: Darwinian Selection, Modern Synthetic Theory and Hardy-Weinberg Principle
+  level: topic
+  name_en: Darwinian Selection, Modern Synthetic Theory and Hardy-Weinberg Principle
+  name_hi: डार्विन का प्राकृतिक वरण, आधुनिक संश्लेषणात्मक सिद्धांत और हार्डी-वेनबर्ग सिद्धांत
+  name_hi_reviewed: false
+  parent_id: neet.zoo.evolution
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.evolution.origin_evolution_man
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Evolution
+  topic: Brief Account of Evolution and Origin/Evolution of Man
+  level: topic
+  name_en: Brief Account of Evolution and Origin/Evolution of Man
+  name_hi: विकास का संक्षिप्त विवरण और मानव की उत्पत्ति तथा विकास
+  name_hi_reviewed: false
+  parent_id: neet.zoo.evolution
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.human_health_diseases
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Human Health and Disease
+  topic: Human Health and Disease
+  level: chapter
+  name_en: Human Health and Disease
+  name_hi: मानव स्वास्थ्य तथा रोग
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.human_health_diseases.infectious_diseases_pathogens
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Human Health and Disease
+  topic: Common Diseases in Humans (Typhoid, Pneumonia, Malaria, Filariasis, Ascariasis)
+  level: topic
+  name_en: Common Diseases in Humans (Typhoid, Pneumonia, Malaria, Filariasis, Ascariasis)
+  name_hi: मानव में सामान्य रोग (टाइफॉइड, निमोनिया, मलेरिया, फाइलेरिया, एस्केरिसता)
+  name_hi_reviewed: false
+  parent_id: neet.zoo.human_health_diseases
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.human_health_diseases.immunity_aids_cancer
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Human Health and Disease
+  topic: Innate/Acquired Immunity, Vaccination, Allergies, Autoimmunity, AIDS and Cancer
+  level: topic
+  name_en: Innate/Acquired Immunity, Vaccination, Allergies, Autoimmunity, AIDS and Cancer
+  name_hi: सहज/उपार्जित प्रतिरक्षा, टीकाकरण, एलर्जी, एड्स और कैंसर
+  name_hi_reviewed: false
+  parent_id: neet.zoo.human_health_diseases
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.human_health_diseases.drug_alcohol_abuse
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Human Health and Disease
+  topic: Adolescence and Drug/Alcohol Abuse Prevention
+  level: topic
+  name_en: Adolescence and Drug/Alcohol Abuse Prevention
+  name_hi: किशोरावस्था तथा ड्रग और ऐल्कोहॉल के कुप्रयोग की रोकथाम
+  name_hi_reviewed: false
+  parent_id: neet.zoo.human_health_diseases
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biotechnology_principles
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: 'Biotechnology: Principles and Processes'
+  topic: 'Biotechnology: Principles and Processes'
+  level: chapter
+  name_en: 'Biotechnology: Principles and Processes'
+  name_hi: 'जैव प्रौद्योगिकी: सिद्धांत व प्रक्रम'
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biotechnology_principles.restriction_enzymes_vectors
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: 'Biotechnology: Principles and Processes'
+  topic: Restriction Enzymes, Cloning Vectors and Competent Host
+  level: topic
+  name_en: Restriction Enzymes, Cloning Vectors and Competent Host
+  name_hi: प्रतिबंधन एंजाइम, क्लोनिंग संवाहक और सक्षम परपोषी
+  name_hi_reviewed: false
+  parent_id: neet.zoo.biotechnology_principles
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biotechnology_principles.pcr_gel_electrophoresis
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: 'Biotechnology: Principles and Processes'
+  topic: Isolation of DNA, Gel Electrophoresis and PCR Amplification
+  level: topic
+  name_en: Isolation of DNA, Gel Electrophoresis and PCR Amplification
+  name_hi: डीएनए का पृथक्करण, जेल वैद्युतकणसंचलन और पीसीआर प्रवर्धन
+  name_hi_reviewed: false
+  parent_id: neet.zoo.biotechnology_principles
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biotechnology_principles.bioreactors_downstream
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: 'Biotechnology: Principles and Processes'
+  topic: Obtaining Foreign Gene Product, Bioreactors and Downstream Processing
+  level: topic
+  name_en: Obtaining Foreign Gene Product, Bioreactors and Downstream Processing
+  name_hi: बाह्य जीन उत्पाद प्राप्त करना, बायोरिएक्टर और अनुप्रवाह संसाधन
+  name_hi_reviewed: false
+  parent_id: neet.zoo.biotechnology_principles
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biotechnology_applications
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Biotechnology and Its Applications
+  topic: Biotechnology and Its Applications
+  level: chapter
+  name_en: Biotechnology and Its Applications
+  name_hi: जैव प्रौद्योगिकी एवं उसके अनुप्रयोग
+  name_hi_reviewed: false
+  parent_id: neet.zoo
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biotechnology_applications.bt_cotton_rnai_agriculture
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Biotechnology and Its Applications
+  topic: 'Biotechnological Applications in Agriculture: Bt Cotton and RNA Interference'
+  level: topic
+  name_en: 'Biotechnological Applications in Agriculture: Bt Cotton and RNA Interference'
+  name_hi: 'कृषि में जैव प्रौद्योगिकी अनुप्रयोग: बीटी कपास और आरएनए अंतरक्षेप'
+  name_hi_reviewed: false
+  parent_id: neet.zoo.biotechnology_applications
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biotechnology_applications.genetically_engineered_insulin
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Biotechnology and Its Applications
+  topic: Genetically Engineered Insulin, Gene Therapy and Molecular Diagnosis
+  level: topic
+  name_en: Genetically Engineered Insulin, Gene Therapy and Molecular Diagnosis
+  name_hi: आनुवंशिकतः निर्मित इंसुलिन, जीन चिकित्सा और आण्विक निदान
+  name_hi_reviewed: false
+  parent_id: neet.zoo.biotechnology_applications
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+- id: neet.zoo.biotechnology_applications.transgenic_animals_biopiracy
+  exam: neet_ug
+  exams:
+  - neet_ug
+  subject: Zoology
+  chapter: Biotechnology and Its Applications
+  topic: Transgenic Animals, Ethical Issues and Biopiracy
+  level: topic
+  name_en: Transgenic Animals, Ethical Issues and Biopiracy
+  name_hi: पारजीवी जंतु, नैतिक मुद्दे और बायोपाइरेसी
+  name_hi_reviewed: false
+  parent_id: neet.zoo.biotechnology_applications
+  class_level: class_12
+  syllabus_year: 2026
+  weightage: null
+  source: model_knowledge
+  verified: false
+topic_prereqs:
+- topic_id: jee.phy.kinematics
+  prereq_topic_id: jee.phy.units_measurements
+- topic_id: jee.phy.laws_of_motion
+  prereq_topic_id: jee.phy.kinematics
+- topic_id: jee.phy.work_energy_power
+  prereq_topic_id: jee.phy.laws_of_motion
+- topic_id: jee.phy.rotational_motion
+  prereq_topic_id: jee.phy.work_energy_power
+- topic_id: jee.phy.gravitation
+  prereq_topic_id: jee.phy.work_energy_power
+- topic_id: jee.phy.oscillations_waves
+  prereq_topic_id: jee.phy.work_energy_power
+- topic_id: jee.phy.current_electricity
+  prereq_topic_id: jee.phy.electrostatics
+- topic_id: jee.phy.magnetic_effects_current
+  prereq_topic_id: jee.phy.current_electricity
+- topic_id: jee.phy.electromagnetic_induction_ac
+  prereq_topic_id: jee.phy.magnetic_effects_current
+- topic_id: jee.phy.electromagnetic_waves
+  prereq_topic_id: jee.phy.electromagnetic_induction_ac
+- topic_id: jee.chem.atomic_structure
+  prereq_topic_id: jee.chem.basic_concepts_chem
+- topic_id: jee.chem.periodic_table
+  prereq_topic_id: jee.chem.atomic_structure
+- topic_id: jee.chem.chemical_bonding
+  prereq_topic_id: jee.chem.periodic_table
+- topic_id: jee.chem.coordination_compounds
+  prereq_topic_id: jee.chem.chemical_bonding
+- topic_id: jee.chem.equilibrium
+  prereq_topic_id: jee.chem.chemical_thermodynamics
+- topic_id: jee.chem.hydrocarbons
+  prereq_topic_id: jee.chem.basic_organic_chemistry
+- topic_id: jee.chem.haloalkanes_haloarenes
+  prereq_topic_id: jee.chem.hydrocarbons
+- topic_id: jee.chem.alcohols_phenols_ethers
+  prereq_topic_id: jee.chem.haloalkanes_haloarenes
+- topic_id: jee.chem.aldehydes_ketones_acids
+  prereq_topic_id: jee.chem.alcohols_phenols_ethers
+- topic_id: jee.math.limits_continuity
+  prereq_topic_id: jee.math.sets_relations_functions
+- topic_id: jee.math.differentiability_derivatives
+  prereq_topic_id: jee.math.limits_continuity
+- topic_id: jee.math.applications_of_derivatives
+  prereq_topic_id: jee.math.differentiability_derivatives
+- topic_id: jee.math.indefinite_integrals
+  prereq_topic_id: jee.math.differentiability_derivatives
+- topic_id: jee.math.definite_integrals_area
+  prereq_topic_id: jee.math.indefinite_integrals
+- topic_id: jee.math.differential_equations
+  prereq_topic_id: jee.math.definite_integrals_area
+- topic_id: jee.math.circles
+  prereq_topic_id: jee.math.straight_lines
+- topic_id: jee.math.conic_sections
+  prereq_topic_id: jee.math.circles
+- topic_id: neet.bot.cell_cycle_division
+  prereq_topic_id: neet.bot.cell_unit_of_life
+- topic_id: neet.bot.inheritance_variation
+  prereq_topic_id: neet.bot.cell_cycle_division
+- topic_id: neet.bot.molecular_basis_inheritance
+  prereq_topic_id: neet.bot.inheritance_variation
+- topic_id: neet.zoo.biotechnology_principles
+  prereq_topic_id: neet.bot.molecular_basis_inheritance
+- topic_id: neet.zoo.biotechnology_applications
+  prereq_topic_id: neet.zoo.biotechnology_principles
+- topic_id: neet.zoo.reproductive_health
+  prereq_topic_id: neet.zoo.human_reproduction

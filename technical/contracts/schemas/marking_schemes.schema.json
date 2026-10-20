@@ -1,0 +1,67 @@
+{
+  "$comment": "Purpose: JSON Schema (2020-12) for contracts/marking_schemes.yaml. contract_version: 1.0.0. Implements: TECH_PLAN \u00a78.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/contracts/schemas/marking_schemes.schema.json",
+  "title": "MarkingSchemesContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "schemes"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "schemes": {
+      "type": "object",
+      "minProperties": 4,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "correct",
+          "wrong",
+          "blank",
+          "partial_rule",
+          "dropped_rule"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "correct": {
+            "type": "number"
+          },
+          "wrong": {
+            "type": "number"
+          },
+          "blank": {
+            "type": "number"
+          },
+          "partial_rule": {
+            "type": "string",
+            "enum": [
+              "none",
+              "full_marks_if_any_accepted",
+              "proportional_no_negative"
+            ]
+          },
+          "dropped_rule": {
+            "type": "string",
+            "enum": [
+              "full_marks_all",
+              "full_marks_attempted_only"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
