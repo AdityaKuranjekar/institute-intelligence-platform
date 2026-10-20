@@ -37,7 +37,7 @@ Shared read-only: `technical/contracts/`, `technical/docs/`. Output of the gener
 6. **Report failures.** If a bar is missed, say so, say why, and propose the fix. Never change the generator or the bar to make a number pass. A missed `blocking` bar stops the merge and goes to the human.
 
 ## Outputs every module must produce
-- `ml/artifacts/vX.Y.Z/metrics.json` valid against `contracts/metrics.schema.json` (keys from `contracts/metrics_bars.yaml`); `manifest.json` valid against `contracts/artifact_manifest.schema.json`; `model_card.md` (intended use, NOT-intended use, data, metrics with CIs, fairness slices, limitations, privacy tier and routing).
+- `<your-module-folder>/artifacts/v1.0.0/metrics.json` (e.g. `ml/irt/artifacts/v1.0.0/`, `backend/app/genai/artifacts/v1.0.0/`; **never a shared top-level file**, agents would overwrite each other; `scripts/deck_numbers.py` merges every `**/artifacts/v*/metrics.json`), valid against `contracts/metrics.schema.json` (keys from `contracts/metrics_bars.yaml`); `manifest.json` valid against `contracts/artifact_manifest.schema.json`; `model_card.md` (intended use, NOT-intended use, data, metrics with CIs, fairness slices, limitations, privacy tier and routing).
 - A `README.md` in the module folder: how to run, how to test, runtime, known limits.
 - Tests runnable with `make test-<module>` (add a target in `technical/Makefile` in your own section only) and a `scripts` equivalent for Windows PowerShell. All tests pass on a clean clone.
 - `docs/agent_logs/R1_<agent>.md`: 10–20 lines: decisions, deviations, results vs bars (pass/fail table), limitations, open questions.

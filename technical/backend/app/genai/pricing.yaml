@@ -1,0 +1,101 @@
+# Purpose: Local and reference hosted LLM token pricing for CostMeter and NB08 cost evaluation.
+# contract_version: 1.0.0
+# Implements: TECH_PLAN §11 (GenAI layer), §16 (Cost model), and R1_E_genai_reports.md #7.
+
+contract_version: "1.0.0"
+fx_inr_per_usd: 90.0
+source_fx: "TECH_PLAN R3 Table C assumption (INR 90 per USD 1)"
+
+default_monthly_cap_inr_per_institute: 500.0
+reports_per_student_per_month: 4
+
+models:
+  # --- Local Ollama models (marginal cost = ₹0; runs on institute/laptop hardware) ---
+  qwen3:4b:
+    provider: ollama_local
+    input_usd_per_1m: 0.0
+    output_usd_per_1m: 0.0
+    input_inr_per_1m: 0.0
+    output_inr_per_1m: 0.0
+    marginal_cost_inr: 0.0
+    licence: "Apache-2.0"
+    commercial_ok: true
+    pii_safe_local: true
+    source: "https://ollama.com/library/qwen3 (local execution, zero API fee; R3 Table A)"
+    verified: true
+
+  gemma3:4b:
+    provider: ollama_local
+    input_usd_per_1m: 0.0
+    output_usd_per_1m: 0.0
+    input_inr_per_1m: 0.0
+    output_inr_per_1m: 0.0
+    marginal_cost_inr: 0.0
+    licence: "Gemma Terms of Use"
+    commercial_ok: true
+    pii_safe_local: true
+    source: "https://ollama.com/library/gemma3 (local execution, zero API fee; R3 Table A)"
+    verified: true
+
+  template_fallback:
+    provider: deterministic_template
+    input_usd_per_1m: 0.0
+    output_usd_per_1m: 0.0
+    input_inr_per_1m: 0.0
+    output_inr_per_1m: 0.0
+    marginal_cost_inr: 0.0
+    licence: "Proprietary / First-party"
+    commercial_ok: true
+    pii_safe_local: true
+    source: "Deterministic Jinja2 template engine (zero LLM cost)"
+    verified: true
+
+  fake_client:
+    provider: test_double
+    input_usd_per_1m: 0.0
+    output_usd_per_1m: 0.0
+    input_inr_per_1m: 0.0
+    output_inr_per_1m: 0.0
+    marginal_cost_inr: 0.0
+    licence: "MIT"
+    commercial_ok: true
+    pii_safe_local: true
+    source: "Unit test FakeClient"
+    verified: true
+
+  # --- Paid Hosted Reference Models (for production slide comparison only; verified: false per R3) ---
+  gemini-2.5-flash-lite:
+    provider: google_cloud_vertex_reference
+    input_usd_per_1m: 0.10
+    output_usd_per_1m: 0.40
+    input_inr_per_1m: 9.00
+    output_inr_per_1m: 36.00
+    licence: "Commercial Paid API (requires DPA + no-training commitment for minors)"
+    commercial_ok: true
+    pii_safe_local: false
+    source: "TECH_PLAN §11 & research_results.txt R3 Table C (https://ai.google.dev/pricing - unverified in offline pass)"
+    verified: false
+
+  gemini-2.5-flash:
+    provider: google_cloud_vertex_reference
+    input_usd_per_1m: 0.30
+    output_usd_per_1m: 2.50
+    input_inr_per_1m: 27.00
+    output_inr_per_1m: 225.00
+    licence: "Commercial Paid API (requires DPA + no-training commitment for minors)"
+    commercial_ok: true
+    pii_safe_local: false
+    source: "TECH_PLAN §11 & research_results.txt R3 Table C (https://ai.google.dev/pricing - unverified in offline pass)"
+    verified: false
+
+  gemini-2.5-pro:
+    provider: google_cloud_vertex_reference
+    input_usd_per_1m: 1.25
+    output_usd_per_1m: 10.00
+    input_inr_per_1m: 112.50
+    output_inr_per_1m: 900.00
+    licence: "Commercial Paid API (requires DPA + no-training commitment for minors)"
+    commercial_ok: true
+    pii_safe_local: false
+    source: "TECH_PLAN §11 & research_results.txt R3 Table C (https://ai.google.dev/pricing - unverified in offline pass)"
+    verified: false

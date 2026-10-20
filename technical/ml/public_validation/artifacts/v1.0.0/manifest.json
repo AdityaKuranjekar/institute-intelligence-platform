@@ -1,0 +1,114 @@
+{
+  "contract_version": "1.0.0",
+  "version": "v1.0.0",
+  "trained_at": "2026-10-20T20:30:56.403264+00:00",
+  "data_version": {
+    "generator_seed": 42,
+    "generator_config_sha256": "39b7369dc3d0dc274fb886cb8c7f9cfbb28b65dbad5cbb8b73fbcd05227edc0c"
+  },
+  "files": [
+    {
+      "path": "metrics.json",
+      "sha256": "e2d48dd59020a931eb96754839f07da52ffc998b7afbba607611fc9e8660eeb6",
+      "kind": "metrics"
+    },
+    {
+      "path": "model_card.md",
+      "sha256": "52e8b11b6e1bd5e6e31535587102f0194a79afbc52c74972447fa6bfd82da4d1",
+      "kind": "model_card"
+    }
+  ],
+  "models": [
+    {
+      "model_id": "oulad_early_withdrawal_lgbm_v1",
+      "module": "early_warning",
+      "target": "retention",
+      "feature_tier": "D",
+      "features_used": [
+        "date_registration_rel",
+        "num_of_prev_attempts",
+        "studied_credits",
+        "module_presentation_length",
+        "due_assessments_count",
+        "assessments_submitted_count",
+        "assessments_submitted_ratio_vs_due",
+        "assessments_missed_due_count",
+        "score_mean_so_far",
+        "score_min_so_far",
+        "score_max_so_far",
+        "score_weighted_so_far",
+        "score_z_vs_cohort",
+        "submission_delay_mean_days",
+        "no_assessment_submitted_flag",
+        "vle_total_clicks",
+        "vle_log_total_clicks",
+        "vle_active_days",
+        "vle_active_days_ratio",
+        "vle_clicks_per_active_day",
+        "vle_clicks_last_7d",
+        "vle_clicks_last_14d",
+        "vle_clicks_prev_14d",
+        "vle_clicks_slope_14d",
+        "vle_clicks_ratio_last7_vs_total",
+        "vle_days_since_last_click",
+        "vle_first_active_date",
+        "vle_span_days",
+        "vle_pre_course_clicks",
+        "vle_unique_sites",
+        "vle_clicks_z_vs_cohort",
+        "vle_active_days_z_vs_cohort",
+        "zero_vle_clicks_last_7d_flag",
+        "vle_clicks_oucontent",
+        "vle_clicks_forumng",
+        "vle_clicks_quiz",
+        "vle_clicks_subpage",
+        "vle_clicks_homepage",
+        "vle_clicks_resource",
+        "vle_clicks_url"
+      ],
+      "minor_eligible": false
+    },
+    {
+      "model_id": "oulad_early_withdrawal_academic_tierA_v1",
+      "module": "early_warning",
+      "target": "academic_support",
+      "feature_tier": "A",
+      "features_used": [
+        "date_registration_rel",
+        "num_of_prev_attempts",
+        "studied_credits",
+        "module_presentation_length",
+        "due_assessments_count",
+        "assessments_submitted_count",
+        "assessments_submitted_ratio_vs_due",
+        "assessments_missed_due_count",
+        "score_mean_so_far",
+        "score_min_so_far",
+        "score_max_so_far",
+        "score_weighted_so_far",
+        "score_z_vs_cohort",
+        "submission_delay_mean_days",
+        "no_assessment_submitted_flag"
+      ],
+      "minor_eligible": true
+    },
+    {
+      "model_id": "assistments2009_online_rasch_eap_v1",
+      "module": "mastery",
+      "target": "academic_support",
+      "feature_tier": "A",
+      "features_used": [
+        "problem_id",
+        "skill_id",
+        "correct"
+      ],
+      "minor_eligible": true
+    }
+  ],
+  "library_versions": {
+    "python": "3.12.10",
+    "numpy": "2.5.4",
+    "lightgbm": "4.7.0",
+    "scikit_learn": "1.9.1"
+  }
+}

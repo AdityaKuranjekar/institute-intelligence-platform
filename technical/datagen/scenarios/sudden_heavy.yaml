@@ -1,0 +1,6 @@
+# Scenario: sudden_heavy — increases sudden (unpredictable) dropout share from 25% to 55%.
+# source: TECH_PLAN §21 & R1_A_datagen.md curveball drill ("sudden_heavy (50 % sudden)"), confidence: assumption
+scenario_name: sudden_heavy
+description: "Raises sudden_share to 0.55 to demonstrate the theoretical predictability ceiling."
+knobs:
+  sudden_share: 0.55

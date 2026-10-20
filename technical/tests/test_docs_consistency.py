@@ -54,7 +54,8 @@ METRIC_PREFIXES = ("irt_", "mastery_", "ew_", "falling_behind_", "fee_default_",
 def test_metric_keys_in_prompts_exist_in_bars(prompt):
     bars = {b["metric_key"] for b in _load(CONTRACTS / "metrics_bars.yaml")["bars"]}
     text = prompt.read_text(encoding="utf-8")
-    keys = {t for t in re.findall(r"`([a-z0-9_]+)", text) if t.startswith(METRIC_PREFIXES)}
+    not_metrics = set(_load(CONTRACTS / "enums.yaml")["enums"]) | {f["name"] for f in _load(CONTRACTS / "features.yaml")["features"]}
+    keys = {t for t in re.findall(r"`([a-z0-9_]+)", text) if t.startswith(METRIC_PREFIXES) and t not in not_metrics}
     unknown = sorted(k for k in keys if k not in bars)
     assert not unknown, f"{prompt.name} names metric keys not in metrics_bars.yaml: {unknown}"
 
@@ -138,3 +139,12 @@ def test_agent_prompts_forbid_editing_contracts_and_committing(prompt):
     text = prompt.read_text(encoding="utf-8").lower()
     assert "do not edit contracts" in text
     assert "do not commit or tag" in text
+
+
+def test_mastery_band_vocabulary_in_prompts_matches_enum():
+    bands = _enum_values("mastery_band", set())
+    assert bands == {"not_enough_data", "building", "steady", "strong"}
+    for name in ("R1_B_irt_mastery.md", "R1_E_genai_reports.md"):
+        text = (DOCS / "agent_prompts" / name).read_text(encoding="utf-8")
+        assert "developing" not in text, f"{name} uses a band word that is not in the mastery_band enum"
+        assert "`weak`" not in text.replace("never \"weak\"", "")

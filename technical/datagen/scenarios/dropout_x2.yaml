@@ -1,0 +1,6 @@
+# Scenario: dropout_x2 — doubles annual dropout rate for stress testing early warning.
+# source: TECH_PLAN §21 curveball drill ("Dropout doubles / sudden-dropout share up"), confidence: assumption
+scenario_name: dropout_x2
+description: "Doubles annual dropout rate (0.18 -> 0.36) while keeping gradual vs sudden ratio fixed."
+knobs:
+  dropout_multiplier: 2.0

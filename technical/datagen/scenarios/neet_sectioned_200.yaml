@@ -1,0 +1,6 @@
+# Scenario: neet_sectioned_200 — switches NEET-UG tests to the 200-question Section A (35) + Section B (15, attempt 10) pattern.
+# source: TECH_PLAN §24 & R1_A_datagen.md curveball drill ("neet_sectioned_200"), confidence: med
+scenario_name: neet_sectioned_200
+description: "Uses the sectioned_200 variant for NEET-UG full mocks (200 offered, 180 attempted)."
+knobs:
+  neet_variant: sectioned_200

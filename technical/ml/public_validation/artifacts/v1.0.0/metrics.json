@@ -1,0 +1,28 @@
+{
+  "contract_version": "1.0.0",
+  "model_version": "v1.0.0",
+  "evaluated_at": "2026-10-20T20:30:56.403264+00:00",
+  "generator_seed": 42,
+  "results": [
+    {
+      "metric_key": "public_oulad_roc_auc_day28",
+      "module": "public_validation",
+      "dataset_origin": "public",
+      "value": 0.7061,
+      "ci_low": 0.6989,
+      "ci_high": 0.714,
+      "passed_bar": true,
+      "notes": "n=27520, n_students=24831, n_events=5104; 5-fold student-grouped CV LightGBM+Isotonic (Tier A+D); delta vs PLOS ONE 2026 anchor (0.794) = -0.0879; Academic-only Tier A ROC-AUC = 0.6980; d14=0.6699, d42=0.7115, d60=0.7171."
+    },
+    {
+      "metric_key": "public_assistments2009_kt_auc",
+      "module": "public_validation",
+      "dataset_origin": "public",
+      "value": 0.7633,
+      "ci_low": 0.756,
+      "ci_high": 0.7785,
+      "passed_bar": true,
+      "notes": "n_students=770, n_predictions=55755, n_events=37594; pyKT 5-fold student-held-out protocol; Hierarchical Rasch/IRT + Online EAP = 0.7633 +/- 0.0012 (vs pyKT published SAKT 0.7246, DKT 0.7541, AKT 0.7853); 4-param BKT EM = 0.7135."
+    }
+  ]
+}

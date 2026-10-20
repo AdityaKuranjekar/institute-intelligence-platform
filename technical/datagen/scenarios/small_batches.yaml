@@ -1,0 +1,7 @@
+# Scenario: small_batches — sets batch size to n = 30 students and shrinks institute sizes by 0.5x.
+# source: R1_A_datagen.md curveball drill ("small_batches (n = 30)"), confidence: assumption
+scenario_name: small_batches
+description: "Reduces batch size to [26, 34] (mean ~30) and institute_size_scale to 0.5 to test Rasch/anchor pooling."
+knobs:
+  institute_size_scale: 0.50
+  batch_size_override: [26, 34]

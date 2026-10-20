@@ -67,3 +67,22 @@ Setup: 3,000 students, 52 weeks, 25 % sudden dropouts, 75 % gradual with a fade 
 - Final-year test cohort: ≈ 620 events overall, enough for stable AUC-PR/recall CIs. Three cohorts ≈ 1,860 events in total.
 - **Gaya has fewer than 30 events per year**: leave-one-institute-out results for Gaya and any per-slice fairness number on it will be wide or "insufficient data". This is a real small-institute limitation, to be stated, not hidden.
 - Kota is 58 % of all students. Report institute-balanced metrics next to pooled ones so that Kota does not dominate.
+
+## 6. Preview on the ACTUAL generator output (Agent A, `full` preset seed 42), 2026-10-21
+Script: `analysis/feasibility/preview_early_warning_on_generator.py` (6-feature logistic regression; train 2024-25, test 2026; 802 train / 1,507 test positive student-weeks; weekly snapshots, next-30-day label).
+
+| Metric | Model | Institute rule (ranked by attendance) | Relative gain |
+|---|---|---|---|
+| AUC-PR (test prevalence 1.74 %) | 0.181 | 0.079 | +131 % |
+| precision@top-2 % / week | 0.193 | 0.182 | +6 % |
+| precision@top-4 % / week | 0.136 (7.8× base) | 0.131 (7.5×) | +4 % |
+| precision@top-8 % / week | 0.095 | 0.089 | +7 % |
+| recall@top-4 % / week | 0.310 | 0.298 | +4 % |
+| share of students flagged at least once (top-4 %/wk) | 38 % | 38 % | none |
+
+What this means (and what we must not hide):
+1. The generator confirms the headline marginals (dropout 17–19 % per cohort-year, 25 % sudden, 43 % of dropouts in months 3–4, festival ratio 0.60 / 0.90, blanks 10.9 %, 78 % of students minors at join).
+2. **A simple model is only marginally better than a ranked attendance rule at a fixed workload**; its advantage is in overall ranking (AUC-PR), calibration, explanations and routing. Real institutes use the rule *unranked*, firing on ~37 % of students, so against the practice, the gain at equal workload is large; against a smart ranking it is small. Agent C must report both (baselines B1/B2).
+3. Item responses per question are large (median 3,754) because shared questions are pooled over institutes and years; the n = 30 / 60 subsampled bars are what represent a single small batch.
+4. Cohort sizes were 10 % / 25 % / 65 % of the configured size per year, leaving 230 training events; fixed by `R1_A2_datagen_fixes.md`.
+5. Recall defined as "ever flagged before dropout" is inflated by weekly re-selection; use snapshot precision/recall.

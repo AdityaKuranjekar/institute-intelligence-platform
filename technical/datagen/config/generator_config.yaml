@@ -1,0 +1,101 @@
+# Synthetic generator config — calibrated from research R4/R5 (2026-10-20)
+# Moved from docs/generator_config_draft.yaml per R1_A_datagen.md.
+# confidence: high = official source, med = report/aggregator, low = blog/inferred, assumption = ours
+seed: 42
+academic_year_start: "2026-04-15"            # source: R4 Indian coaching calendar (April batch start), confidence: med
+academic_years: [2024, 2025, 2026]           # source: CCR-007 multi-year cohorts for temporal evaluation, confidence: high
+months_simulated: 12                         # source: standard 1-year coaching cycle, confidence: high
+
+institutes:          # sizes span the realistic range; profile drives base rates; source: R4 coaching directory survey, confidence: med
+  - {id: patna_jee,     city: Patna,    tier: 2, exam: JEE,  students: 400}   # source: R4 Tier-2 JEE institute profile, confidence: med
+  - {id: lucknow_neet,  city: Lucknow,  tier: 2, exam: NEET, students: 900}   # source: R4 Tier-2 NEET institute profile, confidence: med
+  - {id: smalltown_mix, city: Gaya,     tier: 3, exam: MIX,  students: 150}   # source: R4 Tier-3 mixed institute profile, confidence: low
+  - {id: kota_large,    city: Kota,     tier: 2, exam: JEE,  students: 2000}  # source: R4 Kota mid-large institute profile, confidence: med
+
+students:
+  class_mix: {class_11: 0.30, class_12: 0.30, dropper: 0.40}   # source: R4 inferred coaching cohort mix, confidence: low
+  batch_size: [40, 80]                                         # source: R4 directory listing, confidence: low
+  batch_assignment: admission_order                            # source: MoE 2024 cl. 12(vii) & Rajasthan Act 2025 s.12(ix) — never by performance, confidence: high
+  batch_change_rate: 0.03                                      # source: assumption (non-performance transfers only), confidence: assumption
+  min_age_at_enrolment: 16                                     # source: MoE 2024 guidelines cl. 6(i), confidence: high
+  age_by_class: {class_11: [16, 17], class_12: [17, 18], dropper: [18, 20]}   # source: assumption, confidence: assumption
+  gender_ratio_female: {JEE: 0.30, NEET: 0.55}                 # source: assumption (NTA registration gender split proxy), confidence: assumption
+  out_of_town_share: 0.45                                      # source: assumption (hostel/PG students in coaching hubs), confidence: assumption
+
+exam_patterns:      # canonical definitions in contracts/exam_patterns.yaml
+  JEE_MAIN_2026:
+    subjects: [Physics, Chemistry, Mathematics]
+    per_subject: {mcq_4opt: 20, numeric: 5}
+    marking: {correct: 4, wrong: -1, blank: 0, numeric_wrong: -1}  # source: NTA notice Jan 2026, confidence: high
+    duration_min: 180
+  NEET_UG_2026:
+    verified: false   # source: bulletin PDF not yet checked (R4b NOT FOUND) — manual check pending, confidence: low
+    default_variant: compulsory_180
+    variants:
+      compulsory_180: {per_subject: {mcq_4opt: 45}, attempt_all: true, max_marks: 720, duration_min: 180}   # source: 2025 reform notice, confidence: med
+      sectioned_200:  {per_subject: {section_a: 35, section_b: 15, section_b_attempt: 10}, max_marks: 720, duration_min: 200}  # source: R4 (2021–2024 notices), confidence: med
+    subjects: [Physics, Chemistry, Botany, Zoology]
+    marking: {correct: 4, wrong: -1, blank: 0}
+  dropped_question_rule: full_marks_all        # source: NTA scoring rule, confidence: high
+  multi_correct_rule: full_marks_if_any_accepted  # source: NTA scoring rule, confidence: high
+
+tests:
+  full_mock_every_days: 14                     # source: R4 inferred coaching test schedule, confidence: med
+  chapter_test_every_days: 7                   # source: assumption, confidence: assumption
+  chapter_test_questions: [20, 30]             # source: assumption, confidence: assumption
+  weekly_off_day: Sunday                       # source: MoE 2024 cl. 10.1(v) (weekly off mandatory), confidence: high
+  no_test_day_after_off: true                  # source: MoE 2024 cl. 10.1(vi), confidence: high
+  untaught_topic_pair_rate: 0.03               # source: assumption (syllabus scheduling mismatch), confidence: assumption
+  shared_anchor_question_share: 0.30           # source: assumption (pooled item bank anchor fraction), confidence: assumption
+
+fees:
+  annual_inr: {tier2: [80000, 150000], tier3: [60000, 100000]}   # source: R4 range, split is assumption, confidence: med
+  upfront_share: 0.25                          # source: assumption (CCR-003 aligned with finance model 15/25/40%), confidence: assumption
+  instalments_after_upfront: 2                 # source: R4 inferred, confidence: med
+  rajasthan_profile: {equal_instalments: 4, upfront_share: 0.25}   # source: Rajasthan Act 16/2025 s.6(2)(d) (option for parents), confidence: high
+  instalment_gap_months: 3                     # source: assumption, confidence: assumption
+  late_or_default_final_instalment: [0.15, 0.20]   # source: R4 inferred, confidence: med
+  refund_on_withdrawal: pro_rata_within_10_days    # source: MoE 2024 cl. 8(iv) & Rajasthan Act s.13(4), confidence: high
+
+attendance:
+  base_rate: 0.82                              # source: R4 inferred, confidence: med
+  base_sd: 0.09                                # source: FEASIBILITY_CHECK §2 chronic low attenders, confidence: assumption
+  festival_dip: {months: [10, 11], multiplier: 0.60, other_multiplier: 0.90, applies_to: out_of_town}   # source: R4 Diwali/Chhath dip, confidence: med
+  board_exam_dip: {months: [1, 2], multiplier: 0.70, applies_to: class_12}       # source: R4 (multiplier = assumption), confidence: med
+  pre_dropout_fade_weeks: [3, 8]               # source: assumption (signal for gradual dropouts), confidence: assumption
+
+dropout:
+  annual_rate: 0.18                            # source: R4 15–25 %; knob range [0.12, 0.25], confidence: med
+  peak_months: [3, 4]                          # source: R4 (Aug–Sep after 1st cumulative test), confidence: med
+  dropper_hazard_multiplier: 0.7               # source: R4 sunk-cost argument (value = assumption), confidence: med
+  sudden_share: 0.25                           # source: assumption (the unpredictable ceiling), confidence: assumption
+  reasons_mix: {academic_gap: 0.35, financial: 0.20, homesick_relocation: 0.20, switched_institute: 0.15, health_other: 0.10}   # source: assumption, confidence: assumption
+
+irt_truth:
+  a: {dist: lognormal, mu: 0.0, sigma: 0.3}    # source: assumption (standard 2PL prior), confidence: assumption
+  b: {dist: normal, mean: topic_mean, sd: 1.0} # source: assumption, confidence: assumption
+  guess_mcq: {dist: beta, alpha: 2, beta: 18}  # source: assumption (optional guessing under negative marking), confidence: assumption
+  blank_policy: risk_averse_threshold          # source: assumption (student-level parameter -> MNAR blanks), confidence: assumption
+
+outcomes:
+  percentile_table: contracts/percentile_tables.csv   # source: R4 aggregator/blog data (editable assumption), confidence: low
+  shift_difficulty_sd_marks: 20                # source: R4 says ±15–30 marks across JEE shifts, confidence: med
+
+consents:
+  missing_or_revoked_rate: 0.02                # source: assumption (2% missing/revoked consent rows), confidence: assumption
+
+messy:
+  institute_scanner_error_rate: [0.02, 0.04]   # source: R4 low-cost OMR scanner error rate, confidence: low
+  wrong_answer_keys_per_100_items: 1.5         # source: assumption, confidence: assumption
+
+scenario_knobs:
+  - dropout_multiplier
+  - sudden_share
+  - marks_only_share
+  - online_test_share
+  - upfront_full_fee_share
+  - missing_rate
+  - institute_size_scale
+  - neet_variant
+  - wrong_key_rate
+  - fade_weeks

@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datamoat.local/datagen/config/generator_config.schema.json",
+  "title": "GeneratorConfig",
+  "description": "JSON Schema validating datagen/config/generator_config.yaml and scenario overrides.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "seed",
+    "academic_year_start",
+    "academic_years",
+    "months_simulated",
+    "institutes",
+    "students",
+    "exam_patterns",
+    "tests",
+    "fees",
+    "attendance",
+    "dropout",
+    "irt_truth",
+    "outcomes",
+    "consents",
+    "messy",
+    "scenario_knobs"
+  ],
+  "properties": {
+    "seed": { "type": "integer", "minimum": 0 },
+    "academic_year_start": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "academic_years": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "integer", "minimum": 2020, "maximum": 2100 }
+    },
+    "months_simulated": { "type": "integer", "minimum": 1, "maximum": 24 },
+    "institutes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "city", "tier", "exam", "students"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "city": { "type": "string", "minLength": 1 },
+          "tier": { "type": "integer", "enum": [1, 2, 3] },
+          "exam": { "type": "string", "enum": ["JEE", "NEET", "MIX"] },
+          "students": { "type": "integer", "minimum": 10 }
+        }
+      }
+    },
+    "students": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "class_mix",
+        "batch_size",
+        "batch_assignment",
+        "batch_change_rate",
+        "min_age_at_enrolment",
+        "age_by_class",
+        "gender_ratio_female"
+      ],
+      "properties": {
+        "class_mix": {
+          "type": "object",
+          "required": ["class_11", "class_12", "dropper"],
+          "properties": {
+            "class_11": { "type": "number", "minimum": 0, "maximum": 1 },
+            "class_12": { "type": "number", "minimum": 0, "maximum": 1 },
+            "dropper": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "batch_size": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "integer", "minimum": 10, "maximum": 200 }
+        },
+        "batch_assignment": { "type": "string", "const": "admission_order" },
+        "batch_change_rate": { "type": "number", "minimum": 0, "maximum": 0.5 },
+        "min_age_at_enrolment": { "type": "integer", "const": 16 },
+        "age_by_class": { "type": "object" },
+        "gender_ratio_female": { "type": "object" },
+        "out_of_town_share": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "exam_patterns": { "type": "object" },
+    "tests": {
+      "type": "object",
+      "required": [
+        "full_mock_every_days",
+        "chapter_test_every_days",
+        "chapter_test_questions",
+        "weekly_off_day",
+        "no_test_day_after_off"
+      ],
+      "properties": {
+        "full_mock_every_days": { "type": "integer", "minimum": 7 },
+        "chapter_test_every_days": { "type": "integer", "minimum": 3 },
+        "chapter_test_questions": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "integer", "minimum": 5 }
+        },
+        "weekly_off_day": { "type": "string" },
+        "no_test_day_after_off": { "type": "boolean" },
+        "untaught_topic_pair_rate": { "type": "number", "minimum": 0, "maximum": 0.5 },
+        "shared_anchor_question_share": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "fees": {
+      "type": "object",
+      "required": [
+        "annual_inr",
+        "upfront_share",
+        "instalments_after_upfront",
+        "rajasthan_profile",
+        "instalment_gap_months",
+        "late_or_default_final_instalment",
+        "refund_on_withdrawal"
+      ],
+      "properties": {
+        "annual_inr": { "type": "object" },
+        "upfront_share": { "type": "number", "minimum": 0.05, "maximum": 1.0 },
+        "instalments_after_upfront": { "type": "integer", "minimum": 1, "maximum": 11 },
+        "rajasthan_profile": { "type": "object" },
+        "instalment_gap_months": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "late_or_default_final_instalment": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "refund_on_withdrawal": { "type": "string" }
+      }
+    },
+    "attendance": {
+      "type": "object",
+      "required": ["base_rate", "festival_dip", "board_exam_dip", "pre_dropout_fade_weeks"],
+      "properties": {
+        "base_rate": { "type": "number", "minimum": 0.1, "maximum": 1.0 },
+        "base_sd": { "type": "number", "minimum": 0.01, "maximum": 0.3 },
+        "festival_dip": { "type": "object" },
+        "board_exam_dip": { "type": "object" },
+        "pre_dropout_fade_weeks": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "integer", "minimum": 1, "maximum": 20 }
+        }
+      }
+    },
+    "dropout": {
+      "type": "object",
+      "required": ["annual_rate", "peak_months", "dropper_hazard_multiplier", "sudden_share", "reasons_mix"],
+      "properties": {
+        "annual_rate": { "type": "number", "minimum": 0.01, "maximum": 0.8 },
+        "peak_months": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 12 } },
+        "dropper_hazard_multiplier": { "type": "number", "minimum": 0.1, "maximum": 2.0 },
+        "sudden_share": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "reasons_mix": { "type": "object" }
+      }
+    },
+    "irt_truth": { "type": "object" },
+    "outcomes": { "type": "object" },
+    "consents": { "type": "object" },
+    "messy": { "type": "object" },
+    "scenario_knobs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "active_knobs": {
+      "type": "object"
+    }
+  }
+}

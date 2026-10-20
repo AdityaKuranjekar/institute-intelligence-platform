@@ -20,7 +20,7 @@ Write `ml/common/fixtures.py`: builds tiny DataFrames matching `contracts/datase
 - `update_item_incremental(item_fit, new_responses) -> ItemFit` (warm start; no full refit).
 - `detect_wrong_keys(item_fit, responses, options) -> list[KeyFlag]` (with confidence and a *suggested corrected key* when an option's selection correlates with ability more than the keyed one).
 `ml/mastery/api.py`
-- `estimate_mastery(student_responses, item_fit, topic_map, *, as_of, half_life_days=None) -> list[TopicMastery(topic_id, theta, se, n_items, band, band_reason)]` where `band ∈ {weak, developing, strong, not_enough_data}`; a band is emitted **only** when `se < tau` and `n_items ≥ n_min` (calibrate both on validation, store in the artifact).
+- `estimate_mastery(student_responses, item_fit, topic_map, *, as_of, half_life_days=None) -> list[TopicMastery(topic_id, theta, se, n_items, band, band_reason)]` where `band` is the contract enum `mastery_band` = `{building, steady, strong, not_enough_data}` (`contracts/enums.yaml`; supportive wording, never "weak"); a band is emitted **only** when `se < tau` and `n_items ≥ n_min` (calibrate both on validation, store in the artifact).
 - `batch_topic_coverage(batch_responses, item_fit, topic_map) -> list[CoverageFlag]` (flags "batch-wide failure, probably untaught or wrong key", not student weakness).
 - `marks_only_fallback(test_totals, ...) -> SubjectLevelEstimate` (test-level model when no per-question data; subject-level only, labelled).
 
@@ -36,10 +36,10 @@ Evaluate on `data/clean` + `data/truth`, seed 42, **and 2 more seeds**; report m
 1. `irt_difficulty_recovery_r_n200 ≥ 0.90`, `irt_difficulty_recovery_r_n60 ≥ 0.90`, `irt_difficulty_recovery_r_n30 ≥ 0.85` — subsample responses per item to those n; also report Spearman, RMSE(b̂), coverage of the 95 % CI for b (should be 0.90–0.98).
 2. `irt_difficulty_recovery_r_n60_misspecified ≥ 0.80` (report): data from the misspecified generators in `datagen` scenarios (MNAR blanks, item-specific guessing, ability drift) — if A hasn't delivered them yet, simulate them in `ml/irt/tests/synth.py`.
 3. `irt_discrimination_recovery_r_n200` (report).
-4. `irt_wrong_key_recall ≥ 0.80`, `irt_wrong_key_false_flags_per_300 ≤ 2` on injected wrong keys (truth: `key_error_flag`); report precision, and the share of correct *suggested* keys.
+4. `irt_wrong_key_recall ≥ 0.80`, `irt_wrong_key_false_flags_per_300 ≤ 2` on injected wrong keys (truth: `is_injected_wrong_key` in `true_item_params`); report precision, and the share of correct *suggested* keys.
 5. `mastery_theta_recovery_r ≥ 0.80` against `true_theta_topic` (students with ≥ 3 items in the topic); report r by number of items per topic (1, 2, 3, 4+).
 6. `mastery_next_test_auc_gain_over_baselines > 0` with **non-overlapping bootstrap CIs** versus raw % and BKT, held-out *future tests*, held-out *students*; report the gain **by items-per-topic** (the gain may vanish at 1 item — say so).
-7. **Band calibration**: among students banded `strong`, observed next-test correct rate > `developing` > `weak` (monotone); report reliability by band; the share labelled `not_enough_data` per test index (cold start).
+7. **Band calibration**: among students banded `strong`, observed next-test correct rate > `steady` > `building` (monotone); report reliability by band; the share labelled `not_enough_data` per test index (cold start).
 8. **Coverage flag**: on generator "untaught-topic" tests, recall ≥ 0.8 with ≤ 2 false flags per 100 (batch, topic) pairs.
 9. **Incremental update** equals a full refit within |Δb| < 0.05 on average.
 10. **Runtime**: fit 2,000 students × 90 questions × 12 tests in < 60 s; `estimate_mastery` for a batch of 80 students in < 1 s (CPU).
@@ -55,4 +55,4 @@ Evaluate on `data/clean` + `data/truth`, seed 42, **and 2 more seeds**; report m
 New student with 0–2 tests; topics with 1–2 items per test; whole batch fails an item (key or untaught); bonus/cancelled/dropped items excluded or re-keyed; numeric-answer items; multi-correct; students who blank >60 %; item with all-correct or all-wrong responses (infinite b → prior-regularised, flagged `degenerate`); duplicated question across institutes with different keys; marks-only institute; negative marking schemes.
 
 ### Done when
-Tests pass (`make test-irt`, `make test-mastery`), notebooks run, `ml/artifacts/v1.0.0/{irt,mastery}/` has `metrics.json`, `manifest.json`, `model_card.md`, READMEs written, `docs/agent_logs/R1_B.md` lists every bar pass/fail with CIs.
+Tests pass (`make test-irt`, `make test-mastery`), notebooks run, `ml/irt/artifacts/v1.0.0/` and `ml/mastery/artifacts/v1.0.0/` each have `metrics.json`, `manifest.json`, `model_card.md`, READMEs written, `docs/agent_logs/R1_B.md` lists every bar pass/fail with CIs.

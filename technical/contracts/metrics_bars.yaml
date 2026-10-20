@@ -115,7 +115,7 @@ bars:
   - metric_key: ew_gradual_recall_rel_gain_over_rule_at_capacity
     module: early_warning
     dataset_origin: synthetic
-    description: "Relative recall gain on gradual dropouts versus the institute baseline rule at the SAME weekly top-k workload. Added in 1.0.1 (CCR-006)."
+    description: "Relative weekly-snapshot recall@k gain (next-30-day dropout, student-weeks) versus the institute rule AS PRACTICED (unranked: a random k of the students the rule fires on, i.e. the rule's own precision/recall at the same workload). Added in 1.0.1 (CCR-006); baseline definitions fixed after the generator preview (CCR-009)."
     operator: ">="
     target: 0.25
     gate: blocking
@@ -123,10 +123,26 @@ bars:
   - metric_key: ew_precision_at_capacity_rel_gain_over_rule
     module: early_warning
     dataset_origin: synthetic
-    description: "Relative precision@k gain versus the institute baseline rule at the same top-k. Added in 1.0.1 (CCR-006)."
+    description: "Relative weekly-snapshot precision@k gain versus the institute rule AS PRACTICED (unranked) at the same workload k. Added in 1.0.1 (CCR-006, CCR-009)."
     operator: ">="
     target: 0.25
     gate: blocking
+
+  - metric_key: ew_precision_at_capacity_rel_gain_over_ranked_rule
+    module: early_warning
+    dataset_origin: synthetic
+    description: "Relative precision@k gain versus the STRONGER baseline: the same institute rule but ranked by lowest 4-week attendance, at the same top-k. Report-only: the generator preview showed only +3% to +7% for a simple model, because gradual dropouts are mostly an attendance fade. Report honestly (CCR-009)."
+    operator: ">="
+    target: 0.0
+    gate: report
+
+  - metric_key: ew_recall_at_capacity_rel_gain_over_ranked_rule
+    module: early_warning
+    dataset_origin: synthetic
+    description: "Relative recall@k gain versus the ranked institute rule at the same top-k (weekly snapshot). Report-only (CCR-009)."
+    operator: ">="
+    target: 0.0
+    gate: report
 
   - metric_key: ew_distinct_students_flagged_share_per_month
     module: early_warning

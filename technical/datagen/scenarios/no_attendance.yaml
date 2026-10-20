@@ -1,0 +1,6 @@
+# Scenario: no_attendance — simulates institutes with 90% missing attendance records.
+# source: TECH_PLAN §21 & R1_A_datagen.md curveball drill ("no_attendance"), confidence: assumption
+scenario_name: no_attendance
+description: "Drops 90% of daily attendance records to evaluate Tier-A-only fallback."
+knobs:
+  missing_rate: 0.90

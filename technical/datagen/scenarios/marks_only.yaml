@@ -1,0 +1,6 @@
+# Scenario: marks_only — 80% of institutes upload only aggregate test totals without per-question responses.
+# source: TECH_PLAN §21 curveball drill ("Institute has only total marks"), confidence: assumption
+scenario_name: marks_only
+description: "Sets marks_only_share to 0.80 so most tests emit only test_totals without item-level responses."
+knobs:
+  marks_only_share: 0.80

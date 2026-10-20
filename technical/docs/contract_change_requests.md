@@ -54,3 +54,24 @@ Per `docs/TECH_PLAN.md` §19 and `docs/agent_prompts/P0_contracts.md`, any gap, 
 ### CCR-007: Replace the temporal split by multi-year cohorts
 - TECH_PLAN §10 "train months 1–6 / test months 7–12" puts the dropout peak (months 3–4) in training and leaves too few test events. Generator must emit **≥ 3 academic-year cohorts per institute**; train on earlier years, test on the last year; plus leave-one-institute-out. `datasets.yaml` needs `academic_year` on `students` (present), `batches` (present) and a note that tests/attendance span years.
 - Add `n_events_test` and `n_events_per_slice` to `metrics.schema.json` so thin results are visible; fairness slices with < 30 events report "insufficient data".
+
+### CCR-008: `item_params` column names in `datasets.yaml` vs `schema.sql`, and prompt alias names in truth tables
+- **Logged by:** Agent A (DataGen, 2026-10-21)
+- **Where:** `contracts/datasets.yaml` (`item_params`, `true_item_params`, `dropout_events`, `true_final_outcomes`) vs `contracts/schema.sql` (`item_params`) and `docs/agent_prompts/R1_A_datagen.md` / `R1_B_irt_mastery.md` / `R1_C_risk_band.md`.
+- **Issue:**
+  1. `datasets.yaml` `item_params` defines columns `(institute_id, question_id, a, b, c, point_biserial, key_confidence, suspected_wrong_key, n_responses, updated_at)`, whereas `schema.sql` `item_params` defines `(question_id, institute_id, model_version, a, b, g, se_b, n_responses, fit_flag)`.
+  2. `R1_A_datagen.md` / `R1_B` / `R1_C` refer to `key_error_flag` (in `datasets.yaml`: `is_injected_wrong_key`), `type`/`reason` (in `datasets.yaml`: `dropout_type`/`dropout_reason`), and `internal_mock_scale_score` (in `datasets.yaml`: `true_final_score`).
+- **Conservative Resolution Chosen by Agent A:** Parquet files strictly follow `contracts/datasets.yaml` (the machine-readable parquet contract). In `datagen`'s Postgres `schema.sql` loader test, `item_params` maps `c -> g`, `suspected_wrong_key -> fit_flag ('suspect_wrong_key' / 'ok')`, `model_version = 'v1.0.0'`, and `se_b` computed from `n_responses`. Proposed for `contracts-v1.0.1`: align `datasets.yaml` `item_params` with `schema.sql` and document the truth-table column names across prompts.
+
+
+### CCR-009: Early-warning baselines and metric definitions after the generator preview (2026-10-21, human/analyst review)
+- Evidence: `analysis/feasibility/preview_early_warning_on_generator.py` run on `data/clean` from `datagen --seed 42 --preset full`, train 2024-25, test 2026 (logistic regression, 6 features). AUC-PR 0.18 vs 0.079 for the institute rule (+131 %), but **at fixed top-k (2/4/8 % per week) the model beats the *ranked* rule by only +4 % to +7 % in precision and recall**, because gradual dropouts are mostly an attendance fade the rule already catches. Event-level "ever flagged before dropout" recall is inflated (38 % of all students flagged at least once at top-4 %/week).
+- Resolution: B1 (rule as practiced, unranked) vs B2 (rule ranked by attendance) baselines; blocking relative-gain bars use B1, B2 gains are report-only; primary metrics are weekly-snapshot precision@k/recall@k over student-weeks (event-level recall is report-only). `metrics_bars.yaml` updated; `R1_C_risk_band.md` updated. **Do not move the generator or the bars to make the B2 gain look bigger.** The honest product claim: calibrated, explainable, privacy-routed support lists with earlier and better-ranked coverage than the institute's practice, not a large accuracy leap over "sort by lowest attendance".
+
+
+### CCR-011: PS-suggested schema fields missing from contracts (queued for v1.0.1, from `docs/PS_COVERAGE.md`)
+- Add nullable `responses.time_taken_sec` (the PS `test_responses` lists it); update `datasets.yaml` `responses` and the generator output for online tests; OpenAPI untouched.
+- Add table `student_outcomes` (institute_id, student_id, academic_year, dropout_month nullable, actual_exam_percentile nullable, exam enum, entered_by, entered_at) with the standard RLS policy: the real-exam-label leg of the moat. Synthetic truth stays in `truth/`.
+
+### CCR-012: Batch-faculty link (queued, optional P2)
+- Add `batch_subject_teachers(institute_id, batch_id, subject, teacher_user_id, from_date, to_date)` so owners can see batch/faculty effectiveness (PS: owners cannot measure which batches, faculty or teaching methods actually work). The generator already has a batch x topic effect, which makes this testable.

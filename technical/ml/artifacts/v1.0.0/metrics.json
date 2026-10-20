@@ -1,0 +1,28 @@
+{
+  "contract_version": "1.0.0",
+  "model_version": "v1.0.0",
+  "evaluated_at": "2026-10-20T21:05:11.553296+00:00",
+  "generator_seed": 42,
+  "results": [
+    {
+      "metric_key": "genai_verifier_injected_error_catch_rate",
+      "module": "genai",
+      "dataset_origin": "synthetic",
+      "value": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0,
+      "passed_bar": true,
+      "notes": "n=500 corrupted outputs across 12 categories; caught=500/500."
+    },
+    {
+      "metric_key": "genai_unverified_reports_shipped",
+      "module": "genai",
+      "dataset_origin": "synthetic",
+      "value": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "passed_bar": true,
+      "notes": "n=1000 generated reports with FakeClient good/bad mixture; llm_accepted=692, template_fallbacks=308."
+    }
+  ]
+}
