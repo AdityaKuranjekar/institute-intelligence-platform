@@ -37,3 +37,20 @@ Per `docs/TECH_PLAN.md` §19 and `docs/agent_prompts/P0_contracts.md`, any gap, 
 - **Issue:** `TECH_PLAN.md` §8 uses shorthand column names `class` (on `batches`), `date` (on `tests`, `attendance`, `engagement`), `due` (on `interventions`), and `at` (on `batch_changes`, `audit_log`), which collide with SQL/Python reserved keywords (`class`, `date`) or `P0_contracts.md` Deliverable #9 (`class_level`).
 - **Conservative Resolution Chosen in `contracts/`:** Used unambiguous `snake_case` column names (`class_level`, `test_date`, `attendance_date`, `activity_date`, `due_date`, `changed_at`, `occurred_at`) consistently across `contracts/schema.sql`, `contracts/datasets.yaml`, `contracts/csv_templates/*.csv`, and `contracts/data_dictionary.md`, and included the shorthand forms in `contracts/csv_templates/header_synonyms.yaml`.
 - **Status:** Open for human review.
+
+---
+
+## Human-review queue for `contracts-v1.0.1` (added 2026-10-21 by senior-analyst review; evidence in `docs/FEASIBILITY_CHECK.md`)
+
+### CCR-005: Tighten IRT bars (`metrics_bars.yaml`)
+- `irt_difficulty_recovery_r_n60`: 0.75 → **0.90**; add `irt_difficulty_recovery_r_n30 >= 0.85` (blocking); add `irt_difficulty_recovery_r_n60_misspecified >= 0.80` (report); add `irt_discrimination_recovery_r_n200` (report).
+- Why: a naive model already reaches 0.88–0.92 at n = 30–60 in simulation, so the current bars prove nothing.
+
+### CCR-006: Replace absolute early-warning bars by workload-matched relative bars
+- `ew_median_lead_time_days` (>= 21, blocking) → **report**, evaluated at fixed top-k and shown beside the rule baseline at the same top-k.
+- `ew_gradual_dropout_recall_at_capacity` (>= 0.60, blocking) → **report**; add `ew_gradual_recall_rel_gain_over_rule_at_capacity >= 0.25` (blocking) and `ew_precision_at_capacity_rel_gain_over_rule >= 0.25` (blocking); add `ew_distinct_students_flagged_per_month` (report; alert fatigue).
+- Why: lead time is gameable by flagging chronic low attenders early, and it is set by our own generator's fade parameter; absolute recall depends on generator noise.
+
+### CCR-007: Replace the temporal split by multi-year cohorts
+- TECH_PLAN §10 "train months 1–6 / test months 7–12" puts the dropout peak (months 3–4) in training and leaves too few test events. Generator must emit **≥ 3 academic-year cohorts per institute**; train on earlier years, test on the last year; plus leave-one-institute-out. `datasets.yaml` needs `academic_year` on `students` (present), `batches` (present) and a note that tests/attendance span years.
+- Add `n_events_test` and `n_events_per_slice` to `metrics.schema.json` so thin results are visible; fairness slices with < 30 events report "insufficient data".

@@ -8,3 +8,7 @@ test-contracts:
 
 test-contracts-db:
 	python -m pytest contracts/tests -m db -v -rs
+
+.PHONY: test-docs
+test-docs:
+	python -m pytest tests -q

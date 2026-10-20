@@ -17,10 +17,34 @@ bars:
   - metric_key: irt_difficulty_recovery_r_n60
     module: irt
     dataset_origin: synthetic
-    description: "Pearson correlation r(b_hat, b_true) at small batch size (n = 60 responses) with hierarchical priors."
+    description: "Pearson correlation r(b_hat, b_true) at small batch size (n = 60 responses) with hierarchical priors. Tightened in 1.0.1 (CCR-005): a naive model already reaches ~0.92 in simulation."
     operator: ">="
-    target: 0.75
+    target: 0.90
     gate: blocking
+
+  - metric_key: irt_difficulty_recovery_r_n30
+    module: irt
+    dataset_origin: synthetic
+    description: "Pearson r(b_hat, b_true) with only n = 30 responses per item (smallest realistic batch). Added in 1.0.1 (CCR-005)."
+    operator: ">="
+    target: 0.85
+    gate: blocking
+
+  - metric_key: irt_difficulty_recovery_r_n60_misspecified
+    module: irt
+    dataset_origin: synthetic
+    description: "r(b_hat, b_true) at n = 60 under the misspecified generators of NB07 (MNAR blanks, item-specific guessing, ability drift). Added in 1.0.1 (CCR-005)."
+    operator: ">="
+    target: 0.80
+    gate: report
+
+  - metric_key: irt_discrimination_recovery_r_n200
+    module: irt
+    dataset_origin: synthetic
+    description: "r(a_hat, a_true) at n = 200. Discrimination is much harder to recover than difficulty and drives wrong-key detection; tentative target, calibrate on first run. Added in 1.0.1 (CCR-005)."
+    operator: ">="
+    target: 0.60
+    gate: report
 
   - metric_key: irt_wrong_key_recall
     module: irt
@@ -67,10 +91,10 @@ bars:
   - metric_key: ew_median_lead_time_days
     module: early_warning
     dataset_origin: synthetic
-    description: "Median lead time in days before dropout event (>= 3 weeks = 21 days)."
+    description: "Median lead time in days before dropout among caught gradual dropouts, at fixed top-k workload and reported beside the baseline rule at the same top-k. Now report-only in 1.0.1 (CCR-006): gameable and set by the generator's fade parameter."
     operator: ">="
     target: 21.0
-    gate: blocking
+    gate: report
 
   - metric_key: ew_calibration_ece
     module: early_warning
@@ -83,10 +107,34 @@ bars:
   - metric_key: ew_gradual_dropout_recall_at_capacity
     module: early_warning
     dataset_origin: synthetic
-    description: "Recall on gradual dropouts at top-k = mentor_capacity_per_week."
+    description: "Absolute recall on gradual dropouts at top-k = mentor_capacity_per_week. Report-only in 1.0.1 (CCR-006); simulation reached 0.49-0.55 with a basic model."
     operator: ">="
     target: 0.60
+    gate: report
+
+  - metric_key: ew_gradual_recall_rel_gain_over_rule_at_capacity
+    module: early_warning
+    dataset_origin: synthetic
+    description: "Relative recall gain on gradual dropouts versus the institute baseline rule at the SAME weekly top-k workload. Added in 1.0.1 (CCR-006)."
+    operator: ">="
+    target: 0.25
     gate: blocking
+
+  - metric_key: ew_precision_at_capacity_rel_gain_over_rule
+    module: early_warning
+    dataset_origin: synthetic
+    description: "Relative precision@k gain versus the institute baseline rule at the same top-k. Added in 1.0.1 (CCR-006)."
+    operator: ">="
+    target: 0.25
+    gate: blocking
+
+  - metric_key: ew_distinct_students_flagged_share_per_month
+    module: early_warning
+    dataset_origin: synthetic
+    description: "Share of active students that appear on the support list at least once per month (alert fatigue); requires flag persistence/hysteresis. Tentative target. Added in 1.0.1 (CCR-006)."
+    operator: "<="
+    target: 0.15
+    gate: report
 
   - metric_key: falling_behind_auc_pr_gain_over_rule
     module: falling_behind
