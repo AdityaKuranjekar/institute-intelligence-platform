@@ -1,6 +1,6 @@
 # AlphaQ deck: design system (PowerPoint, 16:9)
 
-Decisions (2026-10-22): team **AlphaQ** (logo to come) · accent **teal** next to navy · **white** backgrounds (light tint for card zones) · built in **PowerPoint** · font chosen by the designer: **Inter** (free; Hindi snippets in **Noto Sans Devanagari**, already in the repo under `technical/backend/templates/fonts/`). The PDF embeds fonts, so judges need nothing installed.
+Decisions (2026-10-22): team **AlphaQ** (logo to come) · accent **teal** next to navy · **white** backgrounds (light tint for card zones) · built in **PowerPoint** · fonts chosen by the designer: **Cambria** (titles) and **Calibri** (body). Both ship with Microsoft Office, so the deck looks the same on any machine that has PowerPoint, and the exported PDF embeds them. Inter was dropped because it is not installed with Office and would silently fall back to another font. Hindi text uses Nirmala UI in the deck and Noto Sans Devanagari (in the repo, `technical/backend/templates/fonts/`) in the report module.
 Derived from the reference deck (Myntra StylBiz) but fixed for legibility: its 10 pt body and 5 pt margins are not copied.
 
 ## 1. Page and grid
@@ -33,7 +33,7 @@ PowerPoint setup: Design > Slide Size > Custom 13.333 x 7.5 in. View > Slide Mas
 | Teal on dark | `#19B5B7` | accent on navy slides | 6.1:1 on navy |
 Rules: body text is always Ink or Navy on white/tint, or white on navy. Never navy on teal (3.7:1). Never red or amber for people's performance (see charts). One accent only (teal) plus amber/red as status.
 
-## 3. Typography (Inter; sizes in pt)
+## 3. Typography (Cambria titles, Calibri body; sizes in pt)
 | Role | Size / weight | Colour | Notes |
 |---|---|---|---|
 | Eyebrow (category chip) | 11, semibold, ALL CAPS, +8 % tracking | white on Teal-dark pill | e.g. "EARLY WARNING" |
@@ -44,15 +44,14 @@ Rules: body text is always Ink or Navy on white/tint, or white on navy. Never na
 | KPI label | 12, regular | Muted | what it measures + origin tag |
 | Chip / tag text | 11, semibold | see tags | |
 | Source / footnote | 10, regular | Muted | only place 10 pt is allowed |
-Hindi: Noto Sans Devanagari 14 pt (never below 13 pt). Word budget: **70 words of body text per slide** plus one visual (the reference deck has 120+).
+Hindi: Nirmala UI 14 pt (never below 13 pt). Word budget: **70 words of body text per slide** plus one visual (the reference deck has 120+).
 
 ## 4. Components
 | Component | Spec |
 |---|---|
 | Eyebrow chip | pill (radius full), height 0.30 in, Teal-dark fill, white 11 pt caps, at x=0.55 in, y=0.40 in |
 | Action title | x=0.55 in, y=0.78 in, width 12.2 in, 28 pt bold navy, max 2 lines |
-| Header rule | 1 pt Line colour at y=1.72 in, full content width (replaces the reference's orange line) |
-| Card | rounded rectangle radius 12 pt, white fill on Tint zone (or Tint on white), 1 pt Line border, no shadow, 16 pt padding; "key" cards add a 4 pt Teal left bar |
+| Card | rounded rectangle radius 12 pt, Tint fill with no border on white slides (or white fill with a 1 pt Line border on Tint zones), no shadow, no accent stripe, 16 pt padding |
 | Value row | 3 or 4 equal cards across the 12 columns, each one plain sentence, 14 pt, with a small Lucide icon (24 pt, Teal) at the top |
 | KPI box | card with number 40 pt, label 12 pt, optional delta chip; height 1.25 in |
 | Data chip | pill, Teal-tint fill, Navy 11 pt semibold text, e.g. "OULAD AUC 0.706" |
@@ -87,3 +86,11 @@ Do not: more than 70 body words; text under 12 pt (10 pt only for sources); more
 
 ## 8. Accessibility and export
 Check contrast with the table above; set alt text on every image; reading order top-left to bottom-right; export PDF at 16:9 with fonts embedded (File > Export > PDF, "Standard"); file name `AlphaQ_CaseB_Round1.pdf` (rule: `TeamName_Case_Round.pdf`); test-read the PDF on a phone at 100 % zoom: if body text is hard to read there, it is too small.
+
+## 9. As built (2026-10-22): deviations from the first draft
+- Built by `slides/build/deck.js` (pptxgenjs), 19 slides: title, 12 content slides, appendix A1-A5, final AI-disclosure slide.
+- **No accent rules under titles and no edge stripes on cards or slide edges**: they read as template decoration. Hierarchy comes from size, weight, spacing and tinted cards instead.
+- Visuals are native shapes (editable in PowerPoint): heatmap, support list, phone report, upload screen, percentile band, tornado, architecture. Charts are drawn as shapes so they render identically everywhere.
+- Tag labels are written in plain words (GUIDE BASELINE, MODEL OUTPUT, PUBLIC DATA, SYNTHETIC DATA, ILLUSTRATIVE MOCK-UP; BUILT, IN BUILD, DESIGNED, PENDING, NOT PROVEN).
+- Amber PENDING tags mark numbers that wait for model results. Remove each one only after the number appears in `technical/scripts/deck_numbers.py` output.
+- Preview and checks: `python slides/build/render_check.py slides/AlphaQ_CaseB_Round1.pptx slides/preview` draws every slide with the real Windows fonts and lists text overflow. Hindi letter shaping in that preview is approximate; PowerPoint renders it correctly.

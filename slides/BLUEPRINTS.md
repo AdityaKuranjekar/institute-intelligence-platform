@@ -112,13 +112,12 @@ Mock-ups M1-M10 are specified in `MOCKUPS_PLAN.md`.
 - Strip: "Assumptions we changed from the guide": effective dropout reduction 25 % → 6.6 %; LTV/CAC 10.7x → 3.7x.
 
 ---
-## Appendix (each page uses the skeleton noted)
-- A1 Architecture detail (S2): full diagram, tenant isolation, offline design.
-- A2 Cost per student (S4): bottom-up infra + AI cost table (free local run = ₹0 marginal; production assumptions with sources) from `financial` COGS_Build.
-- A3 Data model (S1): simplified ERD of the 31 tables, synthetic-data design (4 institutes, years, ground truth).
-- A4 Privacy clause table (S1 table): DPDP s.9, Rule 10, Fourth Schedule, MoE and Rajasthan clauses with our design response.
-- A5 Financial assumptions and sensitivity (S4): top 10 inputs with low/base/high and source.
-- A6 Validation protocol (S1 table): splits, baselines at equal workload, confidence intervals, leakage tests, protocol deviations vs pyKT.
+## Appendix (as built)
+- A1 Data model (S1): 31 tables in five groups; what is deliberately not stored.
+- A2 Cost per student (S4): about ₹3.6 per student per month in the model, ₹0 marginal for the local run, researched price inputs (Bear/Base/Bull).
+- A3 Legal basis (S1 table): DPDP, MoE and Rajasthan clauses with our design response.
+- A4 How we test (S1): leakage, baselines at equal workload, uncertainty, stress tests, honest misses, public data.
+- A5 Scenarios (S4 table): Bear, Base, Bull for a mid-size institute, plus segment results.
 
 ## FINAL SLIDE: AI-USE DISCLOSURE AND CITATIONS (dark or white; mandatory)
 - Title: "How we used AI, and what we cited".

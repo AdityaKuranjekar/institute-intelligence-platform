@@ -2,11 +2,14 @@
 
 Last updated 2026-10-22. **Purpose:** one file you can hand to a person or an AI to build the deck without reading the whole repo. Every number says where it comes from and how much to trust it. Numbers marked PENDING must not appear on a slide until the named file exists.
 
+## The deck exists (2026-10-22)
+`slides/AlphaQ_CaseB_Round1.pptx` (19 slides, editable PowerPoint) with PNG previews in `slides/preview/`. Amber PENDING tags mark numbers that wait for model results; replace them before submission (see `slides/README.md`).
+
 ## Decisions and where the design lives (2026-10-22)
 | Decision | Value |
 |---|---|
 | Team name | AlphaQ (logo to come) |
-| Look | navy + teal accent, white background, Inter font (Hindi: Noto Sans Devanagari), built in PowerPoint |
+| Look | navy + teal accent, white background, Cambria titles + Calibri body (both ship with Office), built in PowerPoint |
 | Design system | [`slides/DESIGN_SYSTEM.md`](slides/DESIGN_SYSTEM.md): tokens with measured contrast, type scale, components, 5 slide skeletons |
 | Slide-by-slide layouts | [`slides/BLUEPRINTS.md`](slides/BLUEPRINTS.md): title + 12 content slides + appendix + final AI-disclosure slide |
 | Mock-ups and images | [`slides/MOCKUPS_PLAN.md`](slides/MOCKUPS_PLAN.md): 10 visuals, how each is made for free, which are blocked on agent results |
@@ -57,7 +60,7 @@ An institute intelligence layer for small JEE/NEET coaching institutes: it reads
 | Generator output (seed 42, `full` preset) | 4 institutes, 3,450 students, ~2 million responses (cohort sizes being fixed, see A2) |
 | Yearly dropout in generated data | 17-19 % per cohort-year; 25 % of dropouts sudden (unpredictable by design); 43 % of dropouts fall in months 3-4 |
 | Modelled calendar effects | festival-season attendance ×0.6 for out-of-town students; January-February dip for class 12 |
-| Test suites | 111 passing tests (contracts 14, prompts/config/metrics-collector/slide-design checks 61, generator 12, GenAI 16, public validation 8) |
+| Test suites | 116 passing tests (contracts 14, prompts/config/metrics/slide/deck checks 66, generator 12, GenAI 16, public validation 8) |
 | Tenant isolation | verified on a real PostgreSQL 16: another tenant sees 0 rows, cannot write across tenants |
 
 **Honest early-warning preview (`technical/docs/FEASIBILITY_CHECK.md` §6; a 6-feature logistic regression, NOT the final model, do not put these on a slide as results):** on synthetic data the model ranks students better overall than the institute's rule (AUC-PR 0.18 vs 0.08), but at a fixed weekly workload it beats a *ranked* attendance rule by only 4-7 %. The slide claim must be about calibrated, explained, privacy-routed support lists, not a big accuracy jump.
