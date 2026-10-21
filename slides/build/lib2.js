@@ -2,7 +2,7 @@
 const path = require("path");
 const { T, ACC, F, X0 } = require("./lib");
 
-const C2 = { band: "E3ECF7", gold: "FBEFC5", goldD: "F2C94C", green: "D6E4F5", greenD: "1F4A82", blue: "2E6DB4", soft: "F2F6FB", orange: "EAF1FA" };
+const C2 = { band: "E3ECF7", gold: "F1E8D3", goldD: "F2C94C", green: "D6E4F5", greenD: "1F4A82", blue: "2E6DB4", soft: "F2F6FB", orange: "EAF1FA" };
 
 function extend(kit, pres) {
   const S = pres.ShapeType;

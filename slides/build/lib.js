@@ -9,7 +9,7 @@ const Md = require("react-icons/md");
 const T = {
   // v4 consulting look: white paper, one blue family, amber only for pending / warnings
   navy: "17325C", ink: "1F2937", muted: "5B6573", teal: "2E6DB4", tealDark: "1F4A82", tealTint: "E3ECF7",
-  tint: "F4F7FB", line: "C9D6E8", white: "FFFFFF", amber: "F2A900", red: "C0392B", green: "1F4A82",
+  tint: "F4F7FB", line: "C9D6E8", white: "FFFFFF", amber: "D4A24C", red: "C0392B", green: "1F4A82",
   tealOnDark: "5B8DC9", grey: "9AA6B5", greyLight: "EEF2F7",
   orange: "5B8DC9", orangeD: "1F4A82", orangeT: "EAF1FA", blue: "2E6DB4", blueD: "1F4A82", blueT: "E3ECF7", yellowT: "EAF1FA", redT: "F8DEDA",
 };

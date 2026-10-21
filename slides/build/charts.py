@@ -19,7 +19,7 @@ for f in ("calibri.ttf", "calibrib.ttf", "calibrii.ttf"):
 plt.rcParams.update({"font.family": "Calibri", "font.size": 11, "axes.edgecolor": "#C9D6E8", "axes.labelcolor": "#5B6573",
                      "xtick.color": "#5B6573", "ytick.color": "#5B6573", "axes.spines.top": False, "axes.spines.right": False,
                      "axes.titleweight": "bold", "axes.titlecolor": "#17325C", "figure.facecolor": "white"})
-NAVY, TEAL, TEALD, TINT, GREY, AMBER, RED = "#17325C", "#2E6DB4", "#1F4A82", "#B9CFE8", "#9AA6B5", "#F2A900", "#C0392B"
+NAVY, TEAL, TEALD, TINT, GREY, AMBER, RED = "#17325C", "#2E6DB4", "#1F4A82", "#B9CFE8", "#9AA6B5", "#D4A24C", "#C0392B"
 ORANGE, BLUE = "#8FB0D8", "#5B8DC9"
 DPI = 220
 S = json.loads((REPO / "technical/ml/public_validation/artifacts/v1.0.0/public_validation_summary.json").read_text(encoding="utf-8"))

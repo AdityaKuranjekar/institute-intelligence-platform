@@ -1,7 +1,7 @@
 /* Shared styles for the illustrative app screens (light UI) and dark showcase images. Rendered to PNG by slides/build/export_html.py (Edge headless). */
 :root {
   --navy: #17325C; --ink: #1F2937; --muted: #5B6573; --teal: #2E6DB4; --teal-d: #1F4A82; --teal-t: #E3ECF7; --tint: #F4F7FB;
-  --line: #C9D6E8; --amber: #F2A900; --amber-t: #FFF3CC; --red: #C0392B; --green: #1B7F4F; --glow: #2E6DB4;
+  --line: #C9D6E8; --amber: #D4A24C; --amber-t: #F1E8D3; --red: #C0392B; --green: #1B7F4F; --glow: #2E6DB4;
   --orange: #5B8DC9; --orange-t: #EAF1FA; --blue: #2E6DB4; --blue-t: #E3ECF7;
   --b0: #EEF2F7; --b1: #C9DBF0; --b2: #7FA6D6; --b3: #1F4A82;
 }
