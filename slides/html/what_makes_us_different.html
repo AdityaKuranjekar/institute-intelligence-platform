@@ -1,62 +1,48 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>What makes us different</title>
 <link rel="stylesheet" href="ui.css">
 <style>
-.rail { position: absolute; left: 60px; top: 150px; width: 220px; bottom: 60px; border: 1.5px solid rgba(25,181,183,.5); border-radius: 18px; background: rgba(25,181,183,.06); box-shadow: 0 0 30px rgba(25,181,183,.14); padding: 22px 18px; }
-.rail .tt { font: 700 14px Bahnschrift; letter-spacing: .16em; color: var(--glow); text-align: center; margin-bottom: 18px; }
-.rail { display:flex; flex-direction:column; justify-content:space-between; }
-.rail .box { position:relative; flex:1; display:flex; flex-direction:column; justify-content:space-around; align-items:center; }
-.rail .box::before { content:''; position:absolute; top:12px; bottom:12px; left:50%; width:2px; background:rgba(25,181,183,.45); }
-.rail .node { position:relative; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; font-size: 16px; color: #E3EDF9; background:#0a1c33; padding:6px 4px; }
-.rail .dot { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--glow); background: #061529; box-shadow: 0 0 14px rgba(25,181,183,.6); }
-
-.rows { position: absolute; left: 310px; right: 60px; top: 150px; bottom: 50px; display: grid; grid-template-rows: repeat(8, 1fr); gap: 12px; }
-.r { display: grid; grid-template-columns: 78px 1fr 440px; gap: 18px; align-items: center; padding: 8px 20px 8px 14px; border-radius: 14px; background: linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,.015)); border: 1.5px solid rgba(25,181,183,.4); }
-.r.hot { border-color: rgba(242,169,0,.6); box-shadow: 0 0 26px rgba(242,169,0,.12); }
-.num { width: 62px; height: 62px; border-radius: 12px; border: 2px solid rgba(255,255,255,.6); display: grid; place-items: center; font: 700 28px Bahnschrift; color: #fff; background: rgba(255,255,255,.04); }
-.r h3 { margin: 0 0 3px; font: 700 21px "Segoe UI"; letter-spacing: .02em; color: #fff; text-transform: uppercase; }
-.r p { margin: 0; font-size: 16px; color: #B8C8DC; line-height: 1.3; }
-.r p em { color: #5BE7B0; font-style: normal; font-weight: 600; }
-.viz { height: 84px; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 10px; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.1); padding: 6px 10px; font-size: 13px; color: #B8C8DC; }
-.pill { padding: 5px 10px; border-radius: 7px; border: 1px solid rgba(25,181,183,.6); color: #CFF3F3; background: rgba(25,181,183,.1); font: 600 13px "Segoe UI"; white-space: nowrap; }
-.pill.a { border-color: rgba(242,169,0,.7); background: rgba(242,169,0,.12); color: #FFE0A3; }
-.pill.g { border-color: rgba(52,211,153,.7); background: rgba(52,211,153,.12); color: #BFF3DD; }
-.ar { color: var(--glow); font-size: 18px; }
-.cell { width: 34px; height: 24px; border-radius: 4px; display: inline-block; }
+body { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #fff; }
+.blob { position: absolute; border-radius: 50%; z-index: 0; }
+h1.t { position: absolute; top: 34px; left: 70px; margin: 0; font: 800 46px "Segoe UI"; color: var(--navy); z-index: 2; }
+.sub { position: absolute; top: 96px; left: 72px; font: 600 18px "Segoe UI"; color: var(--muted); z-index: 2; }
+.grid { position: absolute; left: 70px; right: 70px; top: 160px; bottom: 56px; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 26px 24px; z-index: 2; }
+.card { border-radius: 22px; background: var(--ct); position: relative; padding: 24px 24px 20px; display: flex; flex-direction: column; border: 2.5px solid var(--c); }
+.card .n { position: absolute; right: 18px; top: 8px; font: 800 76px "Segoe UI"; color: var(--c); opacity: .22; line-height: 1; }
+.card .ic { width: 66px; height: 66px; border-radius: 50%; background: var(--c); display: grid; place-items: center; box-shadow: 0 0 0 7px #fff; }
+.card .ic svg { width: 34px; height: 34px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.y .ic svg { stroke: var(--navy); }
+.card h3 { margin: 18px 0 8px; font: 800 27px "Segoe UI"; color: var(--navy); line-height: 1.15; }
+.card p { margin: 0; font-size: 20px; line-height: 1.38; color: var(--ink); }
+.card .chips { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; }
+.chip2 { background: #fff; border: 1.5px solid var(--c); color: var(--cd); border-radius: 999px; font: 700 13.5px "Segoe UI"; padding: 4px 11px; }
+.chip2.hot { background: var(--c); color: #fff; } .y .chip2.hot { color: var(--navy); }
+.g { --c:#1FA971; --cd:#0E7C4F; --ct:#E9F7EF; } .o { --c:#F28C28; --cd:#B85B07; --ct:#FFF1E2; } .b { --c:#2F80D1; --cd:#1F63A8; --ct:#EAF3FC; } .y { --c:#F7B500; --cd:#7A5900; --ct:#FFF7DC; }
 </style></head><body>
-<div class="dark-slide">
-  <div class="dtitle"><h1>What Makes Us Different</h1><p>Built for coaching institutes, not for demos</p></div>
-  <div class="rail">
-    <div class="tt">OUR GATES</div>
-    <div class="box">
-      <div class="node"><div class="dot"></div>Consent first</div>
-      <div class="node"><div class="dot"></div>Supportive only</div>
-      <div class="node"><div class="dot"></div>Checked before it ships</div>
-      <div class="node"><div class="dot"></div>Honest about doubt</div>
-      <div class="node"><div class="dot"></div>Free to run</div>
-      <div class="node"><div class="dot"></div>Misses reported</div>
-    </div>
-  </div>
-  <div class="rows" id="rows"></div>
-</div>
+<div class="blob" style="right:-200px;top:-220px;width:560px;height:560px;background:#E3EEFB"></div>
+<div class="blob" style="left:-220px;bottom:-240px;width:560px;height:560px;background:#FFF1DC"></div>
+<h1 class="t">What makes Pragati different</h1>
+<div class="sub">Built for coaching institutes, not for demos</div>
+<div class="grid" id="g"></div>
 <script>
-const heat = (vals)=>vals.map(v=>`<span class="cell" style="background:${['#1c3550','#2f7f87','#19B5B7','#8FE3E3'][v]}"></span>`).join('');
-const rows = [
- ['01','Age-aware routing','Under 18: a model for <em>academic support</em>, plain rules for dropout and fees. 18 and over: full model with their own consent.',
-  `<span class="pill">Under 18</span><span class="ar">→</span><span class="pill g">Model: academic</span><span class="pill a">Rules: dropout, fees</span>`, true],
- ['02','Parent reports that are checked','Every number and topic is verified in code. If any check fails, a human-written template is sent instead. <em>20 templates, 8 checks.</em>',
-  `<span class="pill">Facts</span><span class="ar">→</span><span class="pill">Optional AI wording</span><span class="ar">→</span><span class="pill g">8 checks</span><span class="ar">→</span><span class="pill a">Template</span>`],
- ['03','Wrong answer-key detector','A question the strongest students get wrong is flagged as a likely wrong key, with a suggested correction.',
-  `<svg width="200" height="70" viewBox="0 0 200 70"><path d="M5 60 C60 55 110 20 195 8" stroke="#19B5B7" stroke-width="3" fill="none"/><path d="M5 12 C60 18 110 48 195 62" stroke="#F2A900" stroke-width="3" fill="none"/><text x="120" y="18" fill="#9FB4CF" font-size="11">normal item</text><text x="110" y="66" fill="#FFC94D" font-size="11">suspect key</text></svg>`],
- ['04','Honest percentile ranges','A band that narrows as tests accumulate, with a disclaimer. Never a single number, never a rank promise.',
-  `<svg width="220" height="70" viewBox="0 0 220 70"><g fill="#19B5B7"><rect x="10" y="6" width="26" height="58" rx="4" opacity=".35"/><rect x="55" y="12" width="26" height="46" rx="4" opacity=".5"/><rect x="100" y="18" width="26" height="34" rx="4" opacity=".7"/><rect x="145" y="24" width="26" height="22" rx="4"/></g><text x="180" y="40" fill="#9FB4CF" font-size="11">narrows</text></svg>`],
- ['05','Strong with small batches','Question difficulty comes from a pooled bank across institutes, so a batch of 60 students is enough. <em>Result pending.</em>',
-  `<span class="pill">Institute A</span><span class="pill">Institute B</span><span class="pill">Institute C</span><span class="ar">→</span><span class="pill g">Shared item bank</span>`],
- ['06','Runs on one laptop, free','Local database, local small models, no paid services. Works with the network unplugged.',
-  `<span class="pill g">₹0 marginal</span><span class="pill">Laptop</span><span class="pill">Local model</span><span class="pill">Offline</span>`],
- ['07','Compliance built in','Age check at enrolment, no test the day after the weekly off, pro-rata refund calculator, consent ledger and register exports.',
-  `<span class="pill g">✓ Age check</span><span class="pill g">✓ Test-day rule</span><span class="pill g">✓ Refunds</span><span class="pill g">✓ Consent ledger</span>`],
- ['08','Tested in the open','Public datasets, a held-out test, an independent attack on the report checker, and every miss reported.',
-  `<span class="pill g">OULAD 0.706</span><span class="pill g">ASSISTments 0.763</span><span class="pill a">Misses listed</span>`, true],
+const items = [
+ ['g','scale','Age-aware routing','Under 18: a model for academic support, plain rules for dropout and fees. 18 and over: full model with their own consent.',['Under 18','Model: academic','Rules: dropout, fees']],
+ ['o','check','Parent reports that are checked','Every number and topic is verified in code. If any check fails, a human-written template is sent instead.',['20 templates','8 checks']],
+ ['b','key','Wrong answer-key detector','A question the strongest students get wrong is flagged as a likely wrong key, with a suggested correction.',['suspect key','re-score in one click']],
+ ['y','range','Honest percentile ranges','A band that narrows as tests accumulate, with a disclaimer. Never a single number, never a rank promise.',['narrows with data','editable NTA table']],
+ ['y','users','Strong with small batches','Question difficulty comes from a pooled bank across institutes, so a batch of 60 students is enough.',['Shared item bank','Result pending']],
+ ['b','laptop','Runs on one laptop, free','Local database, local small models, no paid services. Works with the network unplugged.',['₹0 marginal','Local model','Offline']],
+ ['g','shield','Compliance built in','Age check at enrolment, no test the day after the weekly off, pro-rata refund calculator, consent ledger, register exports.',['Age check','Test-day rule','Refunds','Consent ledger']],
+ ['o','flask','Tested in the open','Public datasets, a held-out test, an independent attack on the report checker, and every miss reported.',['OULAD 0.706','ASSISTments 0.763','Misses listed']]
 ];
-document.getElementById('rows').innerHTML = rows.map(r=>`<div class="r ${r[4]?'hot':''}"><div class="num">${r[0]}</div><div><h3>${r[1]}</h3><p>${r[2]}</p></div><div class="viz">${r[3]}</div></div>`).join('');
+const IC = {
+ scale:'<path d="M12 3v18M5 7h14M5 7l-3 7a3 3 0 0 0 6 0L5 7zM19 7l-3 7a3 3 0 0 0 6 0l-3-7z"/>',
+ check:'<path d="M20 6 9 17l-5-5"/><rect x="2" y="2" width="20" height="20" rx="4"/>',
+ key:'<circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 21 2M16 7l3 3M14 9l2 2"/>',
+ range:'<path d="M3 20h18M7 20V9M12 20V4M17 20v-8"/>',
+ users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+ laptop:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/>',
+ shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+ flask:'<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/>'
+};
+document.getElementById('g').innerHTML = items.map((it,i)=>`<div class="card ${it[0]}"><div class="n">0${i+1}</div><div class="ic"><svg viewBox="0 0 24 24">${IC[it[1]]}</svg></div><h3>${it[2]}</h3><p>${it[3]}</p><div class="chips">${it[4].map((c,k)=>`<span class="chip2 ${k==0?'hot':''}">${c}</span>`).join('')}</div></div>`).join('');
 </script></body></html>

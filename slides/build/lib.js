@@ -7,16 +7,25 @@ const Fa = require("react-icons/fa6");
 const Md = require("react-icons/md");
 
 const T = {
-  navy: "0B2545", ink: "1B2A41", muted: "4F5D75", teal: "0F8B8D", tealDark: "0A6F71", tealTint: "E3F2F2",
-  tint: "F4F7FB", line: "D5DEEA", white: "FFFFFF", amber: "F2A900", red: "B3261E", green: "1B7F4F",
-  tealOnDark: "19B5B7", grey: "9AA7B8", greyLight: "EEF2F6",
+  // v3 light palette: white paper, charcoal-green ink, four accents (green, orange, blue, yellow) in the Indian-infographic spirit
+  navy: "1E2B25", ink: "26332C", muted: "5B675F", teal: "1FA971", tealDark: "0E7C4F", tealTint: "E4F5EC",
+  tint: "F6F8F5", line: "DDE3DF", white: "FFFFFF", amber: "F7B500", red: "E04A3A", green: "1B8F55",
+  tealOnDark: "2BC48A", grey: "9AA39D", greyLight: "EEF1EE",
+  orange: "F28C28", orangeD: "D9701A", orangeT: "FFEBD6", blue: "2F80D1", blueD: "1F63A8", blueT: "E3EEFB", yellowT: "FFF3CC", redT: "FCE4E0",
 };
-const F = { head: "Cambria", body: "Calibri", hindi: "Nirmala UI" };
+// accent cycle used for panels, badges and header bars: [solid, deep, tint, text-on-solid]
+const ACC = [
+  { c: T.teal, d: T.tealDark, t: T.tealTint, on: T.white },
+  { c: T.orange, d: T.orangeD, t: T.orangeT, on: T.white },
+  { c: T.blue, d: T.blueD, t: T.blueT, on: T.white },
+  { c: T.amber, d: "C99700", t: T.yellowT, on: T.navy },
+];
+const F = { head: "Segoe UI", body: "Calibri", hindi: "Nirmala UI" };
 const W = 13.333, H = 7.5, X0 = 0.55, CW = 12.233;
 
 // rough text width (inches) for pills and single-line labels; the renderer check catches under-estimates
 function tw(text, size, bold = false, caps = false) {
-  const em = caps ? 0.68 : bold ? 0.55 : 0.5;
+  const em = caps ? 0.6 : bold ? 0.55 : 0.5;
   return text.length * em * size / 72;
 }
 
@@ -99,8 +108,8 @@ function makeKit(pres) {
   // origin / status tags
   const TAGS = {
     public: { label: "PUBLIC DATA", line: T.tealDark, color: T.tealDark },
-    synthetic: { label: "SYNTHETIC DATA", line: T.navy, color: T.navy },
-    model: { label: "MODEL OUTPUT", line: T.navy, color: T.navy },
+    synthetic: { label: "SYNTHETIC DATA", line: T.blueD, color: T.blueD },
+    model: { label: "MODEL OUTPUT", line: T.orangeD, color: T.orangeD },
     mock: { label: "ILLUSTRATIVE MOCK-UP", line: T.muted, color: T.muted },
     ps: { label: "GUIDE BASELINE", line: T.muted, color: T.muted },
     built: { label: "BUILT", fill: T.tealDark, color: T.white },
@@ -132,7 +141,7 @@ function makeKit(pres) {
     const rh = o.rowH ?? 0.46, hh = o.headH ?? 0.42, fs = o.size ?? 13;
     let cx = x;
     const total = cols.reduce((a, b) => a + b, 0);
-    kit.rect(slide, x, y, total, hh, o.headFill ?? T.navy);
+    kit.rect(slide, x, y, total, hh, o.headFill ?? T.tealDark);
     header.forEach((h, i) => {
       const hf = Array.isArray(o.headFills) ? o.headFills[i] : null;
       if (hf) kit.rect(slide, cx, y, cols[i], hh, hf);
@@ -156,4 +165,4 @@ function makeKit(pres) {
   return kit;
 }
 
-module.exports = { T, F, W, H, X0, CW, tw, makeKit };
+module.exports = { T, ACC, F, W, H, X0, CW, tw, makeKit };

@@ -4,7 +4,7 @@
 .k5 .card { padding: 14px 16px; }
 .k5 .kpi b { font-size: 32px; }
 .d { font-size: 13px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 6px; }
-.d.up { background: #DDF3E6; color: var(--green); } .d.dn { background: #FBE3E1; color: var(--red); }
+.d.up { background: #DDF3E6; color: var(--green); } .d.dn { background: #FCE4E0; color: var(--red); }
 .hb { display: grid; grid-template-columns: 110px 1fr 54px; gap: 10px; align-items: center; margin: 9px 0; font-size: 14.5px; }
 .ck { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14.5px; }
 .ck:first-of-type { border-top: none; }
@@ -29,7 +29,7 @@
           <div class="hb"><span>JEE-11A</span><div class="bar"><i style="width:62%"></i></div><b>0.62</b></div>
           <div class="hb"><span>JEE-11B</span><div class="bar"><i style="width:58%"></i></div><b>0.58</b></div>
           <div class="hb"><span>JEE-12A</span><div class="bar"><i style="width:66%"></i></div><b>0.66</b></div>
-          <div class="hb"><span>JEE-12B</span><div class="bar"><i style="width:51%;background:#6FBFC0"></i></div><b>0.51</b></div>
+          <div class="hb"><span>JEE-12B</span><div class="bar"><i style="width:51%;background:#6FCB9E"></i></div><b>0.51</b></div>
           <div class="hb"><span>Droppers</span><div class="bar"><i style="width:71%"></i></div><b>0.71</b></div>
           <div style="font-size:13px;color:var(--muted);margin-top:8px">Batch level only. No student ranking anywhere.</div></div>
         <div class="card"><h3>Compliance</h3>
@@ -42,7 +42,7 @@
         <div class="card"><h3>Support funnel, last 8 weeks</h3>
           <div class="hb" style="grid-template-columns:130px 1fr 40px"><span>On a list</span><div class="bar"><i style="width:100%"></i></div><b>31</b></div>
           <div class="hb" style="grid-template-columns:130px 1fr 40px"><span>Contacted</span><div class="bar"><i style="width:84%"></i></div><b>26</b></div>
-          <div class="hb" style="grid-template-columns:130px 1fr 40px"><span>Back on track</span><div class="bar"><i style="width:45%;background:#6FBFC0"></i></div><b>14</b></div>
+          <div class="hb" style="grid-template-columns:130px 1fr 40px"><span>Back on track</span><div class="bar"><i style="width:45%;background:#6FCB9E"></i></div><b>14</b></div>
           <div style="font-size:13px;color:var(--muted);margin-top:8px">Logged outcomes feed the "what works" evidence.</div></div>
         <div class="card"><h3>Topic coverage alerts</h3>
           <div class="ck"><span class="wa">!</span>JEE-11A Rotation: whole batch low, likely not taught</div>
@@ -59,12 +59,12 @@
 </div>
 <script>
 const mo=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'], v=[0.85,0.95,1,1,0.99,0.98,0.93,0.9,0.88,0.82,0.6,0.45];
-let s='<g font-size="12" fill="#4F5D75">';
-[0,0.5,1].forEach(p=>{const y=210-p*180; s+=`<line x1="40" x2="610" y1="${y}" y2="${y}" stroke="#E5EAF1"/><text x="6" y="${y+4}">${Math.round(p*100)}%</text>`});
+let s='<g font-size="12" fill="#5B675F">';
+[0,0.5,1].forEach(p=>{const y=210-p*180; s+=`<line x1="40" x2="610" y1="${y}" y2="${y}" stroke="#E3E8E4"/><text x="6" y="${y+4}">${Math.round(p*100)}%</text>`});
 s+='</g>';
 const pts=v.map((x,i)=>[56+i*48,210-x*180]);
-s+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')} 584,210 56,210" fill="#6FBFC0" opacity=".35"/><polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#0F8B8D" stroke-width="3"/>`;
-pts.forEach((p,i)=>{s+=`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#0F8B8D"/><text x="${p[0]-12}" y="232" font-size="12" fill="#4F5D75">${mo[i]}</text>`});
+s+=`<polygon points="${pts.map(p=>p.join(',')).join(' ')} 584,210 56,210" fill="#6FCB9E" opacity=".35"/><polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#168A58" stroke-width="3"/>`;
+pts.forEach((p,i)=>{s+=`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#168A58"/><text x="${p[0]-12}" y="232" font-size="12" fill="#5B675F">${mo[i]}</text>`});
 s+='<text x="430" y="52" font-size="12" fill="#8a5a00">Boards</text><text x="330" y="60" font-size="12" fill="#8a5a00">Festival dip</text>';
 document.getElementById('trend').innerHTML=s;
 </script></body></html>

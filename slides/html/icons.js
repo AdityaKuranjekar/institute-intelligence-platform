@@ -19,5 +19,5 @@ const IC = {
 function ico(n){ return IC[n] || ''; }
 function sidebar(active){
   const items = ['grid','list','users','upload','chart','file','shield'];
-  return `<div class="side"><div class="logo">A</div>` + items.map(i=>`<div class="ico ${i===active?'on':''}">${IC[i]}</div>`).join('') + `<div style="flex:1"></div><div class="ico">${IC.settings}</div></div>`;
+  return `<div class="side"><div class="logo">P</div>` + items.map(i=>`<div class="ico ${i===active?'on':''}">${IC[i]}</div>`).join('') + `<div style="flex:1"></div><div class="ico">${IC.settings}</div></div>`;
 }

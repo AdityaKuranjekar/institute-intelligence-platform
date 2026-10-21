@@ -20,7 +20,7 @@ def _slide_texts():
 def test_deck_exists_with_expected_structure():
     assert PPTX.exists(), "build it: cd slides/build && node deck.js"
     texts = _slide_texts()
-    assert len(texts) == 19  # title + 12 content + 5 appendix + final
+    assert len(texts) == 20  # title + 13 content (incl. web+app surfaces) + 5 appendix + final
     assert "CASE B" in texts[0]
     assert "How we used AI" in texts[-1], "PS rule 2: AI-use disclosure must be the final slide"
     content_slides = texts[1:13]
@@ -42,7 +42,7 @@ def test_unverified_numbers_are_not_presented_as_results():
 def test_every_content_slide_tags_its_numbers_by_origin():
     texts = _slide_texts()
     # slides with numeric claims must carry one of the origin tags
-    for idx in (4, 9, 10, 11):  # 1-based slide numbers of: analytics, ROI, unit economics ... (title is slide 1)
+    for idx in (5, 10, 11, 12):  # 1-based slide numbers of: analytics, ROI, unit economics ... (title is slide 1)
         t = texts[idx].upper()
         assert any(k in t for k in ("PUBLIC DATA", "MODEL OUTPUT", "SYNTHETIC DATA", "GUIDE BASELINE")), f"slide {idx + 1} lacks an origin tag"
 

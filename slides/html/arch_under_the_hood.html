@@ -1,84 +1,100 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>Under the hood</title>
 <link rel="stylesheet" href="ui.css">
 <style>
-.row { position: absolute; left: 65px; right: 65px; display: flex; gap: 0; }
-.stage { width: 395px; height: 590px; display: flex; flex-direction: column; }
-.stage .lab { font: 700 14px Bahnschrift; letter-spacing: .16em; color: var(--glow); }
-.stage h2 { margin: 4px 0 2px; font: 700 28px Cambria; color: #fff; }
-.stage .sub { color: #9FB4CF; font-size: 15px; margin-bottom: 12px; }
-.feat { padding: 11px 0; border-top: 1px solid rgba(255,255,255,.09); display: flex; flex-direction: column; gap: 4px; }
-.feat:first-of-type { border-top: none; }
-.feat b { font-size: 17.5px; color: #fff; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
-.feat p { margin: 0; font-size: 14.5px; color: #B4C4D8; line-height: 1.35; }
-.feat b i { font-style: normal; width: 8px; height: 8px; background: var(--glow); display: inline-block; margin-right: 10px; border-radius: 2px; }
-.feat b span.l { display: flex; align-items: center; }
-.proof { margin-top: auto; border: 1.5px solid rgba(52,211,153,.55); background: rgba(52,211,153,.09); border-radius: 12px; padding: 11px 14px; font-size: 15px; color: #CFF5E5; }
-.proof b { display:block; font: 700 12px Bahnschrift; letter-spacing:.14em; color:#5BE7B0; margin-bottom:3px; }
-.arrow { width: 70px; display: grid; place-items: center; }
-.arrow svg { width: 60px; height: 40px; }
-.trust { position: absolute; left: 65px; right: 65px; top: 800px; height: 150px; }
-.trust .items { display: flex; gap: 14px; margin-top: 8px; }
-.trust .it { flex: 1; background: rgba(25,181,183,.07); border: 1px solid rgba(25,181,183,.35); border-radius: 12px; padding: 12px 14px; }
-.trust .it b { display: block; font-size: 16.5px; color: #fff; margin-bottom: 3px; }
-.trust .it span { font-size: 13.5px; color: #B4C4D8; }
-.metrics { position: absolute; left: 65px; right: 65px; bottom: 36px; display: flex; gap: 14px; }
-.m { flex: 1; text-align: center; padding: 10px 6px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); }
-.m b { display: block; font: 700 34px Cambria; color: #fff; }
-.m.hot { border-color: rgba(52,211,153,.6); background: rgba(52,211,153,.10); }
-.m.hot b { color: #5BE7B0; }
-.m span { font: 600 12.5px Bahnschrift; letter-spacing: .12em; color: #9FB4CF; text-transform: uppercase; }
+body { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #fff; }
+.blob { position: absolute; border-radius: 50%; filter: blur(0); z-index: 0; }
+h1.t { position: absolute; top: 34px; left: 70px; margin: 0; font: 800 46px "Segoe UI"; color: var(--navy); z-index: 2; }
+.sub { position: absolute; top: 96px; left: 72px; font: 600 18px "Segoe UI"; color: var(--muted); z-index: 2; }
+.legend { position: absolute; top: 50px; right: 70px; display: flex; gap: 12px; z-index: 2; align-items: center; font: 600 15px "Segoe UI"; color: var(--muted); }
+.row { position: absolute; left: 70px; right: 70px; top: 160px; display: flex; z-index: 2; }
+.stage { width: 408px; height: 600px; background: #fff; border-radius: 18px; border: 2px solid var(--c); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 24px rgba(30,43,37,.07); }
+.stage .hd { background: var(--c); color: #fff; padding: 16px 22px 14px; position: relative; }
+.stage .hd .lab { font: 700 13px "Segoe UI"; letter-spacing: .16em; opacity: .9; }
+.stage .hd h2 { margin: 2px 0 0; font: 800 32px "Segoe UI"; }
+.stage .hd .s { font-size: 15px; opacity: .95; }
+.stage .hd .num { position: absolute; right: 18px; top: 10px; font: 800 64px "Segoe UI"; opacity: .22; }
+.stage .bd { padding: 6px 22px 0; flex: 1; display: flex; flex-direction: column; }
+.feat { padding: 11px 0; border-top: 1px dashed #D4DBD6; }
+.feat:first-child { border-top: none; }
+.feat b { font-size: 18px; color: var(--navy); display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.feat b span.l { display: flex; align-items: center; gap: 10px; }
+.feat b i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); display: inline-block; flex: none; }
+.feat p { margin: 3px 0 0 20px; font-size: 14.5px; color: var(--muted); line-height: 1.35; }
+.proof { margin: auto 0 18px; border-radius: 12px; padding: 11px 14px; font-size: 14.5px; color: var(--ink); background: var(--ct); }
+.proof b { display: block; font: 800 12px "Segoe UI"; letter-spacing: .14em; color: var(--cd); margin-bottom: 3px; }
+.stag { display: inline-block; font: 700 11.5px "Segoe UI"; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.stag.built { background: #1B8F55; color: #fff; }
+.stag.build { background: var(--amber); color: var(--navy); }
+.stag.design { background: #fff; color: var(--muted); border: 1.5px solid #B9C2BC; }
+.chev { width: 36px; display: grid; place-items: center; }
+.chev svg { width: 36px; height: 60px; }
+.trust { position: absolute; left: 70px; right: 70px; top: 784px; z-index: 2; }
+.trust .tt { font: 800 15px "Segoe UI"; letter-spacing: .16em; color: var(--muted); margin-bottom: 8px; }
+.trust .items { display: flex; gap: 14px; }
+.trust .it { flex: 1; border-radius: 12px; padding: 11px 14px 11px 16px; background: var(--ct); border-left: 7px solid var(--c); }
+.trust .it b { display: block; font-size: 17px; color: var(--navy); margin-bottom: 2px; }
+.trust .it span { font-size: 13.5px; color: var(--muted); line-height: 1.3; display: block; }
+.metrics { position: absolute; left: 70px; right: 70px; bottom: 28px; display: flex; gap: 14px; z-index: 2; }
+.m { flex: 1; text-align: center; padding: 8px 6px 9px; border-radius: 999px; background: var(--c); color: #fff; }
+.m b { display: block; font: 800 34px "Segoe UI"; line-height: 1.1; }
+.m span { font: 700 12px "Segoe UI"; letter-spacing: .1em; text-transform: uppercase; opacity: .95; }
+.g { --c:#1FA971; --cd:#0E7C4F; --ct:#E4F5EC; } .o { --c:#F28C28; --cd:#C4660E; --ct:#FFEBD6; } .b { --c:#2F80D1; --cd:#1F63A8; --ct:#E3EEFB; } .y { --c:#F7B500; --cd:#8A6500; --ct:#FFF3CC; }
+.y .hd { color: var(--navy); }
 </style></head><body>
-<div class="dark-slide">
-  <div class="dtitle"><h1>Under the Hood: System Architecture</h1><p>Local-first · multi-tenant · privacy-routed · free to run</p></div>
-  <div class="row" id="row" style="top:170px"></div>
-  <div class="trust">
-    <div class="mono" style="font-size:14px;color:var(--glow);letter-spacing:.16em">Trust layer under every stage</div>
-    <div class="items">
-      <div class="it"><b>One institute per row</b><span>PostgreSQL 16 row-level security, tested: another tenant sees 0 rows</span></div>
-      <div class="it"><b>Consent gate</b><span>Per purpose, revocable, verified at the admission desk</span></div>
-      <div class="it"><b>Age-aware routing</b><span>Under 18: academic-support model, dropout and fees by plain rules</span></div>
-      <div class="it"><b>Audit log</b><span>Who saw which risk data, kept at least one year</span></div>
-      <div class="it"><b>Data minimised</b><span>No ID images, counselling notes or photos stored</span></div>
-    </div>
+<div class="blob" style="left:-160px;top:-180px;width:520px;height:520px;background:#FFF1DC"></div>
+<div class="blob" style="right:-180px;top:560px;width:560px;height:560px;background:#E4F5EC"></div>
+<h1 class="t">Under the hood: how Pragati works</h1>
+<div class="sub">Local-first · one institute per row · privacy-routed · free to run</div>
+<div class="legend"><span class="stag built">Built</span> working code with tests <span class="stag build">In build</span> <span class="stag design">Designed</span> specified, not coded</div>
+<div class="row" id="row"></div>
+<div class="trust">
+  <div class="tt">TRUST LAYER UNDER EVERY STAGE</div>
+  <div class="items">
+    <div class="it g"><b>One institute per row</b><span>PostgreSQL 16 row-level security, tested: another tenant sees 0 rows</span></div>
+    <div class="it o"><b>Consent gate</b><span>Per purpose, revocable, verified at the admission desk</span></div>
+    <div class="it b"><b>Age-aware routing</b><span>Under 18: academic-support model; dropout and fees by plain rules</span></div>
+    <div class="it y"><b>Audit log</b><span>Who saw which risk data, kept at least one year</span></div>
+    <div class="it g"><b>Data minimised</b><span>No ID images, counselling notes or photos stored</span></div>
   </div>
-  <div class="metrics">
-    <div class="m hot"><b>31</b><span>tables, all isolated</span></div>
-    <div class="m hot"><b>23</b><span>API endpoints specified</span></div>
-    <div class="m hot"><b>380</b><span>bilingual syllabus topics</span></div>
-    <div class="m hot"><b>116</b><span>automated tests</span></div>
-    <div class="m hot"><b>₹3.6</b><span>per student per month</span></div>
-    <div class="m hot"><b>0</b><span>paid services needed</span></div>
-  </div>
+</div>
+<div class="metrics">
+  <div class="m g"><b>31</b><span>tables, all isolated</span></div>
+  <div class="m o"><b>23</b><span>API endpoints specified</span></div>
+  <div class="m b"><b>380</b><span>bilingual syllabus topics</span></div>
+  <div class="m y"><b>116</b><span>automated tests</span></div>
+  <div class="m g"><b>₹3.6</b><span>per student per month</span></div>
+  <div class="m o"><b>0</b><span>paid services needed</span></div>
 </div>
 <script>
 const st = (k,t)=>`<span class="stag ${k}">${t}</span>`;
 const stages = [
- {lab:'STAGE 01', h:'Capture', sub:'Whatever the institute already has', proof:'12 messy export files with known answers; 210 synthetic OMR photos', f:[
+ {c:'g', lab:'STAGE 01', h:'Capture', sub:'Whatever the institute already has', proof:'12 messy export files with known answers; 210 synthetic OMR photos', f:[
   ['Excel and CSV','Finds the header row; reads English, Hinglish and Devanagari column names',st('build','In build')],
-  ['OMR photo','Four corner marks + QR identify the test; uncertain bubbles get a one-tap fix',st('design','Designed')],
+  ['OMR photo','Four corner marks and a QR identify the test; uncertain bubbles get a one-tap fix',st('design','Designed')],
   ['Forms and WhatsApp','Pulled in through the same mapper; parent delivery is a preview',st('design','Designed')],
   ['Offline queue','Uploads wait on the laptop and sync when the network returns',st('design','Designed')]]},
- {lab:'STAGE 02', h:'Structure', sub:'Clean, version, tag', proof:'31 tables, 380 topics; tenant isolation tested on a live database', f:[
+ {c:'o', lab:'STAGE 02', h:'Structure', sub:'Clean, version, tag', proof:'31 tables, 380 topics; tenant isolation tested on a live database', f:[
   ['Column mapper','Row-level error preview before anything is saved',st('build','In build')],
   ['Versioned answer keys','Fix a key and every score is recomputed; dropped and multi-correct handled',st('build','In build')],
   ['Question to topic tagging','Embedding shortlist, local model picks, teacher review queue',st('build','In build')],
   ['Syllabus graph','380 bilingual topics with prerequisites',st('built','Built')]]},
- {lab:'STAGE 03', h:'Intelligence', sub:'Estimate, warn, predict', proof:'Public data: OULAD AUC 0.706, ASSISTments AUC 0.763', f:[
+ {c:'b', lab:'STAGE 03', h:'Intelligence', sub:'Estimate, warn, predict', proof:'Public data: OULAD AUC 0.706, ASSISTments AUC 0.763', f:[
   ['Difficulty and wrong keys','2-parameter IRT with priors; negative discrimination flags a bad key',st('build','In build')],
   ['Mastery with uncertainty','Per-topic estimate shrunk to the student and batch; "not enough data" allowed',st('build','In build')],
-  ['Early warning','LightGBM + calibration, routed by age and purpose; validated on OULAD',st('build','In build')],
-  ['Percentile range','Quantile model + conformal band + editable NTA mapping table',st('build','In build')]]},
- {lab:'STAGE 04', h:'Deliver', sub:'Views and parent messages', proof:'20 templates, 8 automatic checks, works with no AI model', f:[
-  ['Verified parent report','Facts → optional local model → 8 checks → template if any check fails',st('built','Built')],
+  ['Early warning','LightGBM and calibration, routed by age and purpose; validated on OULAD',st('build','In build')],
+  ['Percentile range','Quantile model, conformal band and an editable NTA mapping table',st('build','In build')]]},
+ {c:'y', lab:'STAGE 04', h:'Deliver', sub:'Views and parent messages', proof:'20 templates, 8 automatic checks, works with no AI model', f:[
+  ['Verified parent report','Facts, optional local model, 8 checks, template if any check fails',st('built','Built')],
   ['Teacher and mentor views','Topic heatmap, weekly support list with reasons and actions',st('build','In build')],
   ['Owner dashboard','Retention, batch comparison, interventions done, compliance exports',st('build','In build')],
   ['Hindi and English','Templates and fonts bundled; no internet needed',st('built','Built')]]}
 ];
 const row = document.getElementById('row');
+const cols = {g:'#1FA971', o:'#F28C28', b:'#2F80D1', y:'#F7B500'};
 stages.forEach((s,i)=>{
-  const c = document.createElement('div'); c.className='stage gcard' + (i==2?' amber':'');
-  c.innerHTML = `<div class="lab">${s.lab}</div><h2>${s.h}</h2><div class="sub">${s.sub}</div>` + s.f.map(f=>`<div class="feat"><b><span class="l"><i></i>${f[0]}</span>${f[2]}</b><p>${f[1]}</p></div>`).join('') + `<div class="proof"><b>EVIDENCE</b>${s.proof}</div>`;
+  const c = document.createElement('div'); c.className='stage ' + s.c;
+  c.innerHTML = `<div class="hd"><div class="num">${i+1}</div><div class="lab">${s.lab}</div><h2>${s.h}</h2><div class="s">${s.sub}</div></div><div class="bd">` + s.f.map(f=>`<div class="feat"><b><span class="l"><i></i>${f[0]}</span>${f[2]}</b><p>${f[1]}</p></div>`).join('') + `<div class="proof"><b>EVIDENCE</b>${s.proof}</div></div>`;
   row.appendChild(c);
-  if(i<3){ const a=document.createElement('div'); a.className='arrow'; a.innerHTML='<svg viewBox="0 0 60 40"><path d="M2 20 H48" stroke="#19B5B7" stroke-width="3" fill="none"/><path d="M40 8 L56 20 L40 32" stroke="#19B5B7" stroke-width="3" fill="none"/></svg>'; row.appendChild(a); }
+  if(i<3){ const a=document.createElement('div'); a.className='chev'; a.innerHTML=`<svg viewBox="0 0 36 60"><path d="M6 8 L28 30 L6 52" stroke="${cols[stages[i+1].c]}" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`; row.appendChild(a); }
 });
 </script></body></html>

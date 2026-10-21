@@ -22,6 +22,7 @@ FILES = {
     ("Cambria", False): "cambria.ttc", ("Cambria", True): "cambriab.ttf",
     ("Nirmala UI", False): "NIRMALA.TTF", ("Nirmala UI", True): "NIRMALAB.TTF",
     ("Arial", False): "arial.ttf", ("Arial", True): "arialbd.ttf",
+    ("Segoe UI", False): "segoeui.ttf", ("Segoe UI", True): "segoeuib.ttf",
 }
 _font_cache = {}
 
@@ -258,6 +259,19 @@ def render(pptx, outdir, only=None):
                     d.rounded_rectangle(box, radius=rad, fill=fill, outline=lcol, width=int(lw) if lcol else 0)
                 elif prst in ("rect",):
                     d.rectangle(box, fill=fill, outline=lcol, width=int(lw) if lcol else 0)
+                elif prst in ("chevron", "homePlate", "trapezoid"):
+                    X0_, Y0_, X1_, Y1_ = box; bw, bh = X1_ - X0_, Y1_ - Y0_
+                    if prst == "trapezoid":
+                        ins = 0.25 * min(bw, bh)
+                        pts = [(X0_ + ins, Y0_), (X1_ - ins, Y0_), (X1_, Y1_), (X0_, Y1_)]
+                        if fv:
+                            pts = [(px, Y0_ + Y1_ - py) for px, py in pts]
+                    else:
+                        dd = 0.5 * min(bw, bh)
+                        pts = [(X0_, Y0_), (X1_ - dd, Y0_), (X1_, (Y0_ + Y1_) / 2), (X1_ - dd, Y1_), (X0_, Y1_)]
+                        if prst == "chevron":
+                            pts.append((X0_ + dd, (Y0_ + Y1_) / 2))
+                    d.polygon(pts, fill=fill, outline=lcol)
                 # text
                 tb = el.find("p:txBody", NS)
                 if tb is None:
