@@ -3,6 +3,8 @@ const React = require("react");
 const RDS = require("react-dom/server");
 const sharp = require("sharp");
 const Lu = require("react-icons/lu");
+const Fa = require("react-icons/fa6");
+const Md = require("react-icons/md");
 
 const T = {
   navy: "0B2545", ink: "1B2A41", muted: "4F5D75", teal: "0F8B8D", tealDark: "0A6F71", tealTint: "E3F2F2",
@@ -22,7 +24,7 @@ const iconCache = new Map();
 async function iconData(name, color) {
   const key = name + color;
   if (iconCache.has(key)) return iconCache.get(key);
-  const Comp = Lu[name];
+  const Comp = Lu[name] || Fa[name] || Md[name];
   if (!Comp) throw new Error("missing icon " + name);
   const svg = RDS.renderToStaticMarkup(React.createElement(Comp, { color: "#" + color, size: 256 }));
   const png = await sharp(Buffer.from(svg)).resize(256, 256).png().toBuffer();
@@ -122,7 +124,7 @@ function makeKit(pres) {
   };
 
   kit.source = (slide, text) => {
-    kit.text(slide, text, { x: X0, y: 7.02, w: 9.6, h: 0.3, fontSize: 10, color: T.muted, valign: "middle" });
+    kit.text(slide, text, { x: 0.45, y: 7.07, w: 10.6, h: 0.3, fontSize: 9.5, color: T.muted, valign: "middle" });
   };
 
   // table from shapes; cols = widths (in), rows = array of arrays of strings or {t, bold, color, fill}

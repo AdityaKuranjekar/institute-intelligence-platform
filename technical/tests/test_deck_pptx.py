@@ -60,3 +60,22 @@ def test_layout_has_no_text_overflow():
 
     issues = rc.render(str(PPTX), tempfile.mkdtemp())
     assert issues == [], issues
+
+
+def test_html_and_chart_assets_exist_and_have_expected_sizes():
+    from PIL import Image
+    assets = REPO / "slides" / "assets"
+    for name in ("arch_under_the_hood", "what_makes_us_different"):
+        assert Image.open(assets / f"{name}.png").size == (1920, 1080)
+    for name in ("screen_heatmap", "screen_support_list", "screen_student_profile", "screen_upload", "screen_owner", "screen_parent_report", "screen_consent"):
+        assert (assets / f"{name}.png").stat().st_size > 50_000, name
+    for name in ("oulad_by_day", "assist_bars", "calibration", "privacy_cost", "value_vs_cost", "roster", "price_benchmark", "ltv_segments"):
+        assert (assets / f"chart_{name}.png").exists(), name
+
+
+def test_charts_use_real_result_numbers():
+    import json
+    summary = json.loads((REPO / "technical/ml/public_validation/artifacts/v1.0.0/public_validation_summary.json").read_text(encoding="utf-8"))
+    text = " ".join(_slide_texts())
+    assert f"{summary['assistments2009']['models']['irt_online_eap']['mean_auc']:.3f}" in text
+    assert f"{summary['oulad']['28']['models']['lgbm_acad_behav_student_cv']['roc_auc']:.3f}" in text

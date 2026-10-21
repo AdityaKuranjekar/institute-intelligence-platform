@@ -1,0 +1,64 @@
+/* Shared styles for the illustrative app screens (light UI) and dark showcase images. Rendered to PNG by slides/build/export_html.py (Edge headless). */
+:root {
+  --navy: #0B2545; --ink: #1B2A41; --muted: #4F5D75; --teal: #0F8B8D; --teal-d: #0A6F71; --teal-t: #E3F2F2; --tint: #F4F7FB;
+  --line: #D5DEEA; --amber: #F2A900; --amber-t: #FFF3CF; --red: #B3261E; --green: #1B7F4F; --glow: #19B5B7;
+  --b0: #EEF2F6; --b1: #CBE8E8; --b2: #6FBFC0; --b3: #0F8B8D;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: "Segoe UI", Calibri, sans-serif; color: var(--ink); background: #fff; -webkit-font-smoothing: antialiased; }
+.mono { font-family: Bahnschrift, "Segoe UI", sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+.serif { font-family: Cambria, Georgia, serif; }
+
+/* ---------- app shell ---------- */
+.app { width: 1600px; height: 900px; display: flex; background: var(--tint); overflow: hidden; }
+.side { width: 84px; background: var(--navy); display: flex; flex-direction: column; align-items: center; padding: 22px 0; gap: 10px; }
+.side .logo { width: 44px; height: 44px; border-radius: 12px; background: var(--teal); color: #fff; font: 700 22px Cambria; display: grid; place-items: center; margin-bottom: 18px; }
+.side .ico { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; color: #9fb4cf; }
+.side .ico.on { background: rgba(25,181,183,.18); color: #fff; box-shadow: inset 3px 0 0 var(--glow); }
+.side svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.top { height: 72px; background: #fff; border-bottom: 1px solid var(--line); display: flex; align-items: center; padding: 0 28px; gap: 16px; }
+.top h1 { font: 700 24px Cambria; color: var(--navy); margin: 0; }
+.top .sub { color: var(--muted); font-size: 15px; }
+.top .sp { flex: 1; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 600; background: var(--teal-t); color: var(--navy); white-space: nowrap; }
+.chip.dark { background: var(--navy); color: #fff; }
+.chip.line { background: #fff; border: 1.5px solid var(--navy); }
+.chip.amber { background: var(--amber); color: var(--navy); }
+.chip.green { background: #DDF3E6; color: var(--green); }
+.chip.red { background: #FBE3E1; color: var(--red); }
+.content { flex: 1; padding: 22px 28px; display: flex; gap: 22px; min-height: 0; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+.card h3 { margin: 0 0 12px; font: 700 17px Cambria; color: var(--navy); }
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi b { font: 700 38px Cambria; color: var(--navy); line-height: 1; }
+.kpi span { color: var(--muted); font-size: 14px; }
+.foot { position: absolute; left: 0; right: 0; bottom: 0; height: 30px; background: #fff; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; display: flex; align-items: center; padding: 0 28px; }
+.bar { height: 12px; border-radius: 6px; background: var(--b0); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--b3); }
+.badge { width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: #fff; font: 700 15px "Segoe UI"; display: grid; place-items: center; box-shadow: 0 0 0 4px rgba(11,37,69,.15); }
+table.t { border-collapse: collapse; width: 100%; font-size: 15px; }
+table.t th { text-align: left; font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); }
+table.t td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+table.t tr:last-child td { border-bottom: none; }
+.reason { display: inline-flex; align-items: center; gap: 6px; background: var(--tint); border: 1px solid var(--line); border-radius: 8px; padding: 4px 9px; font-size: 14px; }
+.reason svg { width: 15px; height: 15px; stroke: var(--teal-d); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- dark showcase ---------- */
+.dark-slide { width: 1920px; height: 1080px; position: relative; overflow: hidden; color: #E8F0FA; background:
+  radial-gradient(1200px 700px at 0% 0%, rgba(25,181,183,.16), transparent 60%),
+  radial-gradient(1000px 700px at 100% 100%, rgba(25,181,183,.12), transparent 60%),
+  radial-gradient(900px 500px at 50% 0%, rgba(242,169,0,.05), transparent 70%), #061529; }
+.dark-slide::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px); background-size: 28px 28px; opacity: .6; }
+.dark-slide > * { position: relative; }
+.dtitle { text-align: center; padding-top: 44px; }
+.dtitle h1 { margin: 0; font: 700 50px Cambria; color: #fff; }
+.dtitle p { margin: 10px 0 0; font: 600 17px Bahnschrift, "Segoe UI"; letter-spacing: .14em; text-transform: uppercase; color: var(--glow); }
+.gcard { background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border: 1.5px solid rgba(25,181,183,.45); border-radius: 18px; box-shadow: 0 0 34px rgba(25,181,183,.16), inset 0 0 0 1px rgba(255,255,255,.04); padding: 22px 24px; }
+.gcard.amber { border-color: rgba(242,169,0,.55); box-shadow: 0 0 34px rgba(242,169,0,.14); }
+.stag { display: inline-block; font: 700 12.5px Bahnschrift, "Segoe UI"; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 6px; }
+.stag.built { background: rgba(52,211,153,.18); color: #5BE7B0; border: 1px solid rgba(52,211,153,.5); }
+.stag.build { background: rgba(242,169,0,.18); color: #FFC94D; border: 1px solid rgba(242,169,0,.55); }
+.stag.design { background: rgba(255,255,255,.07); color: #B8C7DA; border: 1px solid rgba(255,255,255,.28); }
+.hline { height: 1px; background: linear-gradient(90deg, transparent, rgba(25,181,183,.6), transparent); }

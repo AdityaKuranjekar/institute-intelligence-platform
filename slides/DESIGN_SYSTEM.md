@@ -94,3 +94,10 @@ Check contrast with the table above; set alt text on every image; reading order 
 - Tag labels are written in plain words (GUIDE BASELINE, MODEL OUTPUT, PUBLIC DATA, SYNTHETIC DATA, ILLUSTRATIVE MOCK-UP; BUILT, IN BUILD, DESIGNED, PENDING, NOT PROVEN).
 - Amber PENDING tags mark numbers that wait for model results. Remove each one only after the number appears in `technical/scripts/deck_numbers.py` output.
 - Preview and checks: `python slides/build/render_check.py slides/AlphaQ_CaseB_Round1.pptx slides/preview` draws every slide with the real Windows fonts and lists text overflow. Hindi letter shaping in that preview is approximate; PowerPoint renders it correctly.
+
+## 10. Version 2 (2026-10-22): dense consultant style
+The first build was too sparse for a competition deck. Version 2 follows the reference decks: many small evidence panels per slide, dashed teal frames with caps titles, navy header bars, gold highlight rows and green result rows in tables, numbered callouts on screenshots, chart panels drawn from real result files, icons in flat coloured circles, and a source line on every slide.
+- **Two registers:** white dense slides for problem, analysis and business (frames, tables, charts); dark HTML-rendered slides for the product wall, the architecture and the differentiators (glow cards, status tags, evidence boxes), as in the RAY deck.
+- **Type floor:** body 10 to 11.5 pt in dense panels, tables 9.5 to 11 pt, sources 9.5 pt. This is deliberate; titles stay at 24 pt and every number sits in a labelled panel.
+- **Rubric tag** (top right of each content slide) names the judging criterion the slide answers.
+- Components live in `slides/build/lib2.js` (`frame`, `hdrBar`, `labelBar`, `dtable`, `heat`, `badge`, `callout`, `pic`).
