@@ -16,11 +16,11 @@ OUT = HERE.parent / "assets"
 OUT.mkdir(exist_ok=True)
 for f in ("calibri.ttf", "calibrib.ttf", "calibrii.ttf"):
     fm.fontManager.addfont(f"C:/Windows/Fonts/{f}")
-plt.rcParams.update({"font.family": "Calibri", "font.size": 11, "axes.edgecolor": "#C9D1CC", "axes.labelcolor": "#5B675F",
-                     "xtick.color": "#5B675F", "ytick.color": "#5B675F", "axes.spines.top": False, "axes.spines.right": False,
-                     "axes.titleweight": "bold", "axes.titlecolor": "#1E2B25", "figure.facecolor": "white"})
-NAVY, TEAL, TEALD, TINT, GREY, AMBER, RED = "#1E2B25", "#1FA971", "#0E7C4F", "#BFE6D2", "#9AA39D", "#F7B500", "#E04A3A"
-ORANGE, BLUE = "#F28C28", "#2F80D1"
+plt.rcParams.update({"font.family": "Calibri", "font.size": 11, "axes.edgecolor": "#C9D6E8", "axes.labelcolor": "#5B6573",
+                     "xtick.color": "#5B6573", "ytick.color": "#5B6573", "axes.spines.top": False, "axes.spines.right": False,
+                     "axes.titleweight": "bold", "axes.titlecolor": "#17325C", "figure.facecolor": "white"})
+NAVY, TEAL, TEALD, TINT, GREY, AMBER, RED = "#17325C", "#2E6DB4", "#1F4A82", "#B9CFE8", "#9AA6B5", "#F2A900", "#C0392B"
+ORANGE, BLUE = "#8FB0D8", "#5B8DC9"
 DPI = 220
 S = json.loads((REPO / "technical/ml/public_validation/artifacts/v1.0.0/public_validation_summary.json").read_text(encoding="utf-8"))
 
@@ -42,10 +42,10 @@ def oulad_by_day():
     for key, lab, c, ls, mk in series:
         ax.plot([int(d) for d in days], [S["oulad"][d]["models"][key]["roc_auc"] for d in days], color=c, ls=ls, marker=mk, lw=2.2, ms=5, label=lab)
     pub = {14: 0.727, 28: 0.794, 42: 0.804}
-    ax.scatter(list(pub), list(pub.values()), s=70, facecolors="none", edgecolors=ORANGE, lw=2, zorder=5, label="Published (PLOS ONE 2026)")
+    ax.scatter(list(pub), list(pub.values()), s=70, facecolors="none", edgecolors=AMBER, lw=2, zorder=5, label="Published (PLOS ONE 2026)")
     ax.scatter([14, 60], [0.735, 0.815], s=70, facecolors="none", edgecolors=RED, lw=2, marker="D", zorder=5, label="Published (IJET 2026)")
     ax.set_xticks([14, 28, 42, 60]); ax.set_xlabel("Observation window (days from course start)"); ax.set_ylabel("ROC-AUC")
-    ax.set_ylim(0.48, 0.84); ax.grid(axis="y", color="#E5EAF1")
+    ax.set_ylim(0.48, 0.84); ax.grid(axis="y", color="#E3EAF3")
     ax.legend(fontsize=8.2, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.2), ncol=2)
     ax.set_title("Withdrawal prediction on OULAD (real data, student-grouped 5-fold)", fontsize=11, loc="left")
     save(fig, "oulad_by_day")
@@ -63,7 +63,7 @@ def assist_bars():
     for i, r in enumerate(rows):
         ax.text(r[1] + 0.001, i, f"{r[1]:.3f}", va="center", fontsize=10, color=NAVY, fontweight="bold")
     ax.set_xlim(0.68, 0.80); ax.set_xlabel("Next-answer AUC, ASSISTments 2009 (pyKT protocol, 770 held-out students)")
-    ax.grid(axis="x", color="#E5EAF1"); ax.set_axisbelow(True)
+    ax.grid(axis="x", color="#E3EAF3"); ax.set_axisbelow(True)
     ax.set_title("Knowledge tracing: ours vs published", fontsize=11, loc="left")
     save(fig, "assist_bars")
 
@@ -77,7 +77,7 @@ def calibration():
     ax.plot(x, y, color=TEALD, lw=1.4)
     ax.set_xlim(0, 0.7); ax.set_ylim(0, 0.7); ax.set_xlabel("Predicted probability"); ax.set_ylabel("Observed share withdrawing")
     ax.text(0.03, 0.62, "Calibration error 0.009", fontsize=10, fontweight="bold", color=NAVY)
-    ax.legend(fontsize=8, frameon=False, loc="lower right"); ax.grid(color="#E5EAF1")
+    ax.legend(fontsize=8, frameon=False, loc="lower right"); ax.grid(color="#E3EAF3")
     ax.set_title("Calibrated on OULAD, day 28", fontsize=11, loc="left")
     save(fig, "calibration")
 
@@ -96,7 +96,7 @@ def privacy_cost():
         ax.text(i + w / 2, ad[i] + 0.004, f"{ad[i]:.3f}", ha="center", fontsize=8.5, color=NAVY)
         ax.text(i, max(a[i], ad[i]) + 0.016, f"-{ad[i]-a[i]:.3f}", ha="center", fontsize=9.5, color=RED, fontweight="bold")
     ax.set_xticks(list(xs)); ax.set_xticklabels([f"Day {x}" for x in d]); ax.set_ylim(0.6, 0.76); ax.set_ylabel("ROC-AUC")
-    ax.legend(fontsize=8.5, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=1); ax.grid(axis="y", color="#E5EAF1"); ax.set_axisbelow(True)
+    ax.legend(fontsize=8.5, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=1); ax.grid(axis="y", color="#E3EAF3"); ax.set_axisbelow(True)
     ax.set_title("The cost of privacy on real data", fontsize=11, loc="left")
     save(fig, "privacy_cost")
 
@@ -112,7 +112,7 @@ def value_vs_cost():
         ax.text(i - w / 2, value[i] + 0.4, f"{value[i]:.2f}", ha="center", fontsize=9, color=NAVY, fontweight="bold")
         ax.text(i + w / 2, cost[i] + 0.4, f"{cost[i]:.2f}", ha="center", fontsize=9, color=NAVY)
     ax.set_xticks(list(xs)); ax.set_xticklabels(labels); ax.set_ylabel("₹ lakh per year")
-    ax.legend(fontsize=8.5, frameon=False, loc="upper left"); ax.grid(axis="y", color="#E5EAF1"); ax.set_axisbelow(True)
+    ax.legend(fontsize=8.5, frameon=False, loc="upper left"); ax.grid(axis="y", color="#E3EAF3"); ax.set_axisbelow(True)
     ax.set_title("Mid institute: value vs cost per year", fontsize=11, loc="left")
     save(fig, "value_vs_cost")
 
@@ -121,7 +121,7 @@ def roster_curve():
     rows = [r for r in csv.DictReader(open(REPO / "financial/seasonality.csv", encoding="utf-8-sig")) if r["kind"] == "student_idx"]
     lab = [r["label"] for r in rows]; v = [float(r["value"]) for r in rows]
     fig, ax = plt.subplots(figsize=(4.4, 2.2))
-    cols = [TEAL if x >= 0.9 else (AMBER if x >= 0.7 else ORANGE) for x in v]
+    cols = [TEALD if x >= 0.9 else (BLUE if x >= 0.7 else AMBER) for x in v]
     ax.bar(lab, v, color=cols, width=0.7)
     for i, x in enumerate(v):
         ax.text(i, x + 0.02, f"{int(round(x*100))}", ha="center", fontsize=8, color=NAVY)
@@ -137,12 +137,12 @@ def price_benchmark():
     for i, (n, lo, hi) in enumerate(rows):
         ax.barh(i, hi - lo, left=lo, color=GREY, height=0.5)
         ax.text(hi + 0.8, i, f"₹{lo:g} to ₹{hi:g}", va="center", fontsize=9, color=NAVY)
-    ax.barh(len(rows), 40 - 20, left=20, color=ORANGE, height=0.5)
+    ax.barh(len(rows), 40 - 20, left=20, color=TEALD, height=0.5)
     ax.plot([30, 30], [len(rows) - 0.3, len(rows) + 0.3], color="white", lw=3)
-    ax.text(41, len(rows), "Pragati list price: ₹20 / ₹30 / ₹40", va="center", fontsize=9.5, color="#B85B07", fontweight="bold")
+    ax.text(41, len(rows), "Pragati list price: ₹20 / ₹30 / ₹40", va="center", fontsize=9.5, color=TEALD, fontweight="bold")
     ax.set_yticks(range(len(rows) + 1)); ax.set_yticklabels([r[0] for r in rows] + ["Pragati"])
     ax.set_xlim(0, 92); ax.set_xlabel("₹ per student per month at 400 students, excluding GST")
-    ax.grid(axis="x", color="#E5EAF1"); ax.set_axisbelow(True)
+    ax.grid(axis="x", color="#E3EAF3"); ax.set_axisbelow(True)
     ax.set_title("What institutes already pay for generic apps (listed prices)", fontsize=11, loc="left")
     save(fig, "price_benchmark")
 
@@ -150,7 +150,7 @@ def price_benchmark():
 def ltv_segments():
     seg = ["Small", "Mid", "Large"]; ltv = [1.549, 3.671, 9.098]; pay = [18, 6, 3]
     fig, ax = plt.subplots(figsize=(3.4, 2.5))
-    ax.bar(range(3), ltv, color=[TINT, ORANGE, TEALD], width=0.6)
+    ax.bar(range(3), ltv, color=[TINT, BLUE, TEALD], width=0.6)
     for i, x in enumerate(ltv):
         ax.text(i, x + 0.2, f"{x:.1f}x", ha="center", fontsize=11, fontweight="bold", color=NAVY)
     ax.set_xticks(range(3)); ax.set_xticklabels([seg[n] + chr(10) + "payback " + str(pay[n]) + " mo" for n in range(3)], fontsize=9)
@@ -162,7 +162,7 @@ def ltv_segments():
 
 def ring(name, pct, color, big, small=""):
     fig, ax = plt.subplots(figsize=(1.6, 1.6))
-    ax.pie([pct, 100 - pct], colors=[color, "#EEF1EE"], startangle=90, counterclock=False, wedgeprops={"width": 0.26, "edgecolor": "white"})
+    ax.pie([pct, 100 - pct], colors=[color, "#EEF2F7"], startangle=90, counterclock=False, wedgeprops={"width": 0.26, "edgecolor": "white"})
     ax.text(0, 0.06 if small else 0, big, ha="center", va="center", fontsize=17, fontweight="bold", color=NAVY)
     if small:
         ax.text(0, -0.28, small, ha="center", va="center", fontsize=7.5, color="#5B675F")

@@ -41,7 +41,7 @@
 </div>
 <script>
 const T=[['Kinematics',0.72,0.1],['Laws of motion',0.55,0.12],['Work and energy',0.5,0.14],['Rotation',0.22,0.1],['Gravitation',0.4,0.2],['Thermodynamics',0.28,0.12],['Electrostatics',0.62,0.16],['Magnetism',null,0],['Optics',0.45,0.22],['Modern physics',0.58,0.25]];
-const col=v=>v<0.33?['Building','#CDEBDB','var(--navy)']:v<0.6?['Steady','#6FCB9E','var(--navy)']:['Strong','#168A58','#fff'];
+const col=v=>v<0.33?['Building','#C9DBF0','var(--navy)']:v<0.6?['Steady','#7FA6D6','var(--navy)']:['Strong','#1F4A82','#fff'];
 document.getElementById('mastery').innerHTML=T.map(t=>{
   if(t[1]==null) return `<div class="mr"><span>${t[0]}</span><div class="track"></div><span class="band" style="background:var(--b0);color:var(--muted)">Not enough data</span></div>`;
   const lo=Math.max(0,t[1]-t[2])*100, hi=Math.min(1,t[1]+t[2])*100, c=col(t[1]);
@@ -53,8 +53,8 @@ let s='<g font-size="12" fill="#5B675F">';
 s+='</g>';
 let up=[],dn=[];
 m.forEach((x,i)=>{const cx=95+i*108; up.push([cx,220-(hi[i]-40)/60*190]); dn.push([cx,220-(lo[i]-40)/60*190]);});
-s+=`<polygon points="${up.map(p=>p.join(',')).join(' ')} ${dn.slice().reverse().map(p=>p.join(',')).join(' ')}" fill="#6FCB9E" opacity=".45"/>`;
-s+=`<polyline points="${m.map((x,i)=>[95+i*108,220-(mid[i]-40)/60*190].join(',')).join(' ')}" fill="none" stroke="#1E2B25" stroke-width="3"/>`;
-m.forEach((x,i)=>{s+=`<text x="${95+i*108-12}" y="242" font-size="12" fill="#5B675F">${x}</text><circle cx="${95+i*108}" cy="${220-(mid[i]-40)/60*190}" r="4.5" fill="#1E2B25"/>`});
+s+=`<polygon points="${up.map(p=>p.join(',')).join(' ')} ${dn.slice().reverse().map(p=>p.join(',')).join(' ')}" fill="#7FA6D6" opacity=".45"/>`;
+s+=`<polyline points="${m.map((x,i)=>[95+i*108,220-(mid[i]-40)/60*190].join(',')).join(' ')}" fill="none" stroke="#17325C" stroke-width="3"/>`;
+m.forEach((x,i)=>{s+=`<text x="${95+i*108-12}" y="242" font-size="12" fill="#5B675F">${x}</text><circle cx="${95+i*108}" cy="${220-(mid[i]-40)/60*190}" r="4.5" fill="#17325C"/>`});
 document.getElementById('band').innerHTML=s;
 </script></body></html>

@@ -7,20 +7,19 @@ const Fa = require("react-icons/fa6");
 const Md = require("react-icons/md");
 
 const T = {
-  // v3 light palette: white paper, charcoal-green ink, four accents (green, orange, blue, yellow) in the Indian-infographic spirit
-  navy: "1E2B25", ink: "26332C", muted: "5B675F", teal: "1FA971", tealDark: "0E7C4F", tealTint: "E4F5EC",
-  tint: "F6F8F5", line: "DDE3DF", white: "FFFFFF", amber: "F7B500", red: "E04A3A", green: "1B8F55",
-  tealOnDark: "2BC48A", grey: "9AA39D", greyLight: "EEF1EE",
-  orange: "F28C28", orangeD: "D9701A", orangeT: "FFEBD6", blue: "2F80D1", blueD: "1F63A8", blueT: "E3EEFB", yellowT: "FFF3CC", redT: "FCE4E0",
+  // v4 consulting look: white paper, one blue family, amber only for pending / warnings
+  navy: "17325C", ink: "1F2937", muted: "5B6573", teal: "2E6DB4", tealDark: "1F4A82", tealTint: "E3ECF7",
+  tint: "F4F7FB", line: "C9D6E8", white: "FFFFFF", amber: "F2A900", red: "C0392B", green: "1F4A82",
+  tealOnDark: "5B8DC9", grey: "9AA6B5", greyLight: "EEF2F7",
+  orange: "5B8DC9", orangeD: "1F4A82", orangeT: "EAF1FA", blue: "2E6DB4", blueD: "1F4A82", blueT: "E3ECF7", yellowT: "EAF1FA", redT: "F8DEDA",
 };
-// accent cycle used for panels, badges and header bars: [solid, deep, tint, text-on-solid]
 const ACC = [
+  { c: T.tealDark, d: T.tealDark, t: T.tealTint, on: T.white },
   { c: T.teal, d: T.tealDark, t: T.tealTint, on: T.white },
-  { c: T.orange, d: T.orangeD, t: T.orangeT, on: T.white },
-  { c: T.blue, d: T.blueD, t: T.blueT, on: T.white },
-  { c: T.amber, d: "C99700", t: T.yellowT, on: T.navy },
+  { c: T.tealDark, d: T.tealDark, t: T.tealTint, on: T.white },
+  { c: "5B8DC9", d: T.tealDark, t: T.tealTint, on: T.white },
 ];
-const F = { head: "Segoe UI", body: "Calibri", hindi: "Nirmala UI" };
+const F = { head: "Calibri", body: "Calibri", hindi: "Nirmala UI" };
 const W = 13.333, H = 7.5, X0 = 0.55, CW = 12.233;
 
 // rough text width (inches) for pills and single-line labels; the renderer check catches under-estimates
@@ -109,7 +108,7 @@ function makeKit(pres) {
   const TAGS = {
     public: { label: "PUBLIC DATA", line: T.tealDark, color: T.tealDark },
     synthetic: { label: "SYNTHETIC DATA", line: T.blueD, color: T.blueD },
-    model: { label: "MODEL OUTPUT", line: T.orangeD, color: T.orangeD },
+    model: { label: "MODEL OUTPUT", line: T.muted, color: T.muted },
     mock: { label: "ILLUSTRATIVE MOCK-UP", line: T.muted, color: T.muted },
     ps: { label: "GUIDE BASELINE", line: T.muted, color: T.muted },
     built: { label: "BUILT", fill: T.tealDark, color: T.white },
@@ -117,7 +116,7 @@ function makeKit(pres) {
     inbuild: { label: "IN BUILD", fill: T.amber, color: T.navy },
     pending: { label: "PENDING", fill: T.amber, color: T.navy },
     notproven: { label: "NOT PROVEN", line: T.red, color: T.red },
-    proved: { label: "PROVED", fill: T.green, color: T.white },
+    proved: { label: "PROVED", fill: T.tealDark, color: T.white },
   };
   kit.tag = (slide, kind, x, y, o = {}) => {
     const t = TAGS[kind];
@@ -133,7 +132,7 @@ function makeKit(pres) {
   };
 
   kit.source = (slide, text) => {
-    kit.text(slide, text, { x: 0.45, y: 7.07, w: 10.6, h: 0.3, fontSize: 9.5, color: T.muted, valign: "middle" });
+    kit.text(slide, text, { x: 0.45, y: 6.96, w: 12.4, h: 0.16, fontSize: 8.5, italic: true, color: T.muted, valign: "middle" });
   };
 
   // table from shapes; cols = widths (in), rows = array of arrays of strings or {t, bold, color, fill}

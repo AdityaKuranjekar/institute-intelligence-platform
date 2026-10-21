@@ -19,6 +19,9 @@ i, j = between(src, '  const titleBox =', '  const content =')
 masters = open('parts/masters.js', encoding='utf-8').read()
 src = src[:i] + masters + src[j:]
 
+i, j = between(src, '  const content =', '  // ================================================================ TITLE')
+src = src[:i] + open('parts/content.js', encoding='utf-8').read() + src[j:]
+
 # 2. title slide
 i, j = between(src, '  // ================================================================ TITLE', '  // ================================================================ 1 PROBLEM')
 src = src[:i] + open('parts/title.js', encoding='utf-8').read() + src[j:]
@@ -44,7 +47,7 @@ src = src.replace('{ x: 5.0, y: 6.7, w: 7.88, h: 0.45, fontSize: 13, color: "B9C
                   '{ x: 5.0, y: 6.7, w: 7.88, h: 0.45, fontSize: 13, color: T.muted, align: "right", valign: "middle" }')
 
 # 7. product naming: AlphaQ -> Pragati, then restore team-name spots
-src = src.replace('AlphaQ', 'Pragati').replace('ALPHAQ', 'PRAGATI')
+src = src.replace('AlphaQ', 'Pragati').replace('ALPHAQ', 'PRAGATI').replace('Team Pragati', 'Team AlphaQ')
 src = src.replace('pres.title = "Pragati: Case B, The Data Moat (Round 1)"', 'pres.title = "AlphaQ: Case B, The Data Moat (Round 1)"')
 src = src.replace('pres.author = "Pragati"', 'pres.author = "AlphaQ"').replace('pres.company = "Pragati"', 'pres.company = "AlphaQ"')
 src = src.replace('Pragati_CaseB_Round1.pptx', 'AlphaQ_CaseB_Round1.pptx')
@@ -71,13 +74,13 @@ src = src.replace('X(base) - X(d[1]), 0.26, "9FD3D4");', 'X(base) - X(d[1]), 0.2
 src = src.replace('X(d[2]) - X(base), 0.26, T.tealDark);', 'X(d[2]) - X(base), 0.26, T.teal);')
 
 # 10. panel style per content slide, in order
-styles = ['tint', 'tab', 'ring', 'tab', 'left', 'dash', 'tab', 'tint', 'ring', 'tint', 'dash', 'left', 'tab', 'plain', 'tint', 'dash']
-parts = src.split('const s = content(')
+styles = ['tab', 'plain', 'tab', 'tab', 'dash', 'tab', 'dash', 'tab', 'tint', 'dash', 'tab', 'tab', 'dash', 'plain', 'tab', 'tab']
+parts = src.split('    const s = content(')
 out = parts[0]
 for n, p in enumerate(parts[1:]):
     st = styles[n] if n < len(styles) else 'tab'
     first_nl = p.index('\n')
-    out += 'const s = content(' + p[:first_nl] + '\n    kit.panels("' + st + '");' + p[first_nl:]
+    out += '    const s = content(' + p[:first_nl] + '\n    kit.panels("' + st + '");' + p[first_nl:]
 src = out
 open('deck.js', 'w', encoding='utf-8').write(src)
 print('ok', src.count('kit.panels('))

@@ -2,7 +2,7 @@
 const path = require("path");
 const { T, ACC, F, X0 } = require("./lib");
 
-const C2 = { band: "E3EEFB", gold: "FFF0BF", goldD: "F2C94C", green: "D3F0DF", greenD: "0E7C4F", blue: "2F80D1", soft: "F1F7F3", orange: "FFE3C7" };
+const C2 = { band: "E3ECF7", gold: "FBEFC5", goldD: "F2C94C", green: "D6E4F5", greenD: "1F4A82", blue: "2E6DB4", soft: "F2F6FB", orange: "EAF1FA" };
 
 function extend(kit, pres) {
   const S = pres.ShapeType;
@@ -21,7 +21,7 @@ function extend(kit, pres) {
       slide.addShape(S.roundRect, { x, y, w, h, rectRadius: 0.06, fill: { color: o.fill ?? T.white }, line: { color: a.c, width: 1.25, dashType: "dash" } });
       if (title) kit.text(slide, title, { x: x + 0.1, y: y + 0.05, w: w - 0.2, h: 0.3, fontSize: tsize, bold: true, color: a.d, align: "center", valign: "middle", charSpacing: 1 });
     } else if (st === "tint") {
-      slide.addShape(S.roundRect, { x, y, w, h, rectRadius: 0.14, fill: { color: o.fill ?? a.t }, line: { type: "none" } });
+      slide.addShape(S.roundRect, { x, y, w, h, rectRadius: 0.03, fill: { color: o.fill ?? a.t }, line: { type: "none" } });
       if (title) {
         kit.ellipse(slide, x + 0.16, y + 0.115, 0.14, 0.14, a.c);
         kit.text(slide, title, { x: x + 0.38, y: y + 0.05, w: w - 0.5, h: 0.26, fontSize: tsize, bold: true, color: a.d, valign: "middle", charSpacing: 0.5 });
@@ -44,7 +44,7 @@ function extend(kit, pres) {
       slide.addShape(S.rect, { x, y, w, h, fill: { color: o.fill ?? T.white }, line: { color: a.c, width: 1.25 } });
       if (title) {
         kit.rect(slide, x, y, w, 0.33, a.c);
-        kit.text(slide, title, { x: x + 0.12, y, w: w - 0.24, h: 0.33, fontSize: tsize - 0.5, bold: true, color: a.on, valign: "middle", charSpacing: 0.5 });
+        kit.text(slide, title, { x: x + 0.12, y, w: w - 0.24, h: 0.33, fontSize: tsize, bold: true, color: a.on, align: "center", valign: "middle" });
       }
     }
   };
@@ -55,12 +55,12 @@ function extend(kit, pres) {
   };
 
   kit.labelBar = (slide, x, y, w, text, o = {}) => {
-    slide.addShape(S.roundRect, { x, y, w, h: o.h ?? 0.32, rectRadius: (o.h ?? 0.32) / 2, fill: { color: o.fill ?? T.tealDark }, line: { type: "none" } });
+    slide.addShape(S.rect, { x, y, w, h: o.h ?? 0.32, fill: { color: o.fill ?? T.tealDark }, line: { type: "none" } });
     kit.text(slide, text, { x: x + 0.15, y, w: w - 0.3, h: o.h ?? 0.32, fontSize: o.size ?? 12, bold: true, color: o.color ?? T.white, align: "center", valign: "middle" });
   };
 
   kit.callout = (slide, n, x, y, d = 0.3) => {
-    kit.ellipse(slide, x, y, d, d, T.orange, { line: T.white, lw: 1.5 });
+    kit.ellipse(slide, x, y, d, d, T.tealDark, { line: T.white, lw: 1.5 });
     kit.text(slide, String(n), { x, y, w: d, h: d, fontSize: 11, bold: true, color: T.white, align: "center", valign: "middle" });
   };
 
@@ -98,7 +98,7 @@ function extend(kit, pres) {
     const lo = o.min ?? Math.min(...vals.flat()), hi = o.max ?? Math.max(...vals.flat());
     const lab = o.labW ?? 0.62;
     const mix = (t) => {
-      const a = [240, 248, 242], b = [31, 169, 113], c = [10, 90, 56];
+      const a = [236, 242, 250], b = [91, 141, 201], c = [23, 50, 92];
       const f = t < 0.55 ? [a, b, t / 0.55] : [b, c, (t - 0.55) / 0.45];
       const h = (i) => Math.round(f[0][i] + (f[1][i] - f[0][i]) * f[2]).toString(16).padStart(2, "0");
       return (h(0) + h(1) + h(2)).toUpperCase();
@@ -132,8 +132,19 @@ function extend(kit, pres) {
     kit.text(slide, runs, { x, y, w, h, fontSize: o.size ?? 11, color: o.color ?? T.ink, valign: "top" });
   };
 
+  // bottom section tab bar (active tab filled), like the reference decks
+  kit.nav = (slide, tabs, active) => {
+    const x0 = 0.45, w = 11.75 / tabs.length;
+    kit.rect(slide, x0, 7.11, 11.75, 0.025, T.navy);
+    tabs.forEach((t, i) => {
+      const on = i === active;
+      if (on) kit.rect(slide, x0 + i * w, 7.14, w, 0.3, T.tealDark);
+      kit.text(slide, t, { x: x0 + i * w, y: 7.14, w, h: 0.3, fontSize: 10.5, bold: true, color: on ? T.white : T.ink, align: "center", valign: "middle" });
+    });
+  };
+
   kit.rubric = (slide, text) => {
-    kit.text(slide, text.toUpperCase(), { x: 8.3, y: 0.2, w: 4.58, h: 0.24, fontSize: 9.5, bold: true, color: T.muted, align: "right", charSpacing: 1.5 });
+    kit.text(slide, text.toUpperCase(), { x: 8.9, y: 0.16, w: 3.98, h: 0.22, fontSize: 8.5, bold: true, color: T.muted, align: "right", charSpacing: 1 });
   };
 
   kit.pic = (slide, file, x, y, w, h, alt) => {

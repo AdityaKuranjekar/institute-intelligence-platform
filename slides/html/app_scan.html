@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>Scan app</title><link rel="stylesheet" href="ui.css">
 <style>
 body { width: 410px; height: 820px; background: transparent; margin: 0; }
-.phone { margin: 5px; background: #1E2B25; }
+.phone { margin: 5px; background: #17325C; }
 .phone .status { color: #fff; }
 .cam { position: absolute; left: 0; right: 0; top: 44px; bottom: 250px; background: radial-gradient(circle at 50% 40%, #46524B, #26302B); overflow: hidden; }
 .sheet { position: absolute; left: 36px; right: 36px; top: 34px; bottom: 30px; background: #FBFAF4; transform: rotate(-2.5deg); border-radius: 4px; box-shadow: 0 8px 20px rgba(0,0,0,.4); padding: 14px 14px; }
@@ -9,19 +9,19 @@ body { width: 410px; height: 820px; background: transparent; margin: 0; }
 .sheet .qr { position: absolute; right: 12px; top: 10px; width: 34px; height: 34px; background: repeating-conic-gradient(#222 0 25%, #fff 0 50%) 0 0/8px 8px; }
 .bub { display: grid; grid-template-columns: 22px repeat(4, 28px); justify-content: center; gap: 5px 10px; margin-top: 34px; font: 600 8.5px "Segoe UI"; color: #555; align-items: center; }
 .bub i { width: 11px; height: 11px; border-radius: 50%; border: 1.3px solid #666; display: inline-block; justify-self: center; }
-.bub i.f { background: #222; } .bub i.u { background: #F28C28; border-color: #F28C28; }
-.mark { position: absolute; width: 22px; height: 22px; background: #1FA971; }
+.bub i.f { background: #222; } .bub i.u { background: #5B8DC9; border-color: #5B8DC9; }
+.mark { position: absolute; width: 22px; height: 22px; background: #2E6DB4; }
 .mark.a { left: 6px; top: 6px; } .mark.b { right: 6px; top: 6px; } .mark.c { left: 6px; bottom: 6px; } .mark.d { right: 6px; bottom: 6px; }
-.frame { position: absolute; left: 22px; right: 22px; top: 22px; bottom: 18px; border: 3px solid #5BE0A4; border-radius: 14px; box-shadow: 0 0 0 600px rgba(0,0,0,.18); }
-.ok { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); background: #1FA971; color: #fff; font: 700 12px "Segoe UI"; padding: 5px 14px; border-radius: 999px; white-space: nowrap; z-index: 4; }
+.frame { position: absolute; left: 22px; right: 22px; top: 22px; bottom: 18px; border: 3px solid #7FB0E6; border-radius: 14px; box-shadow: 0 0 0 600px rgba(0,0,0,.18); }
+.ok { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); background: #2E6DB4; color: #fff; font: 700 12px "Segoe UI"; padding: 5px 14px; border-radius: 999px; white-space: nowrap; z-index: 4; }
 .panel { position: absolute; left: 0; right: 0; bottom: 0; height: 255px; background: #fff; border-radius: 26px 26px 0 0; padding: 16px 20px; }
 .panel h3 { margin: 0; font: 800 18px "Segoe UI"; color: var(--navy); }
 .panel .p { color: var(--muted); font-size: 13px; margin: 2px 0 10px; }
-.bar2 { height: 10px; border-radius: 6px; background: #EEF1EE; overflow: hidden; } .bar2 i { display:block; height:100%; width:96%; background: #1FA971; }
+.bar2 { height: 10px; border-radius: 6px; background: #EEF1EE; overflow: hidden; } .bar2 i { display:block; height:100%; width:96%; background: #2E6DB4; }
 .row { display: flex; gap: 8px; margin-top: 12px; }
 .row div { flex: 1; border-radius: 12px; padding: 8px 10px; font-size: 12px; font-weight: 600; background: var(--tint); }
 .row b { display: block; font: 800 20px "Segoe UI"; }
-.btn { margin-top: 12px; text-align: center; background: #F28C28; color: #fff; padding: 12px; border-radius: 14px; font: 800 15px "Segoe UI"; }
+.btn { margin-top: 12px; text-align: center; background: #5B8DC9; color: #fff; padding: 12px; border-radius: 14px; font: 800 15px "Segoe UI"; }
 </style></head><body>
 <div class="phone"><div class="notch"></div>
   <div class="status"><span>9:41</span><span>● ● ▮</span></div>

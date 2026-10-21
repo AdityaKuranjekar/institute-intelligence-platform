@@ -20,38 +20,41 @@ async function main() {
   const { text, rect, ellipse, line, icon, pill, tag, source, frame, hdrBar, labelBar, callout, dtable, heat, badge, abadge, lines, rubric, pic, chevrow, funnel, loop } = kit;
   let nb = 0;
 
-  const titleBox = { name: "title", type: "title", x: L, y: 0.34, w: CWD, h: 0.8, fontFace: F.head, fontSize: 24, bold: true, color: T.navy, valign: "top", margin: 0 };
-  const foot = (x, c) => ({ text: { text: "Pragati", options: { x, y: 7.1, w: 1.0, h: 0.28, fontFace: F.head, bold: true, fontSize: 11, color: c, align: "right", margin: 0, valign: "middle" } } });
+  const titleBox = { name: "title", type: "title", x: L, y: 0.14, w: 9.2, h: 0.48, fontFace: F.head, fontSize: 24, bold: true, color: T.tealDark, valign: "middle", margin: 0 };
   pres.defineSlideMaster({
     title: "CONTENT", background: { color: T.white },
     objects: [
-      { rect: { x: 0, y: 0, w: 0.16, h: 1.9, fill: { color: T.orange } } },
-      { rect: { x: 0, y: 1.9, w: 0.16, h: 1.9, fill: { color: T.teal } } },
-      { rect: { x: 0, y: 3.8, w: 0.16, h: 1.9, fill: { color: T.blue } } },
-      { rect: { x: 0, y: 5.7, w: 0.16, h: 1.8, fill: { color: T.amber } } },
-      foot(11.2, T.tealDark),
+      { rect: { x: 0, y: 0, w: 13.333, h: 0.07, fill: { color: T.tealDark } } },
+      { rect: { x: 12.3, y: 7.14, w: 0.58, h: 0.3, fill: { color: T.tealDark } } },
       { placeholder: { options: titleBox, text: "" } },
     ],
-    slideNumber: { x: 12.3, y: 7.1, w: 0.5, h: 0.28, fontFace: F.body, fontSize: 11, color: T.muted, align: "right" },
-  });
-  pres.defineSlideMaster({
-    title: "WALL", background: { color: "FFF8EE" },
-    objects: [{ placeholder: { options: Object.assign({}, titleBox, { fontSize: 26 }), text: "" } }],
+    slideNumber: { x: 12.3, y: 7.14, w: 0.58, h: 0.3, fontFace: F.body, fontSize: 13, bold: true, color: T.white, align: "center", valign: "middle" },
   });
   pres.defineSlideMaster({ title: "FULL", background: { color: T.white }, objects: [] });
   pres.defineSlideMaster({
     title: "CLOSING", background: { color: T.white },
     objects: [
-      { rect: { x: 0, y: 0, w: 13.333, h: 0.18, fill: { color: T.teal } } },
-      { placeholder: { options: Object.assign({}, titleBox, { fontSize: 32, y: 0.5, h: 0.9 }), text: "" } },
+      { rect: { x: 0, y: 0, w: 13.333, h: 0.07, fill: { color: T.tealDark } } },
+      { placeholder: { options: Object.assign({}, titleBox, { y: 0.3, h: 0.6, fontSize: 28 }), text: "" } },
     ],
   });
-  pres.defineSlideMaster({ title: "TITLE", background: { color: T.white }, objects: [{ placeholder: { options: { name: "title", type: "title", x: L, y: 1.55, w: 6.2, h: 2.4, fontFace: F.head, fontSize: 31, bold: true, color: T.navy, valign: "top", margin: 0 }, text: "" } }] });
+  pres.defineSlideMaster({ title: "TITLE", background: { color: T.white }, objects: [
+    { rect: { x: 0, y: 0, w: 13.333, h: 0.07, fill: { color: T.tealDark } } },
+    { placeholder: { options: { name: "title", type: "title", x: L, y: 1.5, w: 5.7, h: 2.2, fontFace: F.head, fontSize: 30, bold: true, color: T.tealDark, valign: "top", margin: 0 }, text: "" } }] });
 
+  const NAVTABS = ["Problem", "Product", "Technology", "Trust", "Business", "Validation", "Appendix"];
+  const HEAD = [["THE PROBLEM", 0], ["PRODUCT TOUR", 1], ["WEB AND PHONE APP", 1], ["LEARNING ANALYTICS", 2], ["EARLY WARNING", 2], ["PERCENTILE RANGE AND PARENT REPORTS", 2], ["PRIVACY AND COMPLIANCE", 3],
+    ["RETURN FOR THE INSTITUTE", 4], ["UNIT ECONOMICS", 4], ["MARKET AND GO-TO-MARKET", 4], ["VALIDATION AND PILOT PLAN", 5],
+    ["APPENDIX 1: DATA MODEL", 6], ["APPENDIX 2: COST PER STUDENT", 6], ["APPENDIX 3: LEGAL BASIS", 6], ["APPENDIX 4: HOW WE TEST", 6], ["APPENDIX 5: SCENARIOS", 6]];
+  let hn = 0;
   const content = (section, title, rub) => {
+    const h = HEAD[hn++];
     const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: section });
-    s.addText(title, { placeholder: "title" });
+    s.addText(h[0], { placeholder: "title" });
+    text(s, title.replace(/^Appendix \d: /, ""), { x: L, y: 0.6, w: CWD, h: 0.34, fontSize: 14.5, color: T.muted, valign: "middle" });
+    rect(s, L, 0.98, CWD, 0.025, T.tealDark);
     rubric(s, rub);
+    kit.nav(s, NAVTABS, h[1]);
     return s;
   };
 
@@ -59,25 +62,25 @@ async function main() {
   pres.addSection({ title: "Opening" });
   {
     const s = pres.addSlide({ masterName: "TITLE", sectionTitle: "Opening" });
-    ellipse(s, 7.9, 0.0, 5.4, 5.4, T.orangeT);
-    ellipse(s, 5.2, 3.95, 3.4, 3.4, T.tealTint);
-    ellipse(s, 11.9, 5.0, 1.4, 2.4, T.yellowT);
-    text(s, "CASE B  ·  THE DATA MOAT", { x: L, y: 0.85, w: 6.3, h: 0.35, fontSize: 13, bold: true, color: T.orangeD, charSpacing: 2 });
+    rect(s, 6.35, 0.45, 6.55, 6.45, T.orangeT);
+    text(s, "CASE B  ·  THE DATA MOAT", { x: L, y: 0.75, w: 5.8, h: 0.3, fontSize: 13, bold: true, color: T.teal, charSpacing: 2 });
+    rect(s, L, 1.1, 5.7, 0.025, T.tealDark);
     s.addText("Intelligence for the coaching institutes that run on Excel, OMR sheets and WhatsApp", { placeholder: "title" });
-    text(s, "Pragati turns one upload into a topic map, a weekly support list and a verified Hindi and English parent report. On the web and on the phone. Offline, private, free to run.", { x: L, y: 4.05, w: 5.9, h: 1.0, fontSize: 15, color: T.ink });
-    const kp = [["0.763", "AUC on ASSISTments (public)", T.teal], ["0.706", "AUC on OULAD, day 28 (public)", T.orange], ["₹3.6", "per student per month", T.blue]];
+    text(s, "Pragati turns one upload into a topic map, a weekly support list and a verified Hindi and English parent report, on the web and on the phone. Offline, private, free to run.", { x: L, y: 3.7, w: 5.5, h: 1.0, fontSize: 14.5, color: T.ink });
+    const kp = [["0.763", "AUC on ASSISTments (public data)"], ["0.706", "AUC on OULAD, day 28 (public data)"], ["₹3.6", "per student per month, all-in (model)"]];
     kp.forEach((k, i) => {
-      const x = L + i * 2.05;
-      s.addShape("roundRect", { x, y: 5.3, w: 1.9, h: 1.0, rectRadius: 0.14, fill: { color: k[2] }, line: { type: "none" } });
-      text(s, k[0], { x: x + 0.14, y: 5.35, w: 1.65, h: 0.5, fontSize: 24, bold: true, color: T.white, fontFace: F.head });
-      text(s, k[1], { x: x + 0.14, y: 5.85, w: 1.65, h: 0.4, fontSize: 9.5, color: T.white });
+      const x = L + i * 1.95;
+      rect(s, x, 5.2, 1.8, 0.3, T.tealDark);
+      text(s, k[0], { x, y: 5.2, w: 1.8, h: 0.3, fontSize: 14, bold: true, color: T.white, align: "center", valign: "middle" });
+      s.addShape("rect", { x, y: 5.5, w: 1.8, h: 0.75, fill: { color: T.white }, line: { color: T.tealDark, width: 1.25 } });
+      text(s, k[1], { x: x + 0.08, y: 5.55, w: 1.64, h: 0.65, fontSize: 10.5, color: T.ink, align: "center", valign: "middle" });
     });
-    text(s, "Team Pragati  ·  Round 1  ·  Nextute x Finance Club, IIT Patna", { x: L, y: 6.7, w: 6.4, h: 0.4, fontSize: 12, color: T.muted, valign: "middle" });
-    pic(s, "web_console.png", 6.55, 0.75, 6.3, 3.54, "Pragati web console (illustrative)");
-    pic(s, "app_scan.png", 7.15, 3.35, 1.75, 3.5, "Pragati scan screen on a phone (illustrative)");
-    pic(s, "app_mentor.png", 9.0, 3.1, 1.75, 3.5, "Pragati mentor app (illustrative)");
-    pic(s, "app_parent.png", 10.85, 3.35, 1.75, 3.5, "Pragati parent app (illustrative)");
-    tag(s, "mock", 10.5, 6.95);
+    text(s, "Team AlphaQ  ·  Round 1  ·  Nextute x Finance Club, IIT Patna", { x: L, y: 6.7, w: 5.8, h: 0.4, fontSize: 11.5, color: T.muted, valign: "middle" });
+    pic(s, "web_console.png", 6.55, 0.7, 6.15, 3.46, "Pragati web console (illustrative)");
+    pic(s, "app_scan.png", 7.0, 3.4, 1.7, 3.4, "Pragati scan screen on a phone (illustrative)");
+    pic(s, "app_mentor.png", 8.85, 3.15, 1.7, 3.4, "Pragati mentor app (illustrative)");
+    pic(s, "app_parent.png", 10.7, 3.4, 1.7, 3.4, "Pragati parent app (illustrative)");
+    text(s, "Illustrative mock-ups, synthetic data", { x: 10.2, y: 6.95, w: 2.7, h: 0.25, fontSize: 9, italic: true, color: T.muted, align: "right" });
     s.addNotes("Title. Right-hand screens are illustrative mock-ups rendered from HTML with synthetic values: the web console and three phone screens. The two AUC figures are results on public datasets (ASSISTments 2009 under the pyKT protocol, OULAD day 28); the 3.6 rupee figure is the model's all-in cost per student per month.");
   }
 
@@ -85,7 +88,7 @@ async function main() {
   pres.addSection({ title: "Problem and product" });
   {
     const s = content("Problem and product", "Institutes hold the data, but notice a struggling student only after they leave", "Problem framing · Participant Guide §2, §7");
-    kit.panels("tint");
+    kit.panels("tab");
     frame(s, L, 1.22, 4.75, 2.9, "WHO LOSES TODAY");
     const pers = [["FaChalkboardUser", "Teachers", "Learn which topics are weak only after the exam.", T.navy],
       ["FaBuilding", "Owners", "Cannot compare batches or teaching methods.", T.tealDark],
@@ -141,46 +144,46 @@ async function main() {
     s.addNotes("Dense problem slide. The 8-15 percent and 36,000 rupee figures and the 17.3 lakh total are the guide's illustrative baselines (400 x 12% x 36,000). The roster index is an assumption in the financial model; competitor price range comes from the finance research (listed prices, low-medium confidence).");
   }
 
-  // ================================================================ 2 PRODUCT WALL
+  // ================================================================ 2 PRODUCT TOUR
   {
-    const s = pres.addSlide({ masterName: "WALL", sectionTitle: "Problem and product" });
-    s.addText("From one upload to action: six screens of the same flow", { placeholder: "title" });
-    const cw = 4.05, gx = 0.14, ih = 2.28;
+    const s = content("Problem and product", "Six screens of the same flow: upload, topic map, support list, student profile, owner view, parent report", "Product tour");
+    kit.panels("plain");
+    kit.panels("plain");
+    const cw = 4.05, gx = 0.14, ih = 2.25;
     const cells = [["screen_upload.png", "Upload and map: the system fixes the mess", 16 / 9], ["screen_heatmap.png", "Topic map: strengths, gaps, untaught topics", 16 / 9], ["screen_support_list.png", "Weekly support list: reasons and actions", 16 / 9],
       ["screen_student_profile.png", "Student profile: mastery with doubt, honest range", 16 / 9], ["screen_owner.png", "Owner dashboard: retention, coverage, compliance", 16 / 9], ["screen_parent_report.png", "Parent report in Hindi and English", 5 / 3]];
     cells.forEach((c, i) => {
       const col = i % 3, rw = Math.floor(i / 3);
-      const x = L + col * (cw + gx), y = 1.2 + rw * 2.85;
-      const w = c[2] === 16 / 9 ? cw : ih * c[2], xx = x + (cw - w) / 2, a = kit.acc(i);
-      s.addShape("rect", { x: xx - 0.05, y: y - 0.05, w: w + 0.1, h: ih + 0.1, fill: { color: T.white }, line: { color: a.c, width: 2 } });
+      const x = L + col * (cw + gx), y = 1.22 + rw * 2.85;
+      const w = c[2] === 16 / 9 ? cw : ih * c[2], xx = x + (cw - w) / 2;
+      s.addShape("rect", { x: xx - 0.04, y: y - 0.04, w: w + 0.08, h: ih + 0.08, fill: { color: T.white }, line: { color: T.tealDark, width: 1.5 } });
       pic(s, c[0], xx, y, w, ih, c[1]);
-      ellipse(s, x, y + ih + 0.1, 0.32, 0.32, a.c);
-      text(s, String(i + 1), { x, y: y + ih + 0.1, w: 0.32, h: 0.32, fontSize: 12, bold: true, color: a.on, align: "center", valign: "middle" });
-      text(s, c[1], { x: x + 0.42, y: y + ih + 0.04, w: cw - 0.5, h: 0.44, fontSize: 11.5, bold: true, color: T.navy, valign: "middle" });
+      rect(s, x, y + ih + 0.12, 0.3, 0.3, T.tealDark);
+      text(s, String(i + 1), { x, y: y + ih + 0.12, w: 0.3, h: 0.3, fontSize: 12, bold: true, color: T.white, align: "center", valign: "middle" });
+      text(s, c[1], { x: x + 0.4, y: y + ih + 0.07, w: cw - 0.45, h: 0.4, fontSize: 11.5, bold: true, color: T.navy, valign: "middle" });
     });
-    text(s, "Illustrative mock-ups rendered from HTML with synthetic values. They become real screenshots once the web app is wired to the models.", { x: L, y: 7.08, w: 10.5, h: 0.3, fontSize: 10, color: T.muted, valign: "middle" });
-    s.addNotes("Product wall: upload, topic map, support list, profile, owner dashboard, parent report. All images are illustrative mock-ups (HTML rendered by headless Edge) using synthetic data and real report text from the report module.");
+    source(s, "Illustrative mock-ups rendered from HTML with synthetic values; they become real screenshots once the web app is wired to the models.");
+    s.addNotes("Product tour: upload, topic map, support list, profile, owner dashboard, parent report. All images are illustrative mock-ups (HTML rendered by headless Edge) using synthetic data and real report text from the report module.");
   }
 
   // ================================================================ 2b WEB + APP
   {
-    const s = content("Problem and product", "One product, two surfaces: web for the desk, phone for the floor", "Product surfaces");
+    const s = content("Problem and product", "One product, two surfaces: a web console for the desk and a phone app for the floor", "Product surfaces");
     kit.panels("tab");
-    ellipse(s, 7.0, 1.0, 6.2, 5.0, T.tealTint);
-    s.addShape("roundRect", { x: L, y: 1.25, w: 6.7, h: 3.8, rectRadius: 0.12, fill: { color: T.white }, line: { color: T.teal, width: 2 } });
-    pic(s, "web_console.png", L + 0.05, 1.3, 6.6, 3.71, "Pragati web console (illustrative)");
-    const ph = [["app_scan.png", "Scan an OMR sheet", T.orange], ["app_mentor.png", "Mentor: this week's list", T.teal], ["app_parent.png", "Parent: Hindi or English", T.blue]];
-    ph.forEach((p, i) => {
-      const x = 7.4 + i * 1.85;
-      pic(s, p[0], x, 1.25, 1.8, 3.6, p[1] + " (illustrative)");
-      s.addShape("roundRect", { x: x + 0.03, y: 4.95, w: 1.74, h: 0.5, rectRadius: 0.25, fill: { color: p[2] }, line: { type: "none" } });
-      text(s, p[1], { x: x + 0.1, y: 4.95, w: 1.6, h: 0.5, fontSize: 10, bold: true, color: T.white, align: "center", valign: "middle" });
+    kit.panels("tab");
+    rect(s, 6.9, 1.22, 6.0, 3.95, T.orangeT);
+    s.addShape("rect", { x: L, y: 1.22, w: 6.3, h: 3.55, fill: { color: T.white }, line: { color: T.tealDark, width: 1.5 } });
+    pic(s, "web_console.png", L + 0.03, 1.24, 6.24, 3.51, "Pragati web console (illustrative)");
+    hdrBar(s, L, 4.85, 6.3, "WEB CONSOLE: owner, teacher and compliance views", { h: 0.3, size: 11 });
+    const ph = ["Scan an OMR sheet", "Mentor: this week's list", "Parent: Hindi or English"];
+    ["app_scan.png", "app_mentor.png", "app_parent.png"].forEach((f, i) => {
+      const x = 7.1 + i * 1.9;
+      pic(s, f, x, 1.3, 1.75, 3.5, ph[i] + " (illustrative)");
     });
-    s.addShape("roundRect", { x: L + 0.9, y: 5.1, w: 4.9, h: 0.36, rectRadius: 0.18, fill: { color: T.tealDark }, line: { type: "none" } });
-    text(s, "Web console: owner, teacher and compliance views", { x: L + 0.9, y: 5.1, w: 4.9, h: 0.36, fontSize: 11, bold: true, color: T.white, align: "center", valign: "middle" });
-    text(s, "THE WEEKLY LOOP", { x: L, y: 5.5, w: 3, h: 0.26, fontSize: 10.5, bold: true, color: T.muted, charSpacing: 1.5 });
-    await loop(s, 1.1, 6.0, 10.9, [{ icon: "FaCamera", t: "Scan or upload" }, { icon: "FaChartSimple", t: "Topic map" }, { icon: "FaListCheck", t: "Weekly list" }, { icon: "FaPhone", t: "Call or session" }, { icon: "FaCircleCheck", t: "Outcome logged" }], { d: 0.62, size: 11, back: "Outcomes feed the next week's list" });
-    source(s, "Both surfaces use the same API. Phone screens are illustrative mock-ups with synthetic students; the app is a Next.js progressive web app, no app-store fee.");
+    hdrBar(s, 6.9, 4.85, 6.0, "PHONE APP: scan, mentor list, parent view", { h: 0.3, size: 11 });
+    text(s, "THE WEEKLY LOOP", { x: L, y: 5.3, w: 3, h: 0.24, fontSize: 10.5, bold: true, color: T.tealDark, charSpacing: 1.5 });
+    await loop(s, 1.1, 5.95, 10.9, [{ icon: "FaCamera", t: "Scan or upload" }, { icon: "FaChartSimple", t: "Topic map" }, { icon: "FaListCheck", t: "Weekly list" }, { icon: "FaPhone", t: "Call or session" }, { icon: "FaCircleCheck", t: "Outcome logged" }], { d: 0.55, size: 11, back: "Outcomes feed the next week's list" });
+    source(s, "Both surfaces use the same API. Illustrative mock-ups with synthetic students; the app is a Next.js progressive web app (installed from the browser, no app-store fee).");
     s.addNotes("New slide. Web console (owner, teacher, compliance) and phone screens (scan, mentor list, parent view in Hindi or English). All are illustrative HTML mock-ups with synthetic data. Delivery plan: Next.js PWA installed from the browser, so no app-store account is needed.");
   }
 
@@ -195,7 +198,7 @@ async function main() {
   // ================================================================ 4 LEARNING ANALYTICS
   {
     const s = content("Technology", "We estimate what each student knows, topic by topic, and say how sure we are", "ML rigour 25 % · learning analytics");
-    kit.panels("ring");
+    kit.panels("tab");
     frame(s, L, 1.22, 5.35, 5.7, "WHAT THE TEACHER SEES");
     pic(s, "screen_heatmap.png", L + 0.17, 1.62, 5.0, 2.81, "Topic mastery heatmap (illustrative)");
     callout(s, 1, L + 0.75, 4.18); callout(s, 2, L + 1.68, 1.82); callout(s, 3, L + 4.1, 3.1);
@@ -236,7 +239,7 @@ async function main() {
   // ================================================================ 5 EARLY WARNING
   {
     const s = content("Technology", "A short, supportive list each week: who to call, why, and what to offer", "ML rigour 25 % · early warning");
-    kit.panels("tab");
+    kit.panels("dash");
     frame(s, L, 1.22, 5.0, 5.7, "WHAT THE MENTOR SEES");
     pic(s, "screen_support_list.png", L + 0.1, 1.6, 4.8, 2.7, "Support list (illustrative)");
     callout(s, 1, L + 3.7, 2.15); callout(s, 2, L + 2.2, 2.35);
@@ -275,7 +278,7 @@ async function main() {
   // ================================================================ 6 PREDICTION + REPORT
   {
     const s = content("Technology", "An honest percentile range, and a parent report where every number is checked", "ML rigour 25 % · GenAI with guardrails");
-    kit.panels("left");
+    kit.panels("tab");
     frame(s, L, 1.22, 4.2, 5.7, "PERCENTILE RANGE");
     M.bandChart(kit, s, L + 0.12, 1.62, 3.96, 2.75);
     text(s, "Quantile model plus conformal band, 80 % target (77 to 83 % accepted).", { x: L + 0.12, y: 4.45, w: 3.96, h: 0.4, fontSize: 10.5 });
@@ -430,7 +433,7 @@ async function main() {
   // ================================================================ 11 GTM
   {
     const s = content("Business", "Start with mid-size institutes in Patna and Lucknow, keep small ones self-serve", "Market and go-to-market 10 %");
-    kit.panels("ring");
+    kit.panels("dash");
     frame(s, L, 1.22, 4.9, 3.3, "WHAT INSTITUTES PAY TODAY");
     pic(s, "chart_price_benchmark.png", L + 0.1, 1.6, 4.7, 2.6, "Listed prices of generic institute apps");
     tag(s, "model", L + 0.12, 4.22, { label: "MODEL OUTPUT INPUTS: LISTED PRICES, LOW TO MEDIUM", size: 8, h: 0.2 });
@@ -472,7 +475,7 @@ async function main() {
   pres.addSection({ title: "Validation" });
   {
     const s = content("Validation", "What we proved, what we did not, and how a pilot would settle it", "Feasibility, privacy and safety 20 % · honest limits");
-    kit.panels("tint");
+    kit.panels("tab");
     const cw = 4.05, gx = 0.14, y0 = 1.22, h0 = 3.1;
     const cols = [["PROVED ON PUBLIC DATA", "proved", [["Next-answer AUC", "0.763 (DKT 0.754)"], ["Withdrawal AUC day 28", "0.706 (published 0.794, lower)"], ["Calibration error", "0.009"], ["Academic-only cost", "0.008 AUC"], ["Precision at top 10 %", "0.46 vs 0.24 to 0.31 for rules"]]],
       ["SHOWN ON SYNTHETIC DATA", "pending", [["Pipeline end to end", "over 100 tests pass"], ["Tenant isolation", "0 rows seen across institutes"], ["Report checker", "8 checks, template fallback"], ["Difficulty recovery", "pending"], ["Early-warning lift, range coverage", "pending"]]],
@@ -505,7 +508,7 @@ async function main() {
   pres.addSection({ title: "Appendix" });
   {
     const s = content("Appendix", "Appendix 1: 31 tables in five groups, all isolated per institute", "Data model");
-    kit.panels("dash");
+    kit.panels("tab");
     const groups = [["PEOPLE", "institutes, users, students, guardians, batches, batch_changes, consents, legal_settings"], ["LEARNING", "topics, topic_prereqs, questions, question_topics, item_params, tests, test_questions, answer_keys, marking_schemes"],
       ["RESULTS", "responses, test_totals, attendance, fees, engagement"], ["INTELLIGENCE", "mastery_snapshots, risk_scores, predictions, interventions, reports, model_registry"], ["OPERATIONS", "ingest_jobs, omr_templates, audit_log"]];
     groups.forEach((g, i) => {
@@ -520,7 +523,7 @@ async function main() {
   }
   {
     const s = content("Appendix", "Appendix 2: about ₹3.6 per student per month, ₹0 extra run locally", "Cost per student");
-    kit.panels("left");
+    kit.panels("dash");
     frame(s, L, 1.22, 5.2, 5.7, "COST INPUTS (BEAR / BASE / BULL)");
     dtable(s, L + 0.08, 1.62, [2.4, 0.9, 0.9, 0.8], ["Input", "Bear", "Base", "Bull"], [
       ["Hosted model, ₹ per 1M input tokens", "142.58", "23.76", "9.51"], ["Hosted model, ₹ per 1M output tokens", "712.88", "142.58", "47.53"], ["WhatsApp utility message, ₹", "0.145", "0.132", "0.115"],
@@ -544,7 +547,7 @@ async function main() {
   }
   {
     const s = content("Appendix", "Appendix 3: the rules we design against, and what we do about each", "Legal basis");
-    kit.panels("tab");
+    kit.panels("plain");
     frame(s, L, 1.22, CWD, 5.7, null);
     dtable(s, L + 0.1, 1.35, [3.3, 8.9], ["Rule", "Our response"], [
       ["DPDP Act s.9(1), Rule 10", "Verifiable parental consent before processing a minor's data: ID checked at the admission desk, consent recorded per purpose."],
@@ -560,7 +563,7 @@ async function main() {
   }
   {
     const s = content("Appendix", "Appendix 4: every result follows the same protocol, and misses are reported", "How we test");
-    kit.panels("plain");
+    kit.panels("tab");
     const items = [["FaShieldHalved", "No leakage", "Features use only data before the as-of date. Splits are by student and by year, never by row."], ["FaScaleBalanced", "Baselines at equal workload", "Each model sits beside a simple rule at the same weekly top-k."], ["FaChartColumn", "Uncertainty", "Bootstrap intervals over students, three generator seeds, event counts shown."],
       ["FaTriangleExclamation", "Stress tests", "Misspecified generators, a held-out institute, an independent attack on the report checker."], ["FaFlag", "Honest misses", "A missed bar is reported with its cause. Bars are never moved to pass."], ["FaCircleCheck", "Public data", "OULAD and ASSISTments under published protocols, with deviations listed."]];
     for (let i = 0; i < 6; i++) {
@@ -574,7 +577,7 @@ async function main() {
   }
   {
     const s = content("Appendix", "Appendix 5: Bear, Base and Bull for a mid-size institute, plus segments", "Scenarios");
-    kit.panels("tint");
+    kit.panels("tab");
     frame(s, L, 1.22, 8.1, 5.7, "MID INSTITUTE (400 STUDENTS)");
     dtable(s, L + 0.1, 1.62, [3.3, 1.5, 1.5, 1.5], ["Per year unless stated", "Bear", "Base", "Bull"], [
       ["Effective dropout reduction", "1.0 %", "6.6 %", "22.2 %"], ["Dropouts prevented", "0.2", "2.6", "16"], ["Institute return, all benefits", "0.15x", "2.9x", "14x"], ["Institute return, fees only", "0.04x", "0.75x", "5.9x"],
@@ -597,8 +600,8 @@ async function main() {
     [["AI tools", ["Claude: planning, code review, documentation.", "Google Antigravity agents: code generation.", "Perplexity and Gemini Deep Research: literature and regulation research.", "Everything was reviewed and tested by the team; research claims were checked against primary sources where possible."], 0],
       ["Public data and libraries", ["OULAD (CC BY 4.0), ASSISTments 2009, the pyKT benchmark, JEEBench.", "Noto Sans Devanagari (SIL OFL), LightGBM, Ollama, FastAPI, PostgreSQL.", "Full list with licences: technical/docs/CITATIONS.md in the repository."], 2]].forEach((c, i) => {
       const x = L + i * (cw + 0.3), a = kit.acc(c[2]);
-      s.addShape("roundRect", { x, y: 1.7, w: cw, h: 4.6, rectRadius: 0.14, fill: { color: a.t }, line: { color: a.c, width: 2 } });
-      s.addShape("roundRect", { x: x + 0.3, y: 1.9, w: 2.8, h: 0.45, rectRadius: 0.22, fill: { color: a.c }, line: { type: "none" } });
+      s.addShape("roundRect", { x, y: 1.7, w: cw, h: 4.6, rectRadius: 0.02, fill: { color: a.t }, line: { color: a.c, width: 1.5 } });
+      s.addShape("roundRect", { x: x + 0.3, y: 1.9, w: 2.8, h: 0.45, rectRadius: 0.02, fill: { color: a.c }, line: { type: "none" } });
       text(s, c[0], { x: x + 0.3, y: 1.9, w: 2.8, h: 0.45, fontSize: 15, bold: true, color: a.on, fontFace: F.head, align: "center", valign: "middle" });
       text(s, c[1].map((t, k) => ({ text: t, options: { breakLine: k < c[1].length - 1, paraSpaceAfter: 10, bullet: { indent: 14 } } })), { x: x + 0.3, y: 2.6, w: cw - 0.6, h: 3.6, fontSize: 17, color: T.ink });
     });
