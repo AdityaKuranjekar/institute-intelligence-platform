@@ -10,3 +10,20 @@
 Lineage: v1 is built from `source/build/deck_v4_blue.js` (frozen base) and `parts/v5`; v2 from `parts/v2`; v3 from `parts/v3`; v4 is v3 with overlays added by `assemble_v4.py`. One-off migration scripts are in `source/build/legacy/`.
 
 Each version's preview PNGs are in `previews/<same name as the deck>/`. Next version (v5) should start from v4's assembler and change only what feedback asks for.
+
+## Candidates (23 Oct 2026): pick which looks better
+| File | Based on | What changed |
+|---|---|---|
+| `decks/AlphaQ_CaseB_Round1_candidate-A_v2.2.pptx` | v2 | 8-step chevron breadcrumb strip, bottom bar (AlphaQ, case, slide number), consistent spacing and type sizes, mini India tile map on the go-to-market slide, new appendix 8 "Where we sell first" (tile map, 4 phases, 1,180 addressable institutes) |
+| `decks/AlphaQ_CaseB_Round1_candidate-B_v4.2.pptx` | v4 | Same additions on top of the v4 whiteboard layer (stickies, doodles, cursors) |
+
+Map note: a tile map (one tile per state, not to scale) avoids boundary-line issues. Totals come from `financial/research/R7_market_size.md` (1,180 addressable); the split by state is our derived assumption. Build: `python build_all.py v2.2 v4.2` in `source/build`.
+
+### Update (23 Oct 2026, later): real map
+Both candidates now use a geographic India map (state outlines from a public GeoJSON, `source/assets/india_states.geojson`, orientation only, not an official boundary) instead of the tile map. Target states are shaded by addressable institutes; cities are bubbles coloured by tier (1 grey, 2 gold, 3 orange) and sized by coaching density, which is our qualitative estimate, not a count. v2.2 also gets a section badge ("Section n of 8" and icon) at the top right of every content slide. Code: `source/build/geomap.py`.
+
+### Update: flat-colour icons (23 Oct 2026)
+Both candidates show a flat-colour icon (Icons8 "Flat Color Icons", CC BY 3.0, fetched via Iconify, files in `source/assets/flat/`) at the top right of every content slide, chosen per slide. Attribution is on the final AI-use slide. Flaticon's own files were not used: they need a login and per-icon attribution. Fetch more with `node fetch_flat.js <icon-name> ...` in `source/build`.
+
+### Fix and financial icons (23 Oct 2026)
+Real PowerPoint rendering (exported through PowerPoint itself, which the PIL preview checker cannot do) showed titles centred and "PRAGATI" clipped on the title slide in the v4 family. Fixed in v2.2 and v4.2 by left-aligning the title placeholders. v2.2 also has finance icons on the three unit-economics KPI cards. Always check a deck with a real PowerPoint export before sending.

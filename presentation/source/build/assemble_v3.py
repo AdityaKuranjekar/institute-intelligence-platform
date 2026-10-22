@@ -39,5 +39,11 @@ body = (head + p3("chrome.js") + p3("a_title_exec.js") + p3("b_problem.js") + p3
         + p2("appendix.js") + data + "\n" + legal + "\n" + card + "\n" + cover + "\n" + tour + "\n" + sources + "\n" + fin
         + "  await pres.writeFile({ fileName: OUT });\n  console.log(\"written\", OUT);\n}\n\nmain().catch((e) => { console.error(e); process.exit(1); });\n")
 body = body.replace("Pragati: Case B", "AlphaQ: Case B")
-(B / "deck_v3.js").write_text(body, encoding="utf-8")
+import os
+outjs = "deck_v3.js"
+if os.environ.get("REF"):
+    import ref_common
+    body = ref_common.apply(body, "v3", 9)
+    outjs = "deck_v3r.js"
+(B / outjs).write_text(body, encoding="utf-8")
 print("deck_v3.js written")

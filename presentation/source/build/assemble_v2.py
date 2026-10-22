@@ -32,5 +32,11 @@ body = (head + part("chrome.js") + part("s01_s02.js") + part("s03_s06.js") + par
         + data + "\n" + legal + "\n" + card + "\n" + part("appendix2.js") + "\n" + fin
         + "  await pres.writeFile({ fileName: OUT });\n  console.log(\"written\", OUT);\n}\n\nmain().catch((e) => { console.error(e); process.exit(1); });\n")
 body = body.replace("Pragati: Case B", "AlphaQ: Case B")
-(B / "deck_v2.js").write_text(body, encoding="utf-8")
+import os
+outjs = "deck_v2.js"
+if os.environ.get("REF"):
+    import ref_common
+    body = ref_common.apply(body, "v2", 8).replace("AlphaQ_CaseB_Round1_earlier-2_v2.pptx", "AlphaQ_CaseB_Round1_candidate-A_v2.2.pptx").replace("(Round 1, version 2)", "(Round 1, version 2.2)")
+    outjs = "deck_v22.js"
+(B / outjs).write_text(body, encoding="utf-8")
 print("deck_v2.js written;", body.count("content(\"") - 1, "content slides;")

@@ -9,7 +9,9 @@ from pathlib import Path
 
 B = Path(__file__).resolve().parent
 subprocess.run([sys.executable, str(B / "assemble_v3.py")], check=True, capture_output=True)
-src = (B / "deck_v3.js").read_text(encoding="utf-8")
+import os
+REF = bool(os.environ.get("REF"))
+src = (B / ("deck_v3r.js" if REF else "deck_v3.js")).read_text(encoding="utf-8")
 src = src.replace("AlphaQ_CaseB_Round1_earlier-3_v3.pptx", "AlphaQ_CaseB_Round1_CURRENT_v4.pptx").replace("(Round 1, version 3)", "(Round 1, version 4)").replace("Round 1  ·  Version 3", "Round 1  ·  Version 4")
 
 # ---- canvas: dotted grid behind every content and title slide
@@ -123,5 +125,7 @@ for marker, js in OV.items():
     src = src[:j] + js.rstrip("\n") + "\n" + src[j:]
     k = src.index('s.addNotes("', j) + len('s.addNotes("')
     src = src[:k] + 'DESIGN INTENT: ' + INTENT[marker].replace('"', "'") + ' | ' + src[k:]
-(B / "deck_v4.js").write_text(src, encoding="utf-8")
+if REF:
+    src = src.replace("AlphaQ_CaseB_Round1_earlier-3_v3.pptx", "AlphaQ_CaseB_Round1_candidate-B_v4.2.pptx").replace("AlphaQ_CaseB_Round1_CURRENT_v4.pptx", "AlphaQ_CaseB_Round1_candidate-B_v4.2.pptx").replace("Version 4", "Version 4.2")
+(B / ("deck_v4r.js" if REF else "deck_v4.js")).write_text(src, encoding="utf-8")
 print("deck_v4.js written")
