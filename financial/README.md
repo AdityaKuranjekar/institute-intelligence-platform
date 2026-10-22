@@ -9,6 +9,7 @@ Last updated: 2026-10-22 · Model **v1.1 (CFO audit)** · Owner: ankita2401cs07@
 | `DataMoat_Financial_Model_v1.1.xlsx` | **The model.** Live formulas only; all inputs on `Assumptions`. Open in Excel or Google Sheets (it recalculates on open). |
 | `MODEL_AUDIT.md` | **CFO review**: 18 findings, the fixes, before/after numbers, what is still weak. |
 | `DECK_NUMBER_UPDATES.md` | Old → new numbers for every finance figure in the deck. |
+| `DataMoat_Financial_Model_Preparation_Report.pdf` | **How the model was prepared** (11 pages): requirements trace, process, architecture, evidence, method, tests, the CFO audit, results, limits and how to reproduce. For judges and mentors. |
 | `DataMoat_Financial_Model_Explained.pdf` | Plain-English tour of every tab, the jargon and the link to the PS. |
 | `assumptions.csv`, `seasonality.csv` | Source of every input (Bear / Base / Bull, source, confidence, scenario-driver flag). Edit these, then rebuild. |
 | `build_model.py`, `proj_sheet.py` | Rebuild the workbook: `python build_model.py` (needs `pip install openpyxl`). |

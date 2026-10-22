@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[2]
-PPTX = REPO / "slides" / "AlphaQ_CaseB_Round1_v3.pptx"
+PPTX = REPO / "slides" / "AlphaQ_CaseB_Round1_v4.pptx"
 BUILD = REPO / "slides" / "build"
 
 
@@ -42,7 +42,7 @@ def test_unverified_numbers_are_not_presented_as_results():
 def test_every_content_slide_tags_its_numbers_by_origin():
     texts = _slide_texts()
     # slides with numeric claims must carry one of the origin tags
-    for idx in (5, 6, 9):  # 1-based slide numbers of: analytics, ROI, unit economics ... (title is slide 1)
+    for idx in (6, 7, 10):  # 1-based slide numbers of: analytics, ROI, unit economics ... (title is slide 1)
         t = texts[idx].upper()
         assert any(k in t for k in ("PUBLIC DATA", "MODEL OUTPUT", "SYNTHETIC DATA", "GUIDE BASELINE")), f"slide {idx + 1} lacks an origin tag"
 

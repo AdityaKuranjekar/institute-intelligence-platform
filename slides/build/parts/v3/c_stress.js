@@ -3,7 +3,7 @@
     const s = content("Problem", "The guide's example looks great on paper. Here is where each number breaks, and what we build instead", "Feasibility · business realism", ["STRESS-TESTING THE GUIDE", 1]);
     sec(s, 1, "SIX ASSUMPTIONS, TESTED", L, 1.22, 8);
     const g = (t) => ({ t, bold: true, color: T.tealDark });
-    dtable(s, L, 1.58, [1.75, 3.2, 3.2], ["Guide assumption", "What the evidence says", "What we do instead"], [
+    dtable(s, L, 1.58, [1.75, 3.2, 3.2], ["Hypothesis (the guide)", "Evidence", "Decision (what we do)"], [
       [g("₹40 per student per month"), "Generic institute apps list at ₹4 to ₹21 per student per month. ₹40 x 400 students = ₹1.92 lakh a year.", "List ₹30, tested from ₹20 to ₹40. Willingness to pay goes to owner interviews first."],
       [g("25 % of dropouts prevented"), "8 trials in comparable settings average 15.8 % among students who get outreach; month-1 leavers cannot be flagged.", "Model 4.0 % effective reduction. Prove it with comparison batches in a pilot."],
       [g("Saved fees pay for the product"), "Fees kept alone return 0.35x of the cost.", "Lead with staff time and parent reports: fees plus time reach 0.55x; admissions close the gap."],
