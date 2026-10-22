@@ -154,7 +154,7 @@ function bandChart(kit, slide, x, y, w, h) {
   months.forEach((m, i) => {
     const bx = cx + i * step + step * 0.28, bw = step * 0.44;
     const y1 = bottom - ((highs[i] - 40) / 60) * bh, y2 = bottom - ((lows[i] - 40) / 60) * bh;
-    slide.addShape("roundRect", { x: bx, y: y1, w: bw, h: y2 - y1, rectRadius: 0.05, fill: { color: i === 4 ? T.teal : "9FD3D4" }, line: { type: "none" } });
+    slide.addShape("roundRect", { x: bx, y: y1, w: bw, h: y2 - y1, rectRadius: 0.05, fill: { color: i === 4 ? T.teal : "B9CFE8" }, line: { type: "none" } });
     kit.text(slide, m, { x: cx + i * step, y: bottom + 0.06, w: step, h: 0.26, fontSize: 11, color: T.muted, align: "center" });
   });
   kit.text(slide, "The range narrows as more tests come in", { x: x + 0.2, y: y + h - 0.38, w: w - 0.4, h: 0.28, fontSize: 11, color: T.muted });

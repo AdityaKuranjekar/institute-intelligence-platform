@@ -3,7 +3,8 @@
 **Two versions are kept.**
 | Version | File | What it is | Build |
 |---|---|---|---|
-| **v2 (current)** | `AlphaQ_CaseB_Round1_v2.pptx` (previews: `preview_v2/`) | 13-slide pitch (title + 12 content) in plain English, one core graphic per slide, breadcrumb tracker on top, sources bottom-left, then Appendix 1 to 7 and the AI-use slide. **Uses finance model v1.1** (CFO audit) | `cd build && python assemble_v2.py && node deck_v2.js` |
+| **v3 (current, recommended)** | `AlphaQ_CaseB_Round1_v3.pptx` (previews: `preview_v3/`) | Dense, human-made hybrid: v1's cluttered layout and evidence plus v2's diagrams (loop, friction matrix, layered architecture, intervention journey, compliance matrix with locks, lockbox, gauge, cost stack, Gantt, hub-and-spoke, risk matrix) and v2's top breadcrumb bar; sticky-note annotations; finance model v1.1 | `cd build && python assemble_v3.py && node deck_v3.js` |
+| v2 | `AlphaQ_CaseB_Round1_v2.pptx` (previews: `preview_v2/`) | 13-slide pitch (title + 12 content) in plain English, one core graphic per slide, breadcrumb tracker on top, sources bottom-left, then Appendix 1 to 7 and the AI-use slide. **Uses finance model v1.1** (CFO audit) | `cd build && python assemble_v2.py && node deck_v2.js` |
 | v1 (frozen) | `AlphaQ_CaseB_Round1_v1.pptx` (previews: `preview_v1/`) | 25-slide denser version. **Finance numbers are from model v1.0 and out of date** (see `Financial_Model/DECK_NUMBER_UPDATES.md`) | `cd build && python assemble_v5.py && node deck.js` (writes the v1 file) |
 
 Run `python charts.py` and `python export_html.py` first if the PNGs in `assets/` are missing. Check layout with `python render_check.py ../AlphaQ_CaseB_Round1_v2.pptx ../preview`.
