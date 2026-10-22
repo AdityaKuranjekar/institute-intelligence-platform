@@ -90,7 +90,7 @@ async function main() {
   // ================================================================ EXECUTIVE SUMMARY
   pres.addSection({ title: "Summary" });
   {
-    const s = content("Summary", "Small institutes already hold the data; Pragati turns it into weekly action, at a cost they can say yes to", "All criteria · one-page view", ["EXECUTIVE SUMMARY", 0]);
+    const s = content("Summary", "Small institutes already hold the data. Pragati turns it into a weekly to-do list for mentors, at a price owners can say yes to", "All criteria · one-page view", ["EXECUTIVE SUMMARY", 0]);
     // ---- left: situation, complication, resolution
     const scr = [["SITUATION", [{ text: "Tier-2 and Tier-3 JEE/NEET institutes (150 to 1,200 students) run on " }, { text: "paper OMR sheets, Excel and WhatsApp.", options: { bold: true } }, { text: " 22.8 lakh NEET and about 15.4 lakh JEE Main candidates registered in 2025." }]],
       ["COMPLICATION", [{ text: "A 400-student institute loses about " }, { text: "₹17 lakh a year", options: { bold: true } }, { text: " to mid-session dropouts, noticed only after students leave. Generic apps store marks but give no topic view or warning, and " }, { text: "DPDP s.9(3) bars behavioural tracking of minors.", options: { bold: true } }]],
@@ -157,8 +157,8 @@ async function main() {
   pres.addSection({ title: "Problem" });
   // ================================================================ 1 PROBLEM
   {
-    const s = content("Problem", "Institutes hold the data, but notice a struggling student only after they leave", "Problem framing · Participant Guide §2, §7", ["THE PROBLEM AND THE MARKET", 1]);
-    kit.panels("tab");
+    const s = content("Problem", "Institutes have the marks, but notice a struggling student only after that student has already left", "Problem framing · Participant Guide §2, §7", ["THE PROBLEM AND THE MARKET", 1]);
+    kit.panels("mix");
     frame(s, L, 1.22, 4.75, 2.9, "WHO LOSES TODAY");
     const pers = [["FaChalkboardUser", "Teachers", "Learn which topics are weak only after the exam.", T.navy],
       ["FaBuilding", "Owners", "Cannot compare batches or teaching methods.", T.tealDark],
@@ -222,7 +222,7 @@ async function main() {
 
   // ================================================================ STRESS-TEST THE GUIDE
   {
-    const s = content("Problem", "The guide's example looks great on paper. Here is where each number breaks, and what we build instead", "Feasibility · business realism", ["STRESS-TESTING THE GUIDE", 1]);
+    const s = content("Problem", "The case guide's example looks great on paper. We tested every number and built around what survives", "Feasibility · business realism", ["STRESS-TESTING THE GUIDE", 1]);
     sec(s, 1, "SIX ASSUMPTIONS, TESTED", L, 1.22, 8);
     const g = (t) => ({ t, bold: true, color: T.tealDark });
     dtable(s, L, 1.58, [1.75, 3.2, 3.2], ["Guide assumption", "What the evidence says", "What we do instead"], [
@@ -267,7 +267,7 @@ async function main() {
   // ================================================================ PRODUCT
   pres.addSection({ title: "Product" });
   {
-    const s = content("Product", "One product, two surfaces: a web console for the office and a phone app for mentors and parents", "Architecture · product", ["THE PRODUCT", 2]);
+    const s = content("Product", "One product, two surfaces: a web console for the office, a phone app for mentors and parents", "Architecture · product", ["THE PRODUCT", 2]);
     s.addShape("rect", { x: L, y: 1.22, w: 6.4, h: 3.6, fill: { color: T.white }, line: { color: T.tealDark, width: 1.25 } });
     pic(s, "web_console.png", L + 0.02, 1.24, 6.36, 3.56, "Pragati web console (illustrative)");
     hdrBar(s, L, 4.86, 6.4, "WEB CONSOLE · owner, teacher and compliance views", { h: 0.27, size: 10 });
@@ -314,8 +314,8 @@ async function main() {
 
   // ================================================================ 4 LEARNING ANALYTICS
   {
-    const s = content("Technology", "We estimate what each student knows, topic by topic, and say how sure we are", "ML rigour 25 % · learning analytics", ["LEARNING ANALYTICS", 3]);
-    kit.panels("tab");
+    const s = content("Technology", "We estimate what each student knows, topic by topic, and tell the teacher how sure we are", "ML rigour 25 % · learning analytics", ["LEARNING ANALYTICS", 3]);
+    kit.panels("mix");
     frame(s, L, 1.22, 5.35, 5.7, "WHAT THE TEACHER SEES");
     pic(s, "screen_heatmap.png", L + 0.17, 1.62, 5.0, 2.81, "Topic mastery heatmap (illustrative)");
     callout(s, 1, L + 0.75, 4.18); callout(s, 2, L + 1.68, 1.82); callout(s, 3, L + 4.1, 3.1);
@@ -355,8 +355,8 @@ async function main() {
 
   // ================================================================ 5 EARLY WARNING
   {
-    const s = content("Technology", "A short, supportive list each week: who to call, why, and what to offer", "ML rigour 25 % · early warning", ["EARLY WARNING", 3]);
-    kit.panels("dash");
+    const s = content("Technology", "Each week a mentor gets a short list: who to call, why, and what to offer", "ML rigour 25 % · early warning", ["EARLY WARNING", 3]);
+    kit.panels("mix");
     frame(s, L, 1.22, 5.0, 5.7, "WHAT THE MENTOR SEES");
     pic(s, "screen_support_list.png", L + 0.1, 1.6, 4.8, 2.7, "Support list (illustrative)");
     callout(s, 1, L + 3.7, 2.15); callout(s, 2, L + 2.2, 2.35);
@@ -394,8 +394,8 @@ async function main() {
 
   // ================================================================ 6 PREDICTION + REPORT
   {
-    const s = content("Technology", "An honest percentile range, and a parent report where every number is checked", "ML rigour 25 % · GenAI with guardrails", ["PERCENTILE RANGE AND PARENT REPORTS", 3]);
-    kit.panels("tab");
+    const s = content("Technology", "An honest range instead of a single rank, and parent messages where every number is checked", "ML rigour 25 % · GenAI with guardrails", ["PERCENTILE RANGE AND PARENT REPORTS", 3]);
+    kit.panels("mix");
     frame(s, L, 1.22, 4.2, 5.7, "PERCENTILE RANGE");
     M.bandChart(kit, s, L + 0.12, 1.62, 3.96, 2.75);
     text(s, "Quantile model plus conformal band, 80 % target (77 to 83 % accepted).", { x: L + 0.12, y: 4.45, w: 3.96, h: 0.4, fontSize: 10.5 });
@@ -423,6 +423,7 @@ async function main() {
       text(s, pl[i][1], { x: rx + 0.62, y, w: rw - 0.74, h: 0.4, fontSize: 11.5, bold: true, color: T.navy, valign: "middle" });
       text(s, pl[i][2], { x: rx + 0.62, y: y + 0.4, w: rw - 0.74, h: 0.62, fontSize: 10 });
     }
+    text(s, [{ text: "Same pipeline, next jobs: ", options: { bold: true, color: T.tealDark } }, { text: "a 7-day study plan and doubt answers drawn from retrieved notes, under the same checks. Designed, not in the Round 1 build." }], { x: rx + 0.12, y: 5.5, w: rw - 0.24, h: 0.68, fontSize: 9, color: T.ink });
     tag(s, "built", rx + 0.12, 6.15);
     text(s, "16 automated tests", { x: rx + 0.85, y: 6.12, w: rw - 1.0, h: 0.3, fontSize: 10, valign: "middle", color: T.muted });
     source(s, "Sources: backend/app/genai (report module), contracts/report_numbers.schema.json. An independent attack on the checker found gaps; fixes are in progress, so no catch rate is claimed here.");
@@ -432,8 +433,8 @@ async function main() {
   pres.addSection({ title: "Trust" });
   // ================================================================ 7 PRIVACY
   {
-    const s = content("Trust", "Built for the law: consent first, supportive actions only, no rankings", "Feasibility, privacy and safety 20 %", ["PRIVACY, SAFETY AND COMPLIANCE", 4]);
-    kit.panels("dash");
+    const s = content("Trust", "Built for the law and for children: consent first, supportive actions only, no rankings", "Feasibility, privacy and safety 20 %", ["PRIVACY, SAFETY AND COMPLIANCE", 4]);
+    kit.panels("mix");
     frame(s, L, 1.22, 4.55, 4.95, "WHO GETS WHAT");
     dtable(s, L + 0.1, 1.62, [1.05, 0.9, 0.85, 0.8, 0.75], ["", "Academic support", "Dropout", "Fees", "App activity"],
       [["Under 18", { t: "Model", fill: C2.green, bold: true }, { t: "Plain rules", fill: C2.gold }, { t: "Plain rules", fill: C2.gold }, { t: "Never", fill: "F4CFCB", color: T.red, bold: true }],
@@ -469,8 +470,8 @@ async function main() {
   // ================================================================ BUSINESS MODEL
   pres.addSection({ title: "Business" });
   {
-    const s = content("Business", "₹30 per student: fees and staff time already cover the cost; anything the product adds to admissions is upside", "Revenue model and unit economics 20 %", ["BUSINESS MODEL AND UNIT ECONOMICS", 5]);
-    kit.panels("tab");
+    const s = content("Business", "At ₹30 a student, fees kept and staff time saved already cover the cost; every admission it wins is a bonus", "Revenue model and unit economics 20 %", ["BUSINESS MODEL AND UNIT ECONOMICS", 5]);
+    kit.panels("mix");
     // ---- price and cost
     frame(s, L, 1.22, 3.95, 5.08, "PRICE AND COST TO THE INSTITUTE");
     dtable(s, L + 0.08, 1.62, [2.2, 1.59], null, [
@@ -508,7 +509,7 @@ async function main() {
 
   // ================================================================ GO-TO-MARKET, MOAT AND ROADMAP
   {
-    const s = content("Business", "Win the Hindi belt with a free retro-pilot; let the shared question bank compound as institutes join", "Market and go-to-market 10 %", ["GO-TO-MARKET, MOAT AND ROADMAP", 5]);
+    const s = content("Business", "Start in Patna with a free trial on last year's Excel, then grow as the shared question bank gets sharper", "Market and go-to-market 10 %", ["GO-TO-MARKET, MOAT AND ROADMAP", 5]);
     // ---- where we start
     sec(s, 1, "WHERE WE START, AND WHY", L, 1.22, 6);
     const phs = [["PHASE 1 · JAN TO MAR 2027", "Patna", "Free retro-pilot at 2 institutes on last year's Excel: who left, and would we have flagged them?"],
@@ -564,7 +565,7 @@ async function main() {
   // ================================================================ VALIDATION, RISKS AND THE ASK
   pres.addSection({ title: "Validation" });
   {
-    const s = content("Validation", "What we proved, what we did not, the risks that could sink us, and the one pilot that settles it", "Feasibility, privacy and safety 20 % · honest limits", ["VALIDATION, RISKS AND OUR ASK", 6]);
+    const s = content("Validation", "What we have proved, what we have not, the risks, and the one pilot that settles it", "Feasibility, privacy and safety 20 % · honest limits", ["VALIDATION, RISKS AND OUR ASK", 6]);
     const cw = 4.05, gx = 0.14, y0 = 1.22, h0 = 2.86;
     const cols = [["PROVED ON PUBLIC DATA", "proved", [["Next-answer AUC", "0.763 (DKT 0.754)"], ["Withdrawal AUC, day 28", "0.706 (published 0.794)"], ["Calibration error", "0.009"], ["Academic-only cost", "0.008 AUC"], ["Precision at top 10 %", "0.46 vs 0.24 to 0.31"]]],
       ["SHOWN ON SYNTHETIC DATA", "pending", [["Pipeline end to end", "116 tests pass"], ["Tenant isolation", "0 rows across institutes"], ["Report checker", "8 checks, template fallback"], ["Difficulty recovery", "pending"], ["Early-warning lift", "pending"]]],
@@ -604,7 +605,7 @@ async function main() {
   // ================================================================ 9 ROI
   {
     const s = content("Appendix", "Appendix 1: the assumptions behind the institute return, with ranges and confidence", "Revenue model and unit economics 20 %", ["APPENDIX 1: INSTITUTE RETURN ASSUMPTIONS", 7]);
-    kit.panels("tab");
+    kit.panels("mix");
     frame(s, L, 1.22, 3.95, 5.7, "KEY ASSUMPTIONS (MID, BASE)");
     dtable(s, L + 0.08, 1.6, [1.5, 0.75, 1.0, 0.5], ["Assumption", "Base", "Range", "Conf."], [
       ["Students", "400", "180 to 1,200", "M"], ["Annual fee", "₹95,000", "70k to 120k", "L"], ["Mid-session dropout", "10 %", "6 to 18 %", "L"],
@@ -635,7 +636,7 @@ async function main() {
   // ================================================================ 10 UNIT ECONOMICS
   {
     const s = content("Appendix", "Appendix 2: what moves the answer: price, effect size, acquisition cost and churn", "Revenue model and unit economics 20 %", ["APPENDIX 2: SENSITIVITY", 7]);
-    kit.panels("tint");
+    kit.panels("mix");
     frame(s, L, 1.22, 4.35, 5.7, "UNIT ECONOMICS (MID, BASE)");
     dtable(s, L + 0.08, 1.6, [1.9, 0.95, 1.3], ["Per institute", "Guide", "Pragati"], [
       ["LTV ÷ acquisition cost", "10.7x", { t: "3.7x", bold: true }], ["Payback", "3.1 months", { t: "6 months", bold: true }], ["Contribution margin", "66 %", { t: "78 %", bold: true }],
@@ -677,7 +678,7 @@ async function main() {
 
   {
     const s = content("Appendix", "Appendix 3: Bear, Base and Bull for a mid-size institute, plus segments", "Scenarios", ["APPENDIX 3: SCENARIOS", 7]);
-    kit.panels("tab");
+    kit.panels("mix");
     frame(s, L, 1.22, 8.1, 5.7, "MID INSTITUTE (400 STUDENTS)");
     dtable(s, L + 0.1, 1.62, [3.3, 1.5, 1.5, 1.5], ["Per year unless stated", "Bear", "Base", "Bull"], [
       ["Effective dropout reduction", "1.0 %", "6.6 %", "22.2 %"], ["Dropouts prevented", "0.2", "2.6", "16"], ["Institute return, all benefits", "0.15x", "2.9x", "14x"], ["Institute return, fees only", "0.04x", "0.75x", "5.9x"],
@@ -694,7 +695,7 @@ async function main() {
 
   {
     const s = content("Appendix", "Appendix 4: about ₹3.6 per student per month, ₹0 extra run locally", "Cost per student", ["APPENDIX 4: COST PER STUDENT", 7]);
-    kit.panels("dash");
+    kit.panels("mix");
     frame(s, L, 1.22, 5.2, 5.7, "COST INPUTS (BEAR / BASE / BULL)");
     dtable(s, L + 0.08, 1.62, [2.4, 0.9, 0.9, 0.8], ["Input", "Bear", "Base", "Bull"], [
       ["Hosted model, ₹ per 1M input tokens", "142.58", "23.76", "9.51"], ["Hosted model, ₹ per 1M output tokens", "712.88", "142.58", "47.53"], ["WhatsApp utility message, ₹", "0.145", "0.132", "0.115"],
@@ -718,16 +719,18 @@ async function main() {
   }
   {
     const s = content("Appendix", "Appendix 5: 31 tables in five groups, all isolated per institute", "Data model", ["APPENDIX 5: DATA MODEL", 7]);
-    kit.panels("tab");
+    kit.panels("mix");
     const groups = [["PEOPLE", "institutes, users, students, guardians, batches, batch_changes, consents, legal_settings"], ["LEARNING", "topics, topic_prereqs, questions, question_topics, item_params, tests, test_questions, answer_keys, marking_schemes"],
       ["RESULTS", "responses, test_totals, attendance, fees, engagement"], ["INTELLIGENCE", "mastery_snapshots, risk_scores, predictions, interventions, reports, model_registry"], ["OPERATIONS", "ingest_jobs, omr_templates, audit_log"]];
     groups.forEach((g, i) => {
-      const x = L + (i % 3) * 4.18, y = 1.3 + Math.floor(i / 3) * 2.5, w = 4.05;
-      frame(s, x, y, w, 2.35, g[0]);
-      text(s, g[1], { x: x + 0.15, y: y + 0.5, w: w - 0.3, h: 1.7, fontSize: 12 });
+      const x = L + (i % 3) * 4.18, y = 1.3 + Math.floor(i / 3) * 2.25, w = 4.05;
+      frame(s, x, y, w, 2.1, g[0]);
+      text(s, g[1], { x: x + 0.15, y: y + 0.5, w: w - 0.3, h: 1.5, fontSize: 12 });
     });
-    frame(s, L + 2 * 4.18, 3.8, 4.05, 2.35, "DELIBERATELY NOT STORED");
-    lines(s, ["Counselling notes or mental-health information", "ID document images", "Student photographs", "Any public rank"], L + 2 * 4.18 + 0.2, 4.3, 3.7, 1.8, { size: 12, gap: 6 });
+    frame(s, L + 2 * 4.18, 3.8, 4.05, 1.65, "DELIBERATELY NOT STORED");
+    lines(s, ["Counselling notes or mental-health information", "ID document images", "Student photographs", "Any public rank"], L + 2 * 4.18 + 0.2, 4.2, 3.7, 1.2, { size: 11, gap: 3 });
+    text(s, "HOW EVERY QUESTION GETS ITS TOPIC (SO TAGGING COSTS FALL AS WE GROW)", { x: L, y: 5.55, w: 8, h: 0.24, fontSize: 10, bold: true, color: T.tealDark, charSpacing: 0.5 });
+    chevrow(s, L, 5.83, 8.0, 0.5, [{ t: "Question text" }, { t: "Shortlist" , sub: "embedding" }, { t: "Local model picks" }, { t: "Teacher 1-tap" }, { t: "Shared bank" }], { size: 9, depth: 0.16 });
     labelBar(s, L, 6.4, CWD, "Row-level security on every tenant table; another institute sees 0 rows (tested on PostgreSQL 16)", { h: 0.34, size: 12, fill: T.tealDark });
     source(s, "Source: technical/contracts/schema.sql. Synthetic data: 4 institutes, 3 academic years, known ground truth.");
   }
@@ -826,6 +829,35 @@ async function main() {
       { rowH: 0.405, headH: 0.3, size: 9.5, leftCols: [1, 2, 3], rowStyles: Array(13).fill(0).map((_, i) => i % 2 ? "white" : "band") });
     source(s, "Full citations with URLs and licences: technical/docs/CITATIONS.md and financial/research. Every model number traces to the financial workbook or a metrics.json file.");
   }
+  {
+    const s = content("Appendix", "Appendix 11: where the case's twelve questions are answered, and how strong the evidence is", "Problem statement coverage", ["APPENDIX 11: CASE QUESTIONS, ANSWERED", 7]);
+    const E = (t, c) => ({ t, bold: true, color: T.white, fill: c });
+    const M = E("Measured", T.tealDark), D = E("Designed", T.teal), B = E("Built", T.tealDark), A = E("Assumption", T.amber);
+    const rowsL = [
+      ["T1", "Data capture, offline, low effort", "Architecture, Product", D],
+      ["T2", "Data model; tagging questions to topics at scale", "Appendices 5, 6", B],
+      ["T3", "Mastery and question difficulty (IRT)", "Learning analytics", M],
+      ["T4", "Early warning: dropout, falling behind, fees", "Early warning", M],
+      ["T5", "Percentile range with honest uncertainty", "Percentile and reports", D],
+      ["T6", "GenAI: reports, study plans, doubts", "Percentile and reports", B],
+      ["T7", "Multi-tenant, secure, low-cost architecture", "Architecture, Appendix 4", B],
+      ["T8", "Privacy and safety for minors", "Privacy, Appendix 7", B]];
+    const rowsR = [
+      ["B1", "Buyer and measurable institute return", "Business model, Appendix 1", A],
+      ["B2", "Pricing, CAC, payback, churn, LTV", "Business model, Appendix 3", A],
+      ["B3", "Cities and sizes first; channels", "Go-to-market", A],
+      ["B4", "Competition and a moat that grows", "Go-to-market", D],
+      ["R1", "Financial model with sensitivity", "Appendices 1, 2, 3", A],
+      ["R2", "Limits and what we did not prove", "Validation, Appendix 7", M]];
+    dtable(s, L, 1.22, [0.45, 3.2, 1.85, 0.75], ["#", "Technology (70 %)", "Where", "Evidence"], rowsL, { rowH: 0.52, headH: 0.32, size: 9.5, leftCols: [1, 2], headFill: T.tealDark, rowStyles: Array(8).fill(0).map((_, i) => i % 2 ? "white" : "band") });
+    dtable(s, L + 6.5, 1.22, [0.45, 3.0, 1.9, 0.9], ["#", "Market (30 %) and deliverables", "Where", "Evidence"], rowsR, { rowH: 0.52, headH: 0.32, size: 9.5, leftCols: [1, 2], headFill: T.tealDark, rowStyles: Array(6).fill(0).map((_, i) => i % 2 ? "white" : "band") });
+    sec(s, "i", "HOW TO READ THE EVIDENCE COLUMN", L + 6.5, 4.7, 5.9);
+    lines(s, [{ t: "Measured: a number from our own run on public data or the test suite." }, { t: "Built: working code with tests, shown on synthetic data." }, { t: "Designed: specified in the contracts, not coded yet." }, { t: "Assumption: a model input with a stated range, to be tested in interviews and the pilot." }], L + 6.5, 5.05, 5.9, 1.2, { size: 10, gap: 3 });
+    rect(s, L, 5.5, 6.2, 1.3, T.tint);
+    text(s, [{ text: "Every slide states its limits. ", options: { bold: true, color: T.tealDark } }, { text: "We would rather show an honest 6.6 % than copy a hopeful 25 %, and rather mark a gate as pending than quote a number we have not measured. The case says teams that state assumptions and limits score higher, so we put them on the page." }], { x: L + 0.15, y: 5.5, w: 5.9, h: 1.3, fontSize: 10.5, color: T.ink, valign: "middle" });
+    source(s, "Source: Participant Guide sections 4, 8 and 10 (questions and rubric). T = technology question, B = business question, R = round-1 deliverable or limit.");
+  }
+
   // ================================================================ FINAL
   pres.addSection({ title: "Closing" });
   {

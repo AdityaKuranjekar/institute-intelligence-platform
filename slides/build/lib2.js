@@ -17,7 +17,18 @@ function extend(kit, pres) {
     const a = kit.acc(o.acc ?? counter++);
     const st = o.style ?? style;
     const tsize = o.tsize ?? 12;
-    if (st === "dash") {
+    if (st === "bar" || st === "open" || st === "mix") {
+      const bar = st === "bar" || (st === "mix" && y < 1.6);
+      if (title && bar) {
+        kit.rect(slide, x, y, w, 0.33, a.c);
+        kit.text(slide, title, { x: x + 0.12, y, w: w - 0.24, h: 0.33, fontSize: tsize, bold: true, color: a.on, align: "center", valign: "middle" });
+      } else if (title) {
+        kit.text(slide, title, { x: x + 0.04, y: y + 0.02, w: w - 0.1, h: 0.3, fontSize: tsize + 0.5, bold: true, color: T.tealDark, valign: "middle" });
+        kit.rect(slide, x + 0.04, y + 0.34, w - 0.1, 0.012, T.line);
+        kit.rect(slide, x + 0.04, y + 0.33, Math.min(w - 0.1, 2.4), 0.03, T.tealDark);
+      }
+      if (x + w < 12.6) kit.line(slide, x + w + 0.06, y + (bar ? 0 : 0.05), x + w + 0.06, y + h, { color: "8FA9CC", w: 1, dash: "dash" });
+    } else if (st === "dash") {
       slide.addShape(S.roundRect, { x, y, w, h, rectRadius: 0.06, fill: { color: o.fill ?? T.white }, line: { color: a.c, width: 1.25, dashType: "dash" } });
       if (title) kit.text(slide, title, { x: x + 0.1, y: y + 0.05, w: w - 0.2, h: 0.3, fontSize: tsize, bold: true, color: a.d, align: "center", valign: "middle", charSpacing: 1 });
     } else if (st === "tint") {

@@ -20,7 +20,7 @@ def _slide_texts():
 def test_deck_exists_with_expected_structure():
     assert PPTX.exists(), "build it: cd slides/build && node deck.js"
     texts = _slide_texts()
-    assert len(texts) == 24  # title + 12 content + 10 appendix + final
+    assert len(texts) == 25  # title + 12 content + 11 appendix + final
     assert "CASE B" in texts[0]
     assert "How we used AI" in texts[-1], "PS rule 2: AI-use disclosure must be the final slide"
     content_slides = texts[1:13]
