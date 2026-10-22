@@ -2,7 +2,7 @@
 
 | File or folder | What it is |
 |---|---|
-| `AlphaQ_CaseB_Round1.pptx` | The Round 1 deck (20 slides: title, 13 content incl. the new web + phone surfaces slide, appendix 1 to 5, final AI-disclosure slide). Consulting style v4: white paper, one blue family, amber only for pending/warning, bold caps heading + subtitle + rule, section tab bar at the bottom (modelled on the reference decks). Product name in the deck is **Pragati** (team stays AlphaQ). Panels, tables, chevrons, funnel and text are native and editable; the architecture and differentiators slides and all app screens are images |
+| `AlphaQ_CaseB_Round1.pptx` | The Round 1 deck (24 slides, v5: title, 12 content slides from executive summary to validation, appendix 1 to 10, final AI-disclosure slide). Consulting style v4: white paper, one blue family, amber only for pending/warning, bold caps heading + subtitle + rule, section tab bar at the bottom (modelled on the reference decks). Product name in the deck is **Pragati** (team stays AlphaQ). Panels, tables, chevrons, funnel and text are native and editable; the architecture and differentiators slides and all app screens are images |
 | `html/` | HTML sources of the images: `arch_under_the_hood`, `what_makes_us_different`, `web_console` (browser frame), `app_scan` / `app_mentor` / `app_parent` (phones) and `screen_*` (web screens with synthetic data). `ui.css` holds the shared look |
 | `assets/` | PNGs rendered from `html/` (headless Edge) and charts drawn from real result files (`chart_*.png`) |
 | `preview/` | PNG previews of every slide from `build/render_check.py` (approximate; Hindi shaping is not exact) |
@@ -15,7 +15,7 @@ cd slides/build
 npm install                      # once (pptxgenjs, react-icons, sharp)
 python export_html.py            # app screens and dark slides -> ../assets (needs Edge or Chrome)
 python charts.py                 # evidence charts -> ../assets (needs matplotlib, Calibri)
-python transform_v3.py          # deck_v2_dense.js + parts/*.js -> deck.js (v3); edit those sources, not deck.js
+python assemble_v5.py           # deck_v4_blue.js + parts/v5/*.js -> deck.js (v5); edit those sources, not deck.js
 node deck.js                     # -> ../AlphaQ_CaseB_Round1.pptx
 python render_check.py ../AlphaQ_CaseB_Round1.pptx ../preview   # prints text overflow, writes previews
 ```

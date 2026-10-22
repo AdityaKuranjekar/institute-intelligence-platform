@@ -160,6 +160,23 @@ def ltv_segments():
     save(fig, "ltv_segments")
 
 
+def value_bridge():
+    # workbook, mid institute, Base: fees retained 89,672; staff time 25 h x Rs100 x 12; admissions 1 % x 400 x 95,000 x 60 %
+    fees, staff, adm, cost = 0.897, 0.30, 2.28, 1.201
+    fig, ax = plt.subplots(figsize=(4.6, 3.3))
+    bars = [("Fees" + chr(10) + "retained", 0, fees, TEALD), ("Staff" + chr(10) + "time", fees, staff, TEAL), ("Admissions" + chr(10) + "+1 %", fees + staff, adm, ORANGE), ("Total" + chr(10) + "value", 0, fees + staff + adm, NAVY), ("Cost to" + chr(10) + "institute", 0, cost, GREY)]
+    for i, (lab, b, h, c) in enumerate(bars):
+        ax.bar(i, h, bottom=b, color=c, width=0.62, hatch="//" if i == 2 else None, edgecolor="white" if i != 2 else TEALD, lw=0.8)
+        ax.text(i, b + h + 0.07, f"{h:.2f}", ha="center", fontsize=10, fontweight="bold", color=NAVY)
+    ax.axhline(cost, color=RED, ls="--", lw=1.3)
+    ax.text(-0.42, cost + 0.08, "cost line", color=RED, fontsize=8.5, ha="left")
+    ax.text(2, fees + staff + adm / 2, "assumption," + chr(10) + "low confidence", ha="center", va="center", fontsize=8, color=NAVY, fontweight="bold")
+    ax.set_xticks(range(5)); ax.set_xticklabels([b[0] for b in bars], fontsize=9)
+    ax.set_ylim(0, 4.0); ax.set_ylabel("Rs lakh per year".replace("Rs", "₹")); ax.grid(axis="y", color="#E3EAF3"); ax.set_axisbelow(True)
+    ax.set_title("1.0x on fees and staff time; 2.9x with admissions", fontsize=10.5, loc="left")
+    save(fig, "value_bridge")
+
+
 def ring(name, pct, color, big, small=""):
     fig, ax = plt.subplots(figsize=(1.6, 1.6))
     ax.pie([pct, 100 - pct], colors=[color, "#EEF2F7"], startangle=90, counterclock=False, wedgeprops={"width": 0.26, "edgecolor": "white"})
@@ -180,5 +197,5 @@ def rings():
 
 
 if __name__ == "__main__":
-    for fn in (oulad_by_day, assist_bars, calibration, privacy_cost, value_vs_cost, roster_curve, price_benchmark, ltv_segments, rings):
+    for fn in (oulad_by_day, assist_bars, calibration, privacy_cost, value_vs_cost, roster_curve, price_benchmark, ltv_segments, rings, value_bridge):
         fn()
