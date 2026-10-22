@@ -1,4 +1,4 @@
-"""Reads the calculated values of DataMoat_Financial_Model_v1.1.xlsx (no Excel needed) and writes guide_numbers.json,
+"""Reads the calculated values of DataMoat_Financial_Model_CURRENT_v1.1.xlsx (no Excel needed) and writes guide_numbers.json,
 which build_guide_pdf.py uses so no number in the explainer is typed by hand.
 
 Row positions come from ../model_layout.json, which build_model.py writes next to the workbook, so nothing is guessed from labels.
@@ -15,8 +15,8 @@ import formulas  # noqa: E402
 from openpyxl.utils import get_column_letter  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-XLSX = os.path.join(HERE, "..", "DataMoat_Financial_Model_v1.1.xlsx")
-LAY = json.load(open(os.path.join(HERE, "..", "model_layout.json"), encoding="utf-8"))
+XLSX = os.path.join(HERE, "..", "model", "DataMoat_Financial_Model_CURRENT_v1.1.xlsx")
+LAY = json.load(open(os.path.join(HERE, "..", "model", "model_layout.json"), encoding="utf-8"))
 
 CACHE = os.path.join(HERE, "_values_cache.json")
 if os.path.exists(CACHE) and os.path.getmtime(CACHE) >= os.path.getmtime(XLSX):

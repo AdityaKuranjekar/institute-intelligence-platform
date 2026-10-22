@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[2]
-SLIDES = REPO / "slides"
+SLIDES = REPO / "presentation" / "docs"
 
 
 def _lum(hex_color: str) -> float:
@@ -76,7 +76,7 @@ def test_paths_referenced_in_slide_docs_exist():
     missing = []
     for doc in ("BLUEPRINTS.md", "MOCKUPS_PLAN.md", "DESIGN_SYSTEM.md"):
         text = (SLIDES / doc).read_text(encoding="utf-8")
-        for rel in set(re.findall(r"`((?:technical|financial|slides)/[A-Za-z0-9_./-]+)`", text)):
+        for rel in set(re.findall(r"`((?:technical|financial|presentation)/[A-Za-z0-9_./-]+)`", text)):
             rel = rel.rstrip("/.")
             if "*" in rel or rel.endswith(("assets", "mockups")):
                 continue

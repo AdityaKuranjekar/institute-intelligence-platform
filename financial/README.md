@@ -4,21 +4,28 @@ Last updated: 2026-10-22 · Model **v1.1 (CFO audit)** · Owner: ankita2401cs07@
 > **v1.1 replaced v1.0 on 2026-10-22.** Every finance number from v1.0 (6.6%, 2.9x, 0.75x, 3.5 students) is out of date. `MODEL_AUDIT.md` explains what changed and why; `DECK_NUMBER_UPDATES.md` lists old → new numbers for the deck.
 
 ## 1. Files
+```
+financial/
+  model/      the workbook and everything that builds it
+  docs/       plan, audit, deck-number sheet, plain-English guides
+  guide/      scripts that make the two PDFs from the workbook
+  research/   raw research R1 to R7 with links
+  archive/    superseded v1.0 inputs, generator and workbook (history)
+```
 | File | What it is |
 |---|---|
-| `DataMoat_Financial_Model_v1.1.xlsx` | **The model.** Live formulas only; all inputs on `Assumptions`. Open in Excel or Google Sheets (it recalculates on open). |
-| `MODEL_AUDIT.md` | **CFO review**: 18 findings, the fixes, before/after numbers, what is still weak. |
-| `DECK_NUMBER_UPDATES.md` | Old → new numbers for every finance figure in the deck. |
-| `DataMoat_Financial_Model_Preparation_Report.pdf` | **How the model was prepared** (11 pages): requirements trace, process, architecture, evidence, method, tests, the CFO audit, results, limits and how to reproduce. For judges and mentors. |
-| `DataMoat_Financial_Model_Explained.pdf` | Plain-English tour of every tab, the jargon and the link to the PS. |
-| `assumptions.csv`, `seasonality.csv` | Source of every input (Bear / Base / Bull, source, confidence, scenario-driver flag). Edit these, then rebuild. |
-| `build_model.py`, `proj_sheet.py` | Rebuild the workbook: `python build_model.py` (needs `pip install openpyxl`). |
-| `verify_model.py` | Recalculates without Excel and prints the headline and checks: `python verify_model.py --all` (needs `pip install formulas`; about 3 minutes). |
-| `guide/` | Scripts that make the explainer PDF from the workbook. |
-| `research/` | Raw research R1–R7 with links (competitors, unit costs, fees, dropout, trials, benchmarks, market size). |
-| `FINANCE_PLAN.md` | The plan; §13 records the v1.1 decisions. |
-| `archive_v1.0/` | The superseded v1.0 inputs, generator and workbook. |
-| `DataMoat_Financial_Model.xlsx` | **Superseded v1.0. Delete it** (it was open in Excel when v1.1 was built, so it could not be replaced). |
+| `model/DataMoat_Financial_Model_CURRENT_v1.1.xlsx` | **The model.** Live formulas only; all inputs on `Assumptions`. Open in Excel or Google Sheets (it recalculates on open). |
+| `model/assumptions.csv`, `model/seasonality.csv` | Source of every input (Bear / Base / Bull, source, confidence, scenario-driver flag). Edit these, then rebuild. |
+| `model/build_model.py`, `model/proj_sheet.py` | Rebuild the workbook: `cd model && python build_model.py` (needs `pip install openpyxl`). |
+| `model/verify_model.py` | Recalculates without Excel and prints headline and checks: `python verify_model.py --all` (needs `pip install formulas`; about 3 minutes). |
+| `model/model_layout.json` | Row positions of every output, written by the builder and read by the guide scripts. |
+| `docs/MODEL_AUDIT.md` | **CFO review**: 18 findings, the fixes, before/after numbers, what is still weak. |
+| `docs/DECK_NUMBER_UPDATES.md` | Old to new numbers for every finance figure in the deck. |
+| `docs/FINANCE_PLAN.md` | The plan; section 13 records the v1.1 decisions. |
+| `docs/DataMoat_Financial_Model_Preparation_Report.pdf` | How the model was prepared (method, evidence, tests, audit). For judges and mentors. |
+| `docs/DataMoat_Financial_Model_Explained.pdf` | Plain-English tour of every tab, the jargon and the link to the PS. |
+| `guide/` | `extract_numbers.py` then `build_guide_pdf.py` / `build_prep_report.py` regenerate the PDFs into `docs/`. |
+| `research/` | R1 to R7 (competitors, unit costs, fees, dropout, trials, benchmarks, market size and a quick market check). |
 
 ## 2. Workbook sheets
 Cover (scenario switch C6, status light C7, headline) · Assumptions · Seasonality · Pricing · COGS_Build · Institute_ROI · Unit_Econ · **Projection** (3 years: sales capacity, cohorts, P&L, cash, funding ask) · Scenarios · Sensitivity · Checks · Sources · hidden: Engine, Proj_Bear, Proj_Base, Proj_Bull.

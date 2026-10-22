@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Builds DataMoat_Financial_Model_Explained.pdf: a plain-English guide to every tab, term and idea in
-DataMoat_Financial_Model_v1.1.xlsx, cross-referenced to the case brief (the PS).
+DataMoat_Financial_Model_CURRENT_v1.1.xlsx, cross-referenced to the case brief (the PS).
 
 Every number comes from guide_numbers.json (made by extract_numbers.py from the workbook) or from
 ../assumptions.csv, so nothing is typed by hand. To refresh after the model changes:
@@ -26,9 +26,9 @@ from reportlab.platypus import (BaseDocTemplate, CondPageBreak, Flowable, Frame,
 from reportlab.platypus.tableofcontents import TableOfContents
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "..", "DataMoat_Financial_Model_Explained.pdf")
+OUT = os.path.join(HERE, "..", "docs", "DataMoat_Financial_Model_Explained.pdf")
 N = json.load(open(os.path.join(HERE, "guide_numbers.json"), encoding="utf-8"))
-with open(os.path.join(HERE, "..", "assumptions.csv"), encoding="utf-8-sig") as f:
+with open(os.path.join(HERE, "..", "model", "assumptions.csv"), encoding="utf-8-sig") as f:
     A = {r["name"]: r for r in csv.DictReader(f)}
 
 # ------------------------------------------------------------------ fonts
@@ -658,7 +658,7 @@ def on_cover(c, doc):
     c.drawString(LM + 28 * mm, PH - 143 * mm, "·  Nextute Edtech × Finance Club, IIT Patna  ·  Case Competition 2026")
     c.setFillColor(MUTED)
     c.setFont("Calibri", 8.8)
-    c.drawString(LM, 14 * mm, f"Explains DataMoat_Financial_Model_v1.1.xlsx  ·  model {VERSION}  ·  Base scenario unless stated")
+    c.drawString(LM, 14 * mm, f"Explains DataMoat_Financial_Model_CURRENT_v1.1.xlsx  ·  model {VERSION}  ·  Base scenario unless stated")
     c.restoreState()
 
 

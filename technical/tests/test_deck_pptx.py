@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[2]
-PPTX = REPO / "slides" / "AlphaQ_CaseB_Round1_v4.pptx"
-BUILD = REPO / "slides" / "build"
+PPTX = REPO / "presentation" / "decks" / "AlphaQ_CaseB_Round1_CURRENT_v4.pptx"
+BUILD = REPO / "presentation" / "source" / "build"
 
 
 def _slide_texts():
@@ -18,7 +18,7 @@ def _slide_texts():
 
 
 def test_deck_exists_with_expected_structure():
-    assert PPTX.exists(), "build it: cd slides/build && node deck.js"
+    assert PPTX.exists(), "build it: cd presentation/source/build && python build_all.py v4"
     texts = _slide_texts()
     assert len(texts) == 22  # title + 12 content + 8 appendix + final
     assert "CASE B" in texts[0]
@@ -64,7 +64,7 @@ def test_layout_has_no_text_overflow():
 
 def test_html_and_chart_assets_exist_and_have_expected_sizes():
     from PIL import Image
-    assets = REPO / "slides" / "assets"
+    assets = REPO / "presentation" / "source" / "assets"
     for name in ("arch_under_the_hood", "what_makes_us_different"):
         assert Image.open(assets / f"{name}.png").size == (1920, 1080)
     for name in ("screen_heatmap", "screen_support_list", "screen_student_profile", "screen_upload", "screen_owner", "screen_parent_report", "screen_consent"):

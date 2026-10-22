@@ -9,3 +9,10 @@ data/
 .pytest_cache/
 *.log
 .DS_Store
+
+# Office lock files, local backups, organiser documents
+~$*
+_archive/
+1792441177680_Case_B_The_Data_Moat.pdf
+datamoat/
+institute-intelligence-platform/

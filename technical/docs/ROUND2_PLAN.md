@@ -6,7 +6,7 @@ Source: Participant Guide §9-10. Same rubric as Round 1, but judges now score t
 | # | Deliverable | Limits | Status today |
 |---|---|---|---|
 | 1 | **Working prototype**: upload test results (CSV **or** OMR photo) → topic-mastery heatmap, at-risk list with reasons, predicted performance range, auto-generated parent report (Hindi or English). Live demo; **judges may change an input live**; code repository link submitted in advance | live, not screenshots | libraries exist (generator, parent-report module, public validation); **no backend, no web app, no ingestion code, no OMR reader yet** |
-| 2 | Updated deck incorporating judges' Round 1 feedback | PDF, **max 15 content slides** | Round 1 blueprint in `slides/BLUEPRINTS.md`; +3 slides for Round 2 (below) |
+| 2 | Updated deck incorporating judges' Round 1 feedback | PDF, **max 15 content slides** | Round 1 blueprint in `presentation/docs/BLUEPRINTS.md`; +3 slides for Round 2 (below) |
 | 3 | Detailed financial model | 3-year projection, scenarios, sensitivities | Round 1 workbook done; Round 2 sheets (cohorts, hiring, 3-year P&L, cash) not built (finance chat) |
 | 4 | Model and system report | 2-4 pages: validation metrics, cost per student, privacy design, known limitations | not started; numbers come from `technical/scripts/deck_numbers.py` |
 | 5 | Curveball scenario | about 60 minutes to prepare, presented inside the pitch | drills listed in `TECH_PLAN.md` §21; 6 generator scenarios exist |
@@ -24,7 +24,7 @@ Source: Participant Guide §9-10. Same rubric as Round 1, but judges now score t
 | Charts, icons, fonts | ECharts (Apache-2.0), Lucide icons, Inter and Noto Sans Devanagari (OFL) | keep licence files in the repo |
 | Slides, PDF | PowerPoint export; report as Markdown → PDF through the browser print dialog | embed fonts |
 | Backup recording | OBS Studio (free) | record the whole demo on the same laptop |
-| Mock-ups | HTML + screenshots (see `slides/MOCKUPS_PLAN.md`), Figma free | |
+| Mock-ups | HTML + screenshots (see `presentation/docs/MOCKUPS_PLAN.md`), Figma free | |
 
 ## 3. What still has to be built for the prototype (workstreams)
 Gate order: **G0** wave-1 fixes (A2, E2) → **G1** models (B, C, F) → **G2** app skeleton → **G3** end-to-end flow → **G4** polish and rehearsal.

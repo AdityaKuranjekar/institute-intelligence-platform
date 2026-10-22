@@ -18,15 +18,15 @@ def _swap(old, new):
     _prefix = _prefix.replace(old, new)
 
 
-_swap('OUT = os.path.join(HERE, "..", "DataMoat_Financial_Model_Explained.pdf")',
-      'OUT = os.path.join(HERE, "..", "DataMoat_Financial_Model_Preparation_Report.pdf")')
+_swap('OUT = os.path.join(HERE, "..", "docs", "DataMoat_Financial_Model_Explained.pdf")',
+      'OUT = os.path.join(HERE, "..", "docs", "DataMoat_Financial_Model_Preparation_Report.pdf")')
 _swap('c.drawString(LM, PH - 70 * mm, "The Financial Model,")', 'c.drawString(LM, PH - 70 * mm, "How the Financial Model")')
 _swap('c.drawString(LM, PH - 88 * mm, "Explained")', 'c.drawString(LM, PH - 88 * mm, "Was Prepared")')
 _swap('"Every tab, every term and how it all connects to the case brief,"', '"Method, evidence, tests and audit trail behind the model,"')
 _swap('"in plain English for a first-time reader."', '"for judges, mentors and teammates who want to see the work."')
 _swap('title="The Data Moat financial model, explained"', 'title="How the Data Moat financial model was prepared"')
 _swap('subject="Plain-English guide to DataMoat_Financial_Model.xlsx and its link to the Case B problem statement"',
-      'subject="Preparation report: method, evidence, verification and audit of DataMoat_Financial_Model_v1.1.xlsx"')
+      'subject="Preparation report: method, evidence, verification and audit of DataMoat_Financial_Model_CURRENT_v1.1.xlsx"')
 _swap('"The Data Moat · financial model explained · Team AlphaQ"', '"The Data Moat · how the financial model was prepared · Team AlphaQ"')
 exec(compile(_prefix, "build_guide_pdf_prefix", "exec"), globals())
 
@@ -307,7 +307,7 @@ story += [tbl([["Limit", "Why it matters", "How it closes"],
               [52, 70, 52], first_bold=True),
           Spacer(1, 8), P("Reproduce everything", H3),
           tbl([["Command (in the Financial_Model folder)", "What it does"],
-               ["python build_model.py", "Rebuilds DataMoat_Financial_Model_v1.1.xlsx from assumptions.csv and seasonality.csv"],
+               ["python build_model.py", "Rebuilds DataMoat_Financial_Model_CURRENT_v1.1.xlsx from assumptions.csv and seasonality.csv"],
                ["python verify_model.py --all", "Recalculates without Excel; prints the Cover, the Checks, Scenarios, Sensitivity and the projection (about 3 minutes)"],
                ["python guide/extract_numbers.py", "Reads every output cell into guide_numbers.json (about 4 minutes)"],
                ["python guide/build_guide_pdf.py", "Rebuilds the plain-English explainer"],
