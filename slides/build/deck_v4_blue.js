@@ -6,7 +6,7 @@ const { T, ACC, F, W, H, makeKit } = require("./lib");
 const { extend, C2 } = require("./lib2");
 const M = require("./mocks");
 
-const OUT = path.join(__dirname, "..", "AlphaQ_CaseB_Round1.pptx");
+const OUT = path.join(__dirname, "..", "AlphaQ_CaseB_Round1_v1.pptx");
 const L = 0.45, CWD = 12.433, R = L + CWD;
 
 async function main() {

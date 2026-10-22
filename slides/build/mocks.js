@@ -6,7 +6,7 @@ const { T, F } = require("./lib");
 function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 
 const TOPICS = ["Kinematics", "Laws of motion", "Work and energy", "Rotation", "Gravity", "Heat", "Electricity", "Optics"];
-const BAND_FILL = { nodata: T.greyLight, building: "C9E6E6", steady: "6FBFC0", strong: T.teal };
+const BAND_FILL = { nodata: T.greyLight, building: "C9DBF0", steady: "7FA6D6", strong: "1F4A82" };
 const BAND_LABEL = { nodata: "Not enough data", building: "Building", steady: "Steady", strong: "Strong" };
 
 function heatmapData(n, m, seed = 7) {

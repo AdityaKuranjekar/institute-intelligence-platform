@@ -160,6 +160,25 @@ def ltv_segments():
     save(fig, "ltv_segments")
 
 
+def gauge():
+    import numpy as np
+    from matplotlib.patches import Wedge
+    fig, ax = plt.subplots(figsize=(4.4, 2.3))
+    vmax = 4.2
+    ang = lambda v: 180 - 180 * v / vmax
+    for lo, hi, c in [(0, 1.0, "#E3B3AC"), (1.0, 2.5, "#8FB0D8"), (2.5, 4.2, "#2E6DB4")]:
+        ax.add_patch(Wedge((0, 0), 1.0, ang(hi), ang(lo), width=0.32, facecolor=c, edgecolor="white", lw=2))
+    for v, lab in [(0.37, "Bear"), (1.7, "Base"), (3.9, "Bull")]:
+        a = np.deg2rad(ang(v)); ax.text(1.18 * np.cos(a), 1.18 * np.sin(a), lab, ha="center", va="center", fontsize=9.5, fontweight="bold", color=NAVY)
+    a = np.deg2rad(ang(1.7)); ax.plot([0, 0.78 * np.cos(a)], [0, 0.78 * np.sin(a)], color=NAVY, lw=3.5, solid_capstyle="round")
+    ax.add_patch(plt.Circle((0, 0), 0.07, color=NAVY))
+    a1 = np.deg2rad(ang(1.0)); ax.plot([0.66 * np.cos(a1), 1.04 * np.cos(a1)], [0.66 * np.sin(a1), 1.04 * np.sin(a1)], color=RED, lw=1.6, ls="--")
+    ax.text(1.12 * np.cos(a1), 1.12 * np.sin(a1) + 0.04, "1x", ha="center", fontsize=8.5, color=RED, fontweight="bold")
+    ax.text(0, -0.24, "return above 1x = the product pays for itself", ha="center", fontsize=8, color=RED)
+    ax.set_xlim(-1.4, 1.4); ax.set_ylim(-0.35, 1.35); ax.set_aspect("equal"); ax.axis("off")
+    save(fig, "gauge")
+
+
 def value_bridge():
     # workbook, mid institute, Base: fees retained 89,672; staff time 25 h x Rs100 x 12; admissions 1 % x 400 x 95,000 x 60 %
     fees, staff, adm, cost = 0.897, 0.30, 2.28, 1.201
@@ -197,5 +216,5 @@ def rings():
 
 
 if __name__ == "__main__":
-    for fn in (oulad_by_day, assist_bars, calibration, privacy_cost, value_vs_cost, roster_curve, price_benchmark, ltv_segments, rings, value_bridge):
+    for fn in (oulad_by_day, assist_bars, calibration, privacy_cost, value_vs_cost, roster_curve, price_benchmark, ltv_segments, rings, value_bridge, gauge):
         fn()

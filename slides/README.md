@@ -1,5 +1,13 @@
 # Slides
 
+**Two versions are kept.**
+| Version | File | What it is | Build |
+|---|---|---|---|
+| **v2 (current)** | `AlphaQ_CaseB_Round1_v2.pptx` (previews: `preview_v2/`) | 13-slide pitch (title + 12 content) in plain English, one core graphic per slide, breadcrumb tracker on top, sources bottom-left, then Appendix 1 to 7 and the AI-use slide. **Uses finance model v1.1** (CFO audit) | `cd build && python assemble_v2.py && node deck_v2.js` |
+| v1 (frozen) | `AlphaQ_CaseB_Round1_v1.pptx` (previews: `preview_v1/`) | 25-slide denser version. **Finance numbers are from model v1.0 and out of date** (see `Financial_Model/DECK_NUMBER_UPDATES.md`) | `cd build && python assemble_v5.py && node deck.js` (writes the v1 file) |
+
+Run `python charts.py` and `python export_html.py` first if the PNGs in `assets/` are missing. Check layout with `python render_check.py ../AlphaQ_CaseB_Round1_v2.pptx ../preview`.
+
 | File or folder | What it is |
 |---|---|
 | `AlphaQ_CaseB_Round1.pptx` | The Round 1 deck (25 slides, v5: title, 12 content slides from executive summary to validation, appendix 1 to 11 incl. case-question coverage map, final AI-disclosure slide). Consulting style v4: white paper, one blue family, amber only for pending/warning, bold caps heading + subtitle + rule, section tab bar at the bottom (modelled on the reference decks). Product name in the deck is **Pragati** (team stays AlphaQ). Panels, tables, chevrons, funnel and text are native and editable; the architecture and differentiators slides and all app screens are images |

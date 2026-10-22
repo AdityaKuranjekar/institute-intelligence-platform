@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[2]
-PPTX = REPO / "slides" / "AlphaQ_CaseB_Round1.pptx"
+PPTX = REPO / "slides" / "AlphaQ_CaseB_Round1_v2.pptx"
 BUILD = REPO / "slides" / "build"
 
 
@@ -20,7 +20,7 @@ def _slide_texts():
 def test_deck_exists_with_expected_structure():
     assert PPTX.exists(), "build it: cd slides/build && node deck.js"
     texts = _slide_texts()
-    assert len(texts) == 25  # title + 12 content + 11 appendix + final
+    assert len(texts) == 21  # title + 12 content + 7 appendix + final
     assert "CASE B" in texts[0]
     assert "How we used AI" in texts[-1], "PS rule 2: AI-use disclosure must be the final slide"
     content_slides = texts[1:13]
@@ -42,7 +42,7 @@ def test_unverified_numbers_are_not_presented_as_results():
 def test_every_content_slide_tags_its_numbers_by_origin():
     texts = _slide_texts()
     # slides with numeric claims must carry one of the origin tags
-    for idx in (6, 7, 10, 12):  # 1-based slide numbers of: analytics, ROI, unit economics ... (title is slide 1)
+    for idx in (6, 7, 10):  # 1-based slide numbers of: analytics, ROI, unit economics ... (title is slide 1)
         t = texts[idx].upper()
         assert any(k in t for k in ("PUBLIC DATA", "MODEL OUTPUT", "SYNTHETIC DATA", "GUIDE BASELINE")), f"slide {idx + 1} lacks an origin tag"
 

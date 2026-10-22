@@ -132,7 +132,7 @@ function makeKit(pres) {
   };
 
   kit.source = (slide, text) => {
-    kit.text(slide, text, { x: 0.45, y: 6.96, w: 12.4, h: 0.16, fontSize: 8.5, italic: true, color: T.muted, valign: "middle" });
+    kit.text(slide, text, { x: 0.45, y: kit.srcY ?? 6.96, w: 12.4, h: kit.srcH ?? 0.16, fontSize: 8.5, italic: true, color: T.muted, valign: "middle" });
   };
 
   // table from shapes; cols = widths (in), rows = array of arrays of strings or {t, bold, color, fill}

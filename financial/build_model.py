@@ -1,4 +1,4 @@
-﻿"""Builds DataMoat_Financial_Model.xlsx from assumptions.csv + seasonality.csv.
+"""Builds DataMoat_Financial_Model_v1.1.xlsx from assumptions.csv + seasonality.csv.
 
 Every calculation is a live Excel formula driven by named ranges on the Assumptions sheet.
 Edit the CSVs (or the blue cells in the workbook) — never the formulas.
@@ -7,7 +7,9 @@ Run:  python build_model.py
 import csv
 import datetime
 import os
+import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from openpyxl import Workbook
 from openpyxl.chart import BarChart, Reference
 from openpyxl.comments import Comment
@@ -16,17 +18,19 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.worksheet.datavalidation import DataValidation
 
+from proj_sheet import FIRST, LAST, MONTHS, build_projection
+
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "DataMoat_Financial_Model.xlsx")
-VERSION = "R1-v1.0 · " + datetime.date.today().isoformat()
+OUT = os.environ.get("MODEL_OUT") or os.path.join(HERE, "DataMoat_Financial_Model_v1.1.xlsx")
+VERSION = "v1.1 CFO audit · " + datetime.date.today().isoformat()
 
 H = 60  # LTV horizon in months
 SEGS = ["S", "M", "L"]
 SEG_NAMES = {"S": "Small (<250)", "M": "Mid (250-800)", "L": "Large (>800)"}
 SEG_VARS = {"Students", "Fee", "OnboardMult"}
 TORNADO = ["ListPrice", "Fee", "DropoutRate", "UpfrontShare", "NInstalments", "InterventionSuccess",
-           "Recall_Minor", "BlindMonths", "AdmissionUplift", "ITCShare", "ChurnInSeason", "RenewalSpike",
-           "PilotConv", "PilotsPerRepMonth"]
+           "Recall_Minor", "Precision", "InterventionMinutes", "BlindMonths", "AdmissionUplift", "ITCShare",
+           "ChurnInSeason", "RenewalSpike", "PilotConv", "PilotsPerRepMonth", "InstPerCSM"]
 CHURN_GRID = [0.01, 0.02, 0.03, 0.04, 0.05]
 ACQ_GRID = [15000, 25000, 35000, 50000, 75000]
 PRICE_GRID = [20, 30, 40, 50, 60, 80]
@@ -237,6 +241,8 @@ def spec_roi():
           lambda R: f"={R('PlatformFee')}*{R('GST')}*(1-{R('ITCShare')})"),
         C("Flagged", "Students flagged per year (true + false alarms)", "students/yr", "num1",
           lambda R: f"=IF({R('Precision')}>0,{R('Dropouts')}*{R('Recall')}/{R('Precision')},0)"),
+        C("FlaggedShare", "Share of the roll flagged per year (alert load)", "%", "pct",
+          lambda R: f"=IF({R('Students')}>0,{R('Flagged')}/{R('Students')},0)"),
         C("InterventionCost", "Mentor time spent acting on flags", "₹/yr", "inr",
           lambda R: f"={R('Flagged')}*{R('ActionRate')}*{R('InterventionMinutes')}/60*{R('MentorHourCost')}"),
         C("TotalCost", "Total cost", "₹/yr", "inr",
@@ -248,6 +254,8 @@ def spec_roi():
           lambda R: f"=IF({R('TotalCost')}>0,{R('TotalValue')}/{R('TotalCost')},0)", out=True),
         C("FeesOnlyROI", "Fees-only ROI (no soft benefits)", "x", "x",
           lambda R: f"=IF({R('TotalCost')}>0,{R('FeesRetained')}/{R('TotalCost')},0)", out=True),
+        C("HardROI", "Hard-benefit ROI (fees retained + staff time, no admissions)", "x", "x",
+          lambda R: f"=IF({R('TotalCost')}>0,({R('FeesRetained')}+{R('StaffValue')})/{R('TotalCost')},0)", out=True),
         C("BreakEvenStudents", "Break-even: students to save per year (fees only)", "students/yr", "num1",
           lambda R: f"=IF({R('FeeSavedPerPrevented')}>0,{R('TotalCost')}/{R('FeeSavedPerPrevented')},0)",
           out=True),
@@ -273,7 +281,7 @@ def spec_ue():
         I("ChurnInSeason"), I("PrepayUptake"), I("RenewalSpike"), I("CSM_CTC"), I("InstPerCSM"), I("RepCTC"),
         I("RepTravel"), I("PilotsPerRepMonth"), I("PilotConv"), I("PilotMonths"), I("PilotSetupCost"),
         I("OnboardBase"),
-        I("OnboardMult"), I("MarketingPerPaid"),
+        I("OnboardMult"), I("MarketingPerPaid"), I("SalesOverheadPct"), I("MinRenewTenure"), I("ChannelCommission"),
         LNK("EffDisc", "Effective discount (Pricing)", "%", "pct"),
         LNK("COGS_PerStudent", "Variable COGS per student-month (COGS_Build)", "₹/student/month", "inr2"),
         LNK("COGS_FixedInst", "Fixed COGS per institute-month (COGS_Build)", "₹/month", "inr"),
@@ -285,22 +293,22 @@ def spec_ue():
         C("Y1COGS", "COGS, first 12 months (students × seasonality × COGS + fixed + gateway)", "₹/yr", "inr",
           lambda R: f"={R('Students')}*{R('COGS_PerStudent')}*SUM(Seasonality!$C${TL0}:$C${TL0 + 11})"
                     f"+12*{R('COGS_FixedInst')}+{R('GatewayFee')}*{R('Y1Revenue')}"),
-        C("GrossMargin", "Gross margin", "%", "pct",
+        C("GrossMargin", "Product gross margin (before customer-success staff)", "%", "pct",
           lambda R: f"=IF({R('Y1Revenue')}>0,({R('Y1Revenue')}-{R('Y1COGS')})/{R('Y1Revenue')},0)", out=True),
         C("SupportPerInst", "Customer-success cost per institute", "₹/month", "inr",
           lambda R: f"={R('CSM_CTC')}/{R('InstPerCSM')}"),
         C("AvgMonthlyContr", "Average monthly contribution (after COGS + support)", "₹/month", "inr",
           lambda R: f"=SUM({R('contr_1')}:{R('contr_12')})/12", out=True),
-        C("ContrMargin", "Contribution margin", "%", "pct",
+        C("ContrMargin", "Contribution margin (after support: the PS's definition, a peer's 'gross margin')", "%", "pct",
           lambda R: f"=IF({R('AvgMonthlyRev')}>0,{R('AvgMonthlyContr')}/{R('AvgMonthlyRev')},0)", out=True),
         HD("2. Cost to acquire one paying institute"),
-        C("SalesPerPilot", "Sales cost per pilot started (rep CTC + travel ÷ pilots)", "₹", "inr",
-          lambda R: f"=({R('RepCTC')}+{R('RepTravel')})/{R('PilotsPerRepMonth')}"),
+        C("SalesPerPilot", "Sales cost per pilot started (rep CTC + travel, loaded with overhead, ÷ pilots)", "₹", "inr",
+          lambda R: f"=({R('RepCTC')}+{R('RepTravel')})*(1+{R('SalesOverheadPct')})/{R('PilotsPerRepMonth')}"),
         C("OnboardCost", "Onboarding cost (data migration + training)", "₹", "inr",
           lambda R: f"={R('OnboardBase')}*{R('OnboardMult')}"),
         C("PilotCOGS", "Cost of serving the free pilot", "₹", "inr",
           lambda R: f"={R('PilotMonths')}*({R('Students')}*{R('COGS_PerStudent')}+{R('COGS_FixedInst')})"),
-        C("CAC", "CAC: sales + marketing per paid institute (failed pilots included)", "₹", "inr",
+        C("CAC", "CAC (PS definition): sales + marketing per paying institute (failed pilots included)", "₹", "inr",
           lambda R: f"={R('SalesPerPilot')}/{R('PilotConv')}+{R('MarketingPerPaid')}", out=True),
         C("AcqCost", "Fully loaded acquisition cost = (sales + pilot setup + pilot COGS) ÷ conversion "
                      "+ onboarding (paid only) + marketing", "₹", "inr",
@@ -322,6 +330,17 @@ def spec_ue():
         C("Payback", "Payback (months of paid life, discounted)", "months", "int",
           lambda R: f'=IF({R(f"cum_{H}")}<{R("AcqCost")},{H + 1},COUNTIF({R("cum_1")}:{R(f"cum_{H}")},"<"&{R("AcqCost")})+1)',
           out=True),
+        C("PaybackSimple", "Payback, simple (acquisition cost ÷ average monthly contribution)", "months", "num1",
+          lambda R: f"=IF({R('AvgMonthlyContr')}>0,{R('AcqCost')}/{R('AvgMonthlyContr')},99)", out=True),
+        C("LTVUndisc", "LTV, undiscounted (survival-weighted)", "₹", "inr",
+          lambda R: f"=SUMPRODUCT({R('surv_1')}:{R(f'surv_{H}')},{R('contr_1')}:{R(f'contr_{H}')})"),
+        C("LTVUndiscToCAC", "LTV ÷ acquisition cost, undiscounted (the peer convention)", "x", "x",
+          lambda R: f"=IF({R('AcqCost')}>0,{R('LTVUndisc')}/{R('AcqCost')},0)", out=True),
+        HD("4b. Field sales versus a channel partner"),
+        C("ChannelAcq", "Acquisition cost via a channel partner (commission on year-1 revenue + our onboarding)", "₹", "inr",
+          lambda R: f"={R('ChannelCommission')}*{R('Y1Revenue')}+{R('OnboardCost')}"),
+        C("ChannelLTVtoCAC", "LTV ÷ channel acquisition cost", "x", "x",
+          lambda R: f"=IF({R('ChannelAcq')}>0,{R('LTV')}/{R('ChannelAcq')},0)", out=True),
         HD("5. Month-by-month engine (t = paid month; calendar from Seasonality timeline)"),
     ]
     for t in range(1, H + 1):
@@ -336,8 +355,9 @@ def spec_ue():
         if t == 1:
             f = lambda R: "=1"
         else:
+            # a renewal decision only exists once the customer has paid for MinRenewTenure months (audit fix)
             f = (lambda R, t=t: f"={R(f'surv_{t - 1}')}*(1-{R('ChurnEff')})"
-                                f"*(1-{tl('D', t - 1)}*{R('SpikeMonthly')})")
+                                f"*(1-IF({t - 1}>={R('MinRenewTenure')},{tl('D', t - 1)}*{R('SpikeMonthly')},0))")
         items.append(C(f"surv_{t}", f"Share of institutes still paying · month {t}", "%", "pct", f))
     for t in range(1, H + 1):
         prev = "" if t == 1 else None
@@ -392,8 +412,8 @@ def seg_getter(seg):
 # ================================================================ workbook
 wb = Workbook()
 wb.remove(wb.active)
-order = ["Cover", "Assumptions", "Seasonality", "Pricing", "COGS_Build", "Institute_ROI", "Unit_Econ",
-         "Scenarios", "Sensitivity", "Checks", "Sources", "Engine"]
+order = ["Cover", "Assumptions", "Seasonality", "Pricing", "COGS_Build", "Institute_ROI", "Unit_Econ", "Projection",
+         "Scenarios", "Sensitivity", "Checks", "Sources", "Engine", "Proj_Bear", "Proj_Base", "Proj_Bull"]
 WS = {n: wb.create_sheet(n) for n in order}
 
 # ---------------------------------------------------------------- Cover (scenario cell first: it is referenced everywhere)
@@ -403,36 +423,42 @@ add_name(wb, "Scenario", "Cover!$C$6")
 # ---------------------------------------------------------------- Assumptions
 asn = WS["Assumptions"]
 put(asn, "A1", "Assumptions — every input in the model lives here", font=F_TITLE)
-put(asn, "A2", "Blue = input you may edit (Bear / Base / Bull). Live = CHOOSE(Scenario, Bear, Base, Bull). "
-               "Bear = worst case for OUR business. Type: Researched/Public = sourced · Guide = case brief · "
-               "Assumption = unverified · Structural = modelling convention.", font=F_SUB)
+put(asn, "A2", "Blue = input you may edit (Bear / Base / Bull). LIVE = the value the model uses: rows marked Y in 'Scenario driver' "
+               "follow the Cover switch, CHOOSE(Scenario, Bear, Base, Bull); rows marked N always use Base. Bear = worse for OUR "
+               "business. Type: Researched/Public = sourced · Guide = case brief · Assumption = unverified · Structural = convention.",
+    font=F_SUB)
 header_row(asn, 4, ["Name (named range → Live)", "Input", "Unit", "Bear", "Base", "Bull", "LIVE", "Type",
-                    "Confidence", "Source", "Note", "Pct out of [0,1]", "Live outside Bear–Bull"])
+                    "Confidence", "Source", "Note", "Pct out of [0,1]", "Live outside Bear–Bull", "Scenario driver (Y/N)"])
 A_ROW = {}
 r = 5
 cur_sec = None
 for a in ASSUMP:
     if a["section"] != cur_sec:
         cur_sec = a["section"]
-        section(asn, r, cur_sec, last_col="M")
+        section(asn, r, cur_sec, last_col="N")
         r += 1
     A_ROW[a["name"]] = r
+    drv = (a.get("driver") or "").strip().upper() == "Y"
     put(asn, f"A{r}", a["name"], font=F_NOTE)
     put(asn, f"B{r}", a["label"])
     put(asn, f"C{r}", a["unit"], font=F_NOTE)
     for col, key in zip("DEF", ["bear", "base", "bull"]):
         put(asn, f"{col}{r}", float(a[key]), font=F_IN, fmt=a["fmt"])
-    put(asn, f"G{r}", f"=CHOOSE(Scenario,D{r},E{r},F{r})", fmt=a["fmt"], fill=FILL_KEY, bold=True)
+    put(asn, f"G{r}", f'=IF(N{r}="Y",CHOOSE(Scenario,D{r},E{r},F{r}),E{r})', fmt=a["fmt"], fill=FILL_KEY, bold=True)
     put(asn, f"H{r}", a["type"], font=F_NOTE)
     put(asn, f"I{r}", a["confidence"], font=F_NOTE)
     put(asn, f"J{r}", a["source"], font=F_NOTE)
     put(asn, f"K{r}", a["note"], font=F_NOTE)
     put(asn, f"L{r}", f"=IF(OR(G{r}<0,G{r}>1),1,0)" if a["fmt"] == "pct" else 0, font=F_NOTE)
     put(asn, f"M{r}", f"=IF(AND(G{r}>=MIN(D{r},F{r}),G{r}<=MAX(D{r},F{r})),0,1)", font=F_NOTE)
+    put(asn, f"N{r}", "Y" if drv else "N", font=F_IN)
     add_name(wb, a["name"], f"Assumptions!$G${r}")
     r += 1
 A_LAST = r - 1
-for col, w in zip("ABCDEFGHIJKLM", [24, 52, 16, 11, 11, 11, 12, 12, 10, 60, 40, 9, 9]):
+dv_drv = DataValidation(type="list", formula1='"Y,N"', allow_blank=False)
+asn.add_data_validation(dv_drv)
+dv_drv.add(f"N5:N{A_LAST}")
+for col, w in zip("ABCDEFGHIJKLMN", [24, 52, 16, 11, 11, 11, 12, 12, 10, 60, 40, 9, 9, 11]):
     asn.column_dimensions[col].width = w
 asn.freeze_panes = "D5"
 
@@ -441,18 +467,23 @@ se = WS["Seasonality"]
 put(se, "A1", "Seasonality, dropout timing and the 60-month timeline", font=F_TITLE)
 put(se, "A2", "Session month 1 = April. Blue cells are inputs (currently assumptions, see Source).", font=F_SUB)
 put(se, "A4", "A. Active-student index and renewal (churn) months", font=F_BOLD)
-header_row(se, 4, ["No.", "Month", "Active-student index", "Renewal month (1/0)", "Source"], start_col=1)
+header_row(se, 4, ["No.", "Month", "Active-student index", "Renewal month (1/0)", "Sales intensity index", "Source"],
+           start_col=1)
 put(se, "A3", "A. Active-student index and renewal (churn) months", font=F_BOLD)
 idx_rows = [s for s in SEAS if s["kind"] == "student_idx"]
 flag_rows = {s["index"]: s for s in SEAS if s["kind"] == "renewal_flag"}
+sales_rows = {s["index"]: s for s in SEAS if s["kind"] == "sales_idx"}
 for i, s in enumerate(idx_rows):
     rr = 5 + i
     put(se, f"A{rr}", int(s["index"]))
     put(se, f"B{rr}", s["label"])
     put(se, f"C{rr}", float(s["value"]), font=F_IN, fmt="num2")
     put(se, f"D{rr}", int(flag_rows[s["index"]]["value"]), font=F_IN, fmt="0")
-    put(se, f"E{rr}", s["source"] + (" | flag: " + flag_rows[s["index"]]["source"]
-                                      if flag_rows[s["index"]]["source"] else ""), font=F_NOTE)
+    put(se, f"E{rr}", float(sales_rows[s["index"]]["value"]), font=F_IN, fmt="num1")
+    put(se, f"F{rr}", s["source"] + (" | flag: " + flag_rows[s["index"]]["source"]
+                                      if flag_rows[s["index"]]["source"] else "") +
+        (" | sales index: " + sales_rows[s["index"]]["source"] if sales_rows[s["index"]]["source"] else ""), font=F_NOTE)
+add_name(wb, "Sales_Idx", "Seasonality!$E$5:$E$16")
 add_name(wb, "Season_Idx", "Seasonality!$C$5:$C$16")
 add_name(wb, "Season_Flag", "Seasonality!$D$5:$D$16")
 put(se, "B18", "Renewal months per year")
@@ -486,7 +517,7 @@ for t in range(1, H + 1):
     put(se, f"C{rr}", f"=INDEX(Season_Idx,B{rr})", fmt="num2")
     put(se, f"D{rr}", f"=INDEX(Season_Flag,B{rr})", fmt="0")
     put(se, f"E{rr}", f"=1/(1+DiscountRate)^(A{rr}/12)", fmt="0.000")
-for col, w in zip("ABCDE", [14, 18, 20, 18, 70]):
+for col, w in zip("ABCDEF", [14, 18, 20, 18, 22, 70]):
     se.column_dimensions[col].width = w
 
 # ---------------------------------------------------------------- Pricing
@@ -560,8 +591,9 @@ ir.freeze_panes = "D5"
 # ---------------------------------------------------------------- Unit_Econ
 ue = WS["Unit_Econ"]
 put(ue, "A1", "Unit economics per institute (live scenario)", font=F_TITLE)
-put(ue, "A2", "LTV uses a seasonal survival curve (monthly churn + renewal spike), discounted, capped at "
-              f"{H} months. Payback = {H + 1} means 'not within {H} months'.", font=F_SUB)
+put(ue, "A2", "LTV uses a seasonal survival curve (monthly churn + a renewal spike that applies only after the customer has "
+              f"paid MinRenewTenure months), discounted, capped at {H} months. Payback = {H + 1} means 'not within {H} months'. "
+              "Undiscounted LTV and simple payback are shown too, because peers quote those.", font=F_SUB)
 header_row(ue, 4, ["", "Line", "Unit"] + [SEG_NAMES[s] for s in SEGS])
 ue_rows = emit(ue, spec_ue(), 5, ["D", "E", "F"], [seg_getter(s) for s in SEGS])
 first_block = ue_rows["rev_1"]
@@ -583,10 +615,10 @@ for i, (lab, f, fm) in enumerate(guide_ue):
     GU[lab] = f"Unit_Econ!$I${rr}"
     put(ue, f"H{rr}", lab)
     put(ue, f"I{rr}", f, fmt=fm)
-put(ue, "H13", "Break-even scale (fixed team cost ÷ Mid contribution)", font=F_HDR, fill=FILL_HDR)
+put(ue, "H13", "Break-even scale, steady state (no new sales; fixed team ÷ Mid contribution)", font=F_HDR, fill=FILL_HDR)
 put(ue, "I13", "Value", font=F_HDR, fill=FILL_HDR)
 be = [
-    ("Fixed team + tools cost per month", "=Founders*FounderStipend+Engineers*EngineerCTC+ToolsOpex", "inr"),
+    ("Fixed team + tools cost per month", "=Founders*FounderStipend+EngineersY1*EngineerCTC+ToolsOpex", "inr"),
     ("Mid-institute avg monthly contribution", f"=E{ue_rows['AvgMonthlyContr']}", "inr"),
     ("Institutes needed to cover fixed cost", f"=IF(I15>0,I14/I15,0)", "num1"),
     ("…equivalent active students", "=I16*Students_M", "int"),
@@ -596,14 +628,15 @@ for i, (lab, f, fm) in enumerate(be):
     rr = 14 + i
     put(ue, f"H{rr}", lab)
     put(ue, f"I{rr}", f, fmt=fm, fill=FILL_OUT if i == 2 else None)
-put(ue, "H20", "Full hiring plan, cohorts, cash and funding need: Round 2 sheets.", font=F_NOTE)
+put(ue, "H20", "Hiring plan, cohorts, P&L, cash and funding need: see the Projection tab.", font=F_NOTE)
 for col, w in zip("ABCDEFGHI", [3, 66, 16, 16, 16, 16, 3, 50, 14]):
     ue.column_dimensions[col].width = w
 ue.freeze_panes = "D5"
 
 # ---------------------------------------------------------------- Engine (scenario / sensitivity re-runs)
 en = WS["Engine"]
-put(en, "A1", "Engine — re-runs the full chain for scenarios, tornado and churn grid. Do not edit.", font=F_TITLE)
+put(en, "A1", "Engine — re-runs the full chain for scenarios, the stress test, the tornado and the churn grid. Do not edit.",
+    font=F_TITLE)
 eng_items = [it for it in spec_cogs() + spec_pricing() + spec_roi() + spec_ue() if it["kind"] != "hdr"]
 eng_inputs = []
 for it in eng_items:
@@ -611,32 +644,39 @@ for it in eng_items:
         eng_inputs.append(it["key"])
 cases = []
 for s in SEGS:
-    cases.append({"label": f"Live {s}", "seg": s, "scen": "=Scenario", "ov": "", "ovv": ""})
-for sc, scn in [(1, "Bear"), (2, "Base"), (3, "Bull")]:
+    cases.append({"label": f"Live {s}", "seg": s, "scen": "=Scenario", "filt": "DRIVERS", "ov": "", "ovv": ""})
+for sc_, scn in [(1, "Bear"), (2, "Base"), (3, "Bull")]:
     for s in SEGS:
-        cases.append({"label": f"{scn} {s}", "seg": s, "scen": sc, "ov": "", "ovv": ""})
+        cases.append({"label": f"{scn} {s}", "seg": s, "scen": sc_, "filt": "DRIVERS", "ov": "", "ovv": ""})
+for s in SEGS:
+    cases.append({"label": f"Stress {s}", "seg": s, "scen": 1, "filt": "ALL", "ov": "", "ovv": ""})
+
+
 def mid_name(nm):
     return nm + "_M" if nm in SEG_VARS else nm
 
 
 for nm in TORNADO:
     rr = A_ROW[mid_name(nm)]
-    cases.append({"label": f"T {nm} bear", "seg": "M", "scen": 2, "ov": nm, "ovv": f"=Assumptions!$D${rr}"})
-    cases.append({"label": f"T {nm} bull", "seg": "M", "scen": 2, "ov": nm, "ovv": f"=Assumptions!$F${rr}"})
+    cases.append({"label": f"T {nm} bear", "seg": "M", "scen": 2, "filt": "DRIVERS", "ov": nm,
+                  "ovv": f"=Assumptions!$D${rr}"})
+    cases.append({"label": f"T {nm} bull", "seg": "M", "scen": 2, "filt": "DRIVERS", "ov": nm,
+                  "ovv": f"=Assumptions!$F${rr}"})
 for j, _ in enumerate(CHURN_GRID):
-    cases.append({"label": f"Churn grid {j + 1}", "seg": "M", "scen": "=Scenario", "ov": "ChurnInSeason",
-                  "ovv": None, "grid": j})
-for lbl, rr in [("Case", 1), ("Segment", 2), ("Scenario (1-3)", 3), ("Override input", 4), ("Override value", 5)]:
+    cases.append({"label": f"Churn grid {j + 1}", "seg": "M", "scen": "=Scenario", "filt": "DRIVERS",
+                  "ov": "ChurnInSeason", "ovv": None, "grid": j})
+for lbl, rr in [("Case", 1), ("Segment", 2), ("Scenario (1-3)", 3), ("Override input", 4), ("Override value", 5),
+                ("Inputs flexed: DRIVERS or ALL", 6)]:
     put(en, f"B{rr + 1}", lbl, font=F_BOLD)
 
 
 def colname(i):
-    s = ""
+    s_ = ""
     i += 1
     while i:
         i, rem = divmod(i - 1, 26)
-        s = chr(65 + rem) + s
-    return s
+        s_ = chr(65 + rem) + s_
+    return s_
 
 
 EIN0 = 8
@@ -652,11 +692,13 @@ for ci, cs in enumerate(cases):
     if cs.get("grid") is not None:
         cs["ovv"] = f"=Sensitivity!{chr(66 + cs['grid'])}$SENSROW$"
     put(en, f"{col}6", cs["ovv"])
+    put(en, f"{col}7", cs["filt"])
     for nm in eng_inputs:
         src = f"{nm}_{cs['seg']}" if nm in SEG_VARS else nm
         ar = A_ROW[src]
         put(en, f"{col}{ein_rows[nm]}",
-            f'=IF(${col}$5="{nm}",${col}$6,INDEX(Assumptions!$D${ar}:$F${ar},${col}$4))',
+            f'=IF(${col}$5="{nm}",${col}$6,IF(OR(${col}$7="ALL",Assumptions!$N${ar}="Y"),'
+            f'INDEX(Assumptions!$D${ar}:$F${ar},${col}$4),Assumptions!$E${ar}))',
             fmt=A_BY[src]["fmt"])
 for nm in eng_inputs:
     put(en, f"B{ein_rows[nm]}", nm, font=F_NOTE)
@@ -665,19 +707,28 @@ eng_rows = emit(en, eng_items, calc_start, [CASE_COL[c["label"]] for c in cases]
                 [lambda k: (_ for _ in ()).throw(KeyError(k))] * len(cases),
                 skip_inputs=True, extra_rows=ein_rows, input_font=F_CALC)
 en.column_dimensions["B"].width = 40
-en.freeze_panes = "D7"
+en.freeze_panes = "D8"
 
 
 def E(case, key):
     return f"Engine!${CASE_COL[case]}${eng_rows[key] if key in eng_rows else ein_rows[key]}"
 
 
+# ---------------------------------------------------------------- Projection (3 years): live sheet + one hidden sheet per scenario
+PJ = build_projection(WS["Projection"], None, globals())
+PROW, POUT = PJ["row"], PJ["out"]
+for code_, nm_ in ((1, "Bear"), (2, "Base"), (3, "Bull")):
+    build_projection(WS[f"Proj_{nm_}"], code_, globals())
+
+
 # ---------------------------------------------------------------- Scenarios
 sc = WS["Scenarios"]
+n_drv = sum(1 for a in ASSUMP if (a.get("driver") or "").strip().upper() == "Y")
 put(sc, "A1", "Scenarios — honest model vs the guide's naive model", font=F_TITLE)
-put(sc, "A2", "Bear / Base / Bull are always shown side by side, whatever the Cover selector says. "
-              "Mid institute = 400 students (the guide's example).", font=F_SUB)
-header_row(sc, 4, ["Metric (Mid institute)", "Unit", "Guide (naive)", "Bear", "Base", "Bull"])
+put(sc, "A2", f"Bear / Base / Bull flex only the {n_drv} scenario drivers (Assumptions column N); every other input stays at Base. "
+              "Stress flexes ALL inputs to their worst at once: a survival test, not a forecast. Mid institute = 400 students. "
+              "Always shown side by side, whatever the Cover selector says.", font=F_SUB)
+header_row(sc, 4, ["Metric (Mid institute)", "Unit", "Guide (naive)", "Bear", "Base", "Bull", "Stress (all inputs worst)"])
 metrics = [
     ("Effective dropout reduction", "%", "EffReduction", "=Assumptions!$E$" + str(A_ROW["G_Prevent"]), "pct"),
     ("Dropouts prevented per year", "students", "Prevented", "=" + GI["gi_prev"], "num1"),
@@ -685,16 +736,20 @@ metrics = [
     ("Fees retained per year", "₹/yr", "FeesRetained", "=" + GI["gi_saved"], "inr"),
     ("Total value to institute", "₹/yr", "TotalValue", "=" + GI["gi_saved"], "inr"),
     ("Total cost to institute (fee + GST + mentor time)", "₹/yr", "TotalCost", "=" + GI["gi_cost"], "inr"),
-    ("Institute ROI", "x", "ROI", "=" + GI["gi_roi"], "x"),
-    ("Fees-only ROI", "x", "FeesOnlyROI", "=" + GI["gi_roi"], "x"),
+    ("Institute ROI, all benefits", "x", "ROI", "=" + GI["gi_roi"], "x"),
+    ("Institute ROI, hard benefits (fees + staff time)", "x", "HardROI", "=" + GI["gi_roi"], "x"),
+    ("Institute ROI, fees only", "x", "FeesOnlyROI", "=" + GI["gi_roi"], "x"),
     ("Break-even students saved per year", "students", "BreakEvenStudents", "=" + GI["gi_be"], "num1"),
     ("Avg monthly revenue per institute", "₹/month", "AvgMonthlyRev", "=" + GU["Revenue per institute per month"], "inr"),
     ("Avg monthly contribution", "₹/month", "AvgMonthlyContr", "=" + GU["Contribution per month"], "inr"),
+    ("CAC: sales + marketing per paying institute", "₹", "CAC", "=G_CAC", "inr"),
     ("Fully loaded acquisition cost", "₹", "AcqCost", "=" + GU["CAC + onboarding"], "inr"),
     ("Annual logo retention", "%", "AnnualRetention", "=(1-G_Churn)^12", "pct"),
-    ("LTV", "₹", "LTV", "=" + GU["LTV = contribution ÷ churn"], "inr"),
-    ("LTV ÷ acquisition cost", "x", "LTVtoCAC", "=" + GU["LTV ÷ (CAC + onboarding)"], "x"),
-    ("Payback", "months", "Payback", "=" + GU["Payback (months)"], "num1"),
+    ("LTV, discounted", "₹", "LTV", "=" + GU["LTV = contribution ÷ churn"], "inr"),
+    ("LTV ÷ acquisition cost, discounted", "x", "LTVtoCAC", "=" + GU["LTV ÷ (CAC + onboarding)"], "x"),
+    ("LTV ÷ acquisition cost, undiscounted (peer convention)", "x", "LTVUndiscToCAC", "=" + GU["LTV ÷ (CAC + onboarding)"], "x"),
+    ("Payback, survival-weighted and discounted", "months", "Payback", "=" + GU["Payback (months)"], "num1"),
+    ("Payback, simple", "months", "PaybackSimple", "=" + GU["Payback (months)"], "num1"),
 ]
 SC_ROW = {}
 for i, (lab, unit, key, gf, fm) in enumerate(metrics):
@@ -703,12 +758,14 @@ for i, (lab, unit, key, gf, fm) in enumerate(metrics):
     put(sc, f"A{rr}", lab)
     put(sc, f"B{rr}", unit, font=F_NOTE)
     put(sc, f"C{rr}", gf, fmt=fm, font=F_LINK)
-    for col, scn in zip("DEF", ["Bear", "Base", "Bull"]):
+    for col, scn in zip("DEFG", ["Bear", "Base", "Bull", "Stress"]):
         put(sc, f"{col}{rr}", "=" + E(f"{scn} M", key), fmt=fm, font=F_LINK,
-            fill=FILL_OUT if key in ("ROI", "LTVtoCAC", "BreakEvenStudents") else None)
+            fill=FILL_OUT if key in ("ROI", "LTVtoCAC", "BreakEvenStudents") and col != "G" else None)
 r0 = 5 + len(metrics) + 2
 put(sc, f"A{r0}", "By segment", font=F_BOLD)
-for block, (key, fm, title) in enumerate([("ROI", "x", "Institute ROI"), ("LTVtoCAC", "x", "LTV ÷ acquisition cost"),
+for block, (key, fm, title) in enumerate([("ROI", "x", "Institute ROI, all benefits"),
+                                          ("LTVtoCAC", "x", "LTV ÷ acquisition cost (field sales)"),
+                                          ("ChannelLTVtoCAC", "x", "LTV ÷ acquisition cost (channel partner)"),
                                           ("Payback", "num1", "Payback (months)")]):
     rb = r0 + 1 + block * 6
     header_row(sc, rb, [title, "", "", "Bear", "Base", "Bull"])
@@ -717,7 +774,23 @@ for block, (key, fm, title) in enumerate([("ROI", "x", "Institute ROI"), ("LTVto
         put(sc, f"A{rr}", SEG_NAMES[s])
         for col, scn in zip("DEF", ["Bear", "Base", "Bull"]):
             put(sc, f"{col}{rr}", "=" + E(f"{scn} {s}", key), fmt=fm, font=F_LINK)
-for col, w in zip("ABCDEF", [52, 12, 16, 14, 14, 14]):
+rb3 = r0 + 1 + 4 * 6
+SC_SEG0, SC_PJ0 = r0, rb3  # row anchors, exported to model_layout.json
+header_row(sc, rb3, ["3-year projection (36 months)", "Unit", "", "Bear", "Base", "Bull"])
+pj_rows = [("Revenue in year 3", "₹", "rev3", "inr"), ("EBITDA in year 3", "₹", "ebitda3", "inr"),
+           ("Paying institutes at the end of year 3", "institutes", "act3", "num1"),
+           ("Run-rate annual revenue at the end of year 3", "₹", "arr3", "inr"),
+           ("Funding the model says we need", "₹", "funding", "inr"),
+           ("Break-even month (3 positive months in a row)", "month #", "be3", "int"),
+           ("Months in which the market cap limited sales", "months", "capbind", "int")]
+for i, (lab, unit, key, fm) in enumerate(pj_rows):
+    rr = rb3 + 1 + i
+    put(sc, f"A{rr}", lab)
+    put(sc, f"B{rr}", unit, font=F_NOTE)
+    for col, nm_ in zip("DEF", ["Bear", "Base", "Bull"]):
+        put(sc, f"{col}{rr}", f"=Proj_{nm_}!{POUT[key]}", fmt=fm, font=F_LINK,
+            fill=FILL_OUT if key in ("funding", "ebitda3") else None)
+for col, w in zip("ABCDEFG", [56, 12, 16, 14, 14, 14, 22]):
     sc.column_dimensions[col].width = w
 
 # ---------------------------------------------------------------- Sensitivity
@@ -819,6 +892,10 @@ ck = WS["Checks"]
 put(ck, "A1", "Checks — any red flag means the model is not safe to quote", font=F_TITLE)
 header_row(ck, 3, ["Check", "Type", "Value", "Flag (1 = fail)"])
 mid_ue = lambda k: f"Unit_Econ!$E${ue_rows[k]}"
+pj = lambda k: f"Projection!{POUT[k]}"
+act_rng = f"Projection!${FIRST}${PROW['active']}:${LAST}${PROW['active']}"
+cum_rng = f"Projection!${FIRST}${PROW['cum_new']}:${LAST}${PROW['cum_new']}"
+cash_rng = f"Projection!${FIRST}${PROW['cash']}:${LAST}${PROW['cash']}"
 checks = [
     ("Scenario selector is 1, 2 or 3", "Error", "=Scenario", "=IF(OR(Scenario=1,Scenario=2,Scenario=3),0,1)"),
     ("Dropout timing curve sums to 100%", "Error", "=SUM(DropTiming)", "=IF(ABS(C5-1)<0.0001,0,1)"),
@@ -831,6 +908,11 @@ checks = [
      f"=Institute_ROI!E{ir_rows['EffReduction']}-InterventionSuccess", "=IF(C10<=0.000001,0,1)"),
     ("Instalments ≥ 1 and ≤ course months", "Error", "=NInstalments",
      "=IF(AND(C{r}>=1,C{r}<=CourseMonths,C{r}=INT(C{r})),0,1)"),
+    ("Customer mix (Small + Mid + Large) sums to 100%", "Error", "=ABS(SegMix_S+SegMix_M+SegMix_L-1)",
+     "=IF(C{r}<0.0001,0,1)"),
+    ("Sales intensity index averages 1.0", "Error", "=ABS(AVERAGE(Sales_Idx)-1)", "=IF(C{r}<0.02,0,1)"),
+    ("First renewal tenure is between 0 and 24 months", "Error", "=MinRenewTenure",
+     "=IF(AND(C{r}>=0,C{r}<=24),0,1)"),
 ]
 for s in SEGS:
     col = "DEF"[SEGS.index(s)]
@@ -844,6 +926,16 @@ checks += [
      f"=IF(AND(MIN(Unit_Econ!E{ue_rows['surv_1']}:E{ue_rows[f'surv_{H}']})>=0,"
      f"MAX(Unit_Econ!E{ue_rows['surv_1']}:E{ue_rows[f'surv_{H}']})<=1),0,1)", "=C{r}"),
     ("Guide ROI reproduces the brief's 2.25x", "Error", "=" + GI["gi_roi"], "=IF(ABS(C{r}-2.25)<0.01,0,1)"),
+    ("Projection: never more paying institutes than institutes won", "Error",
+     f"=SUMPRODUCT(({act_rng}>{cum_rng}+0.000001)*1)", "=IF(C{r}=0,0,1)"),
+    ("Projection: institutes won never exceed the market cap", "Error",
+     f"=MAX(0,Projection!${LAST}${PROW['cum_new']}-Projection!$D${PROW['sam_cap']})", "=IF(C{r}<0.001,0,1)"),
+    ("Projection: cash never negative once the funding ask arrives", "Error", f"=MIN({cash_rng})",
+     "=IF(C{r}>=-1,0,1)"),
+    ("Projection (live) equals the fixed-scenario sheet for the chosen scenario", "Error",
+     f"=ABS({pj('rev3')}-CHOOSE(Scenario,Proj_Bear!{POUT['rev3']},Proj_Base!{POUT['rev3']},Proj_Bull!{POUT['rev3']}))"
+     f"+ABS({pj('funding')}-CHOOSE(Scenario,Proj_Bear!{POUT['funding']},Proj_Base!{POUT['funding']},Proj_Bull!{POUT['funding']}))",
+     "=IF(C{r}<0.01,0,1)"),
     ("WARNING: RCT effect exceeds share of dropouts that are preventable", "Warning",
      "=InterventionSuccess-Preventable", "=IF(C{r}<=0,0,1)"),
     ("WARNING: list price above the highest ERP/LMS anchor found (₹21/student/month)", "Warning",
@@ -852,9 +944,19 @@ checks += [
      f"=COUNTIF(Unit_Econ!E{ue_rows['contr_1']}:E{ue_rows[f'contr_{H}']},\"<0\")", "=IF(C{r}=0,0,1)"),
     ("WARNING: all-in COGS outside tech band ₹3–10 per student-month", "Warning", "=COGS_AllIn",
      "=IF(AND(C{r}>=3,C{r}<=10),0,1)"),
-    ("WARNING: Mid institute ROI below 1.0x", "Warning", f"=Institute_ROI!E{ir_rows['ROI']}", "=IF(C{r}>=1,0,1)"),
-    ("WARNING: Mid LTV/CAC below 3x", "Warning", f"=Unit_Econ!E{ue_rows['LTVtoCAC']}", "=IF(C{r}>=3,0,1)"),
+    ("WARNING: Mid institute ROI (all benefits) below 1.0x", "Warning", f"=Institute_ROI!E{ir_rows['ROI']}",
+     "=IF(C{r}>=1,0,1)"),
+    ("WARNING: Mid hard-benefit ROI (fees + staff time) below 1.0x", "Warning", f"=Institute_ROI!E{ir_rows['HardROI']}",
+     "=IF(C{r}>=1,0,1)"),
+    ("WARNING: more than 30% of the roll flagged per year (alert fatigue)", "Warning",
+     f"=Institute_ROI!E{ir_rows['FlaggedShare']}", "=IF(C{r}<=0.3,0,1)"),
+    ("WARNING: Mid LTV/CAC (discounted) below 3x", "Warning", f"=Unit_Econ!E{ue_rows['LTVtoCAC']}", "=IF(C{r}>=3,0,1)"),
     ("WARNING: Mid payback above 24 months", "Warning", f"=Unit_Econ!E{ue_rows['Payback']}", "=IF(C{r}<=24,0,1)"),
+    ("WARNING: 3-year projection never reaches 3 positive EBITDA months in a row", "Warning",
+     f"=IF(ISNUMBER({pj('be3')}),0,1)", "=C{r}"),
+    ("WARNING: EBITDA in year 3 is negative", "Warning", f"={pj('ebitda3')}", "=IF(C{r}>=0,0,1)"),
+    ("WARNING: the market cap limited sales in the live projection", "Warning", f"={pj('capbind')}",
+     "=IF(C{r}=0,0,1)"),
 ]
 for i, (lab, typ, val, flag) in enumerate(checks):
     rr = 4 + i
@@ -873,7 +975,7 @@ add_name(wb, "ErrorCount", f"Checks!$D${CK_LAST + 2}")
 add_name(wb, "WarningCount", f"Checks!$D${CK_LAST + 3}")
 ck.conditional_formatting.add(f"D4:D{CK_LAST + 3}",
                               CellIsRule(operator="greaterThan", formula=["0"], fill=red_f))
-for col, w in zip("ABCD", [64, 10, 14, 14]):
+for col, w in zip("ABCD", [72, 10, 14, 14]):
     ck.column_dimensions[col].width = w
 
 # ---------------------------------------------------------------- Sources
@@ -913,47 +1015,58 @@ heads = [
     ("Effective dropout reduction", f"=Institute_ROI!E{ir_rows['EffReduction']}", "=G_Prevent", "pct"),
     ("Dropouts prevented per year", f"=Institute_ROI!E{ir_rows['Prevented']}", "=" + GI["gi_prev"], "num1"),
     ("Institute ROI (all benefits)", f"=Institute_ROI!E{ir_rows['ROI']}", "=" + GI["gi_roi"], "x"),
+    ("Institute ROI (hard benefits: fees + staff time)", f"=Institute_ROI!E{ir_rows['HardROI']}", "=" + GI["gi_roi"], "x"),
     ("Institute ROI (fees only)", f"=Institute_ROI!E{ir_rows['FeesOnlyROI']}", "=" + GI["gi_roi"], "x"),
     ("Break-even: students to save per year", f"=Institute_ROI!E{ir_rows['BreakEvenStudents']}",
      "=" + GI["gi_be"], "num1"),
     ("Extra admissions needed to break even (after fees + staff time)",
      f"=Institute_ROI!E{ir_rows['UpliftNeededStudents']}", "n/a", "num1"),
     ("Platform cost as % of a student's fee", f"=Institute_ROI!E{ir_rows['CostPctFee']}",
-     "=G_Price*G_Months/Fee_M", "pct"),
+     "=G_Price*G_Months/G_Fee", "pct"),
     ("Avg monthly revenue per institute", f"=Unit_Econ!E{ue_rows['AvgMonthlyRev']}",
      "=" + GU["Revenue per institute per month"], "inr"),
     ("Contribution margin", f"=Unit_Econ!E{ue_rows['ContrMargin']}",
      "=" + GU["Contribution per month"] + "/" + GU["Revenue per institute per month"], "pct"),
+    ("CAC: sales + marketing per paying institute", f"=Unit_Econ!E{ue_rows['CAC']}", "=G_CAC", "inr"),
     ("Fully loaded acquisition cost", f"=Unit_Econ!E{ue_rows['AcqCost']}", "=" + GU["CAC + onboarding"], "inr"),
-    ("LTV", f"=Unit_Econ!E{ue_rows['LTV']}", "=" + GU["LTV = contribution ÷ churn"], "inr"),
-    ("LTV ÷ acquisition cost", f"=Unit_Econ!E{ue_rows['LTVtoCAC']}", "=" + GU["LTV ÷ (CAC + onboarding)"], "x"),
-    ("Payback (months)", f"=Unit_Econ!E{ue_rows['Payback']}", "=" + GU["Payback (months)"], "num1"),
-    ("Institutes needed to cover fixed team cost", "=Unit_Econ!I16", "n/a", "num1"),
+    ("LTV (discounted)", f"=Unit_Econ!E{ue_rows['LTV']}", "=" + GU["LTV = contribution ÷ churn"], "inr"),
+    ("LTV ÷ acquisition cost (discounted)", f"=Unit_Econ!E{ue_rows['LTVtoCAC']}", "=" + GU["LTV ÷ (CAC + onboarding)"], "x"),
+    ("LTV ÷ acquisition cost (undiscounted, peer convention)", f"=Unit_Econ!E{ue_rows['LTVUndiscToCAC']}",
+     "=" + GU["LTV ÷ (CAC + onboarding)"], "x"),
+    ("Payback, survival-weighted (months)", f"=Unit_Econ!E{ue_rows['Payback']}", "=" + GU["Payback (months)"], "num1"),
+    ("Payback, simple (months)", f"=Unit_Econ!E{ue_rows['PaybackSimple']}", "=" + GU["Payback (months)"], "num1"),
+    ("Institutes needed to cover fixed team cost (steady state)", "=Unit_Econ!I16", "n/a", "num1"),
+    ("3-year: revenue in year 3", f"={pj('rev3')}", "n/a", "inr"),
+    ("3-year: EBITDA in year 3", f"={pj('ebitda3')}", "n/a", "inr"),
+    ("3-year: paying institutes at the end of year 3", f"={pj('act3')}", "n/a", "num1"),
+    ("3-year: funding the model says we need", f"={pj('funding')}", "n/a", "inr"),
+    ("3-year: break-even month (3 positive months in a row)", f"={pj('be3')}", "n/a", "int"),
 ]
-for i, (lab, f, g, fm) in enumerate(heads):
+for i, (lab, f, g_, fm) in enumerate(heads):
     rr = 10 + i
     put(cv, f"B{rr}", lab)
     put(cv, f"C{rr}", f, fmt=fm, font=F_LINK, fill=FILL_OUT, border=True)
-    put(cv, f"D{rr}", g, fmt=fm, font=F_LINK, border=True)
+    put(cv, f"D{rr}", g_, fmt=fm, font=F_LINK, border=True)
 r0 = 10 + len(heads) + 1
 legend = [
     ("Colour code", ""),
-    ("Blue text", "Input — edit only these (Assumptions D:F, Seasonality, grid points, Scenario)"),
+    ("Blue text", "Input — edit only these (Assumptions D:F and N, Seasonality, grid points, Scenario)"),
     ("Black text", "Formula"),
     ("Green text", "Link from another sheet"),
     ("Yellow fill", "Key lever / live value"),
     ("Green fill", "Key output"),
     ("", ""),
     ("How to use", ""),
-    ("1", "Pick a scenario in C6. Everything recalculates; Scenarios and Sensitivity always show all three."),
+    ("1", "Pick a scenario in C6. Bear / Base / Bull flex only the scenario drivers (Assumptions column N)."),
     ("2", "Change an input on Assumptions (Bear/Base/Bull) — never type over a formula."),
     ("3", "Cover C7 must say ALL CHECKS PASS before you quote any number."),
     ("4", "To rebuild from the CSVs: python build_model.py (Financial_Model folder)."),
     ("", ""),
     ("Evidence labels", "Researched/Public = sourced (see Sources) · Guide = case brief · "
                         "Assumption = unverified · Structural = modelling convention"),
-    ("Scope", "Round 1: Pricing, COGS, Institute ROI, Unit economics, Scenarios, Sensitivity. "
-              "Round 2 adds cohorts, hiring plan, 3-year P&L, cash and funding need."),
+    ("Scope", "Pricing, COGS, Institute ROI, Unit economics, 3-year Projection (sales capacity, cohorts, P&L, cash, funding "
+              "ask), Scenarios, Sensitivity, Checks, Sources. Not modelled: upsell/expansion revenue (so no NRR) and the other "
+              "PS revenue models (outcome-linked, parent, marketplace, benchmarks)."),
 ]
 for i, (a_, b_) in enumerate(legend):
     rr = r0 + i
@@ -963,12 +1076,24 @@ cv[f"B{r0 + 1}"].font = F_IN
 cv[f"B{r0 + 3}"].font = F_LINK
 cv[f"B{r0 + 4}"].fill = FILL_KEY
 cv[f"B{r0 + 5}"].fill = FILL_OUT
-for col, w in zip("ABCD", [3, 48, 22, 22]):
+for col, w in zip("ABCD", [3, 62, 22, 22]):
     cv.column_dimensions[col].width = w
 cv["C6"].comment = Comment("Scenario selector: 1 Bear, 2 Base, 3 Bull", "model")
 
-WS["Engine"].sheet_state = "hidden"
+for hidden_ in ("Engine", "Proj_Bear", "Proj_Base", "Proj_Bull"):
+    WS[hidden_].sheet_state = "hidden"
 wb.calculation.fullCalcOnLoad = True
+# exact row positions of every output, so guide/extract_numbers.py reads cells instead of guessing at labels
+import json  # noqa: E402
+LAYOUT = {
+    "ir_rows": ir_rows, "cg_rows": cg_rows, "pr_rows": pr_rows,
+    "ue_rows": {k: v for k, v in ue_rows.items() if not k.startswith(("rev_", "contr_", "surv_", "cum_"))},
+    "sc_rows": SC_ROW, "sc_seg0": SC_SEG0, "sc_pj0": SC_PJ0, "tornado_first": 6, "tornado_n": len(TORNADO), "g1": g1, "g2": g2,
+    "proj_rows": PROW, "proj_out": POUT, "cover_n": len(heads), "checks_n": len(checks), "ck_last": CK_LAST,
+    "months": MONTHS, "first_col": FIRST, "last_col": LAST, "version": VERSION,
+}
+with open(os.path.join(HERE, "model_layout.json"), "w", encoding="utf-8") as f_:
+    json.dump(LAYOUT, f_, indent=1)
 wb.save(OUT)
 print("saved", OUT)
 print("engine cases:", len(cases), "assumption rows:", len(ASSUMP))
