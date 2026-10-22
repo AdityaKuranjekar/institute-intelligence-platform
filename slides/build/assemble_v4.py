@@ -14,8 +14,16 @@ src = src.replace("AlphaQ_CaseB_Round1_v3.pptx", "AlphaQ_CaseB_Round1_v4.pptx").
 
 # ---- canvas: dotted grid behind every content and title slide
 BG = 'background: { path: path.join(__dirname, "..", "assets", "bg_dots.png") }'
-src = src.replace('title: "CONTENT", background: { color: T.white },', 'title: "CONTENT", ' + BG + ',')
-src = src.replace('title: "TITLE", background: { color: T.white },', 'title: "TITLE", ' + BG + ',')
+SOFT = 'background: { path: path.join(__dirname, "..", "assets", "bg_dots_soft.png") }'
+m0 = src.index('  pres.defineSlideMaster({' + chr(10) + '    title: "CONTENT"')
+m1 = src.index('  });' + chr(10), src.index("slideNumber", m0)) + 6
+blk = src[m0:m1]
+mk = lambda name, bg: blk.replace('title: "CONTENT", background: { color: T.white },', 'title: "' + name + '", ' + bg + ',')
+src = src[:m0] + mk("CONTENT", BG) + mk("CONTENT_SOFT", SOFT) + mk("CONTENT_BLANK", "background: { color: T.white }") + src[m1:]
+BGMAP = {"dots": ["THE PROBLEM", "THE PRODUCT", "HONEST RANGES", "VALIDATION, RISKS"], "soft": ["STRESS-TESTING", "KNOW EVERY", "GO-TO-MARKET"]}
+sel = "(" + " : ".join('[' + ",".join('"%s"' % k for k in v) + '].some((k) => head[0].startsWith(k)) ? "%s"' % ("CONTENT" if n == "dots" else "CONTENT_SOFT") for n, v in BGMAP.items()) + ' : "CONTENT_BLANK")'
+src = src.replace('pres.addSlide({ masterName: "CONTENT", sectionTitle: section })', 'pres.addSlide({ masterName: ' + sel + ', sectionTitle: section })')
+src = src.replace('title: "TITLE", background: { color: T.white },', 'title: "TITLE", background: { path: path.join(__dirname, "..", "assets", "bg_dots_soft.png") },')
 
 # ---- helpers (after the v3 helpers: note and stat)
 helpers = r'''
@@ -59,44 +67,61 @@ src = src.replace('note(s, 4.6, 4.45, 1.7, 0.4, "Hindi and English, checked", 3)
 src = src.replace('note(s, 11.0, 0.72, 1.85, 0.36,', 'note(s, 11.0, 0.7, 1.85, 0.42,')
 # ---- per-slide overlays
 OV = {
-    "CASE B  ·  NEXTUTE × FINANCE CLUB, IIT PATNA": r'''
+    "CASE B  ·  NEXTUTE × FINANCE CLUB, IIT PATNA": r"""
     ul(s, "swoosh", 0.45, 2.02, 3.5, 0.26); hl(s, "y", 2.05, 3.03, 1.32, 0.3);
     sticky(s, 4.55, 1.05, 1.55, 0.78, "Your Excel in. A weekly list out.", "y", -4); dd(s, "arrow_d", 6.1, 1.65, 0.7, 0.2, -10);
-    cur(s, "mentor", 10.25, 3.9); cur(s, "parent", 11.75, 5.2); ring(s, 0.62, 5.08, 1.65, 0.62, "c");''',
-    "EXECUTIVE SUMMARY\", 0]": r'''
-    hl(s, "y", 7.28, 0.83, 2.5, 0.3); cur(s, "owner", 12.0, 6.5); ring(s, 11.5, 1.17, 1.25, 0.62, "c");
-    pmtag(s, "GOAL", 1.68, 1.12, 0.5, "E0584A"); pmtag(s, "USERS", 1.68, 2.2, 0.55, "2E6DB4"); pmtag(s, "METRIC", 1.68, 3.28, 0.62, "3C9664");''',
-    "THE PROBLEM: LEAKY REVENUE, MESSY DATA": r'''
-    ul(s, "wave", 9.88, 3.4, 1.4, 0.14); sticky(s, 2.95, 3.68, 1.55, 0.4, "HMW tell mentors who to call?", "g", -3);''',
-    "STRESS-TESTING THE GUIDE": r'''
-    hl(s, "y", 8.95, 2.58, 3.7, 0.5); ring(s, 2.15, 3.15, 2.9, 0.58, "c");''',
-    "THE PRODUCT\", 2]": r'''
-    cur(s, "owner", 3.9, 3.0); cur(s, "mentor", 9.7, 3.7); cur(s, "parent", 11.75, 2.2); ring(s, 7.02, 4.18, 1.9, 0.62, "c");
-    sticky(s, 4.75, 3.95, 1.75, 0.7, "As a mentor, I want 8 names, not 400.", "y", -3); dd(s, "arrow_a", 6.8, 3.9, 0.6, 0.3, 0);''',
-    "SYSTEM ARCHITECTURE: THREE LAYERS, FOUR STAGES": r'''
-    ring(s, 1.86, 3.88, 1.7, 1.12, "c"); sticky(s, 2.0, 5.1, 1.5, 0.34, "trust is the moat", "p", -2); cur(s, "owner", 11.9, 6.0);''',
-    "KNOW EVERY STUDENT'S WEAK TOPICS": r'''
+    cur(s, "mentor", 10.25, 3.9); cur(s, "parent", 11.75, 5.2);""",
+    "EXECUTIVE SUMMARY\", 0]": r"""
+    cur(s, "owner", 12.0, 6.5);
+    pmtag(s, "GOAL", 1.68, 1.12, 0.5, "E0584A"); pmtag(s, "USERS", 1.68, 2.2, 0.55, "2E6DB4"); pmtag(s, "METRIC", 1.68, 3.28, 0.62, "3C9664");""",
+    "THE PROBLEM: LEAKY REVENUE, MESSY DATA": r"""
+    ul(s, "wave", 9.88, 3.4, 1.4, 0.14); sticky(s, 2.95, 3.68, 1.55, 0.4, "HMW tell mentors who to call?", "g", -3);""",
+    "STRESS-TESTING THE GUIDE": r"""
+    hl(s, "y", 8.95, 2.58, 3.7, 0.5);""",
+    "THE PRODUCT\", 2]": r"""
+    cur(s, "owner", 3.9, 3.0); cur(s, "mentor", 9.7, 3.7); cur(s, "parent", 11.75, 2.2);
+    sticky(s, 4.55, 3.85, 1.95, 0.8, "Job to be done: when a test ends, who do I call?", "y", -3); dd(s, "arrow_a", 6.8, 3.9, 0.6, 0.3, 0);""",
+    "SYSTEM ARCHITECTURE: THREE LAYERS, FOUR STAGES": r"""
+    ring(s, 1.86, 3.88, 1.7, 1.12, "c"); sticky(s, 2.0, 5.1, 1.5, 0.34, "trust is the moat", "p", -2); cur(s, "owner", 11.9, 6.0);""",
+    "KNOW EVERY STUDENT'S WEAK TOPICS": r"""
     hl(s, "y", 0.78, 5.02, 4.4, 0.3); cur(s, "mentor", 3.0, 2.55); dd(s, "arrow_a", 5.3, 1.2, 0.8, 0.4, 0);
-    sticky(s, 4.7, 6.0, 1.5, 0.42, "gates pending, not hidden", "o", 2);''',
-    "EARLY WARNING: THE INTERVENTION JOURNEY": r'''
-    ring(s, 6.5, 1.08, 1.0, 0.9, "c"); cur(s, "mentor", 2.2, 3.2); sticky(s, 11.0, 0.7, 1.85, 0.42, "a quarter of dropouts are sudden", "p", 2);''',
-    "HONEST RANGES AND SAFE PARENT REPORTS": r'''
+    sticky(s, 4.5, 6.0, 1.75, 0.42, "open loops: closed in Round 2", "o", 2);""",
+    "EARLY WARNING: THE INTERVENTION JOURNEY": r"""
+    cur(s, "mentor", 2.2, 3.2); sticky(s, 11.0, 0.7, 1.85, 0.42, "a quarter of dropouts are sudden", "p", 2);""",
+    "HONEST RANGES AND SAFE PARENT REPORTS": r"""
     cur(s, "parent", 6.8, 3.6); dd(s, "arrow_d", 7.1, 5.72, 0.85, 0.25, 0); ul(s, "swoosh", 10.2, 4.2, 1.6, 0.14);
-    sticky(s, 11.0, 0.7, 1.85, 0.42, "the range narrows as tests come in", "b", 2);''',
-    "PRIVACY, SAFETY AND DPDP COMPLIANCE": r'''
-    ring(s, 5.75, 1.36, 1.2, 0.95, "c"); ul(s, "swoosh", 4.3, 2.4, 4.0, 0.12); cur(s, "parent", 1.2, 3.6);''',
-    "BUSINESS MODEL AND UNIT ECONOMICS": r'''
-    ring(s, 0.38, 1.18, 1.7, 0.78, "c"); cur(s, "owner", 11.9, 1.6);''',
-    "GO-TO-MARKET, MOAT AND ROADMAP": r'''
-    ring(s, 11.55, 5.7, 1.45, 0.8, "c"); cur(s, "owner", 4.0, 5.2);
-    pmtag(s, "NOW", 2.75, 3.84, 0.5, "E0584A"); pmtag(s, "NEXT", 4.4, 3.84, 0.5, "2E6DB4"); pmtag(s, "LATER", 8.0, 3.84, 0.6, "6B7280");''',
-    "VALIDATION, RISKS AND THE ASK": r'''
+    sticky(s, 11.0, 0.7, 1.85, 0.42, "the range narrows as tests come in", "b", 2);""",
+    "PRIVACY, SAFETY AND DPDP COMPLIANCE": r"""
+    ul(s, "swoosh", 4.3, 2.4, 4.0, 0.12); cur(s, "parent", 1.2, 3.6);""",
+    "BUSINESS MODEL AND UNIT ECONOMICS": r"""
+    ring(s, 0.38, 1.18, 1.7, 0.78, "c"); cur(s, "owner", 11.9, 1.6);""",
+    "GO-TO-MARKET, MOAT AND ROADMAP": r"""
+    cur(s, "owner", 4.0, 5.2);
+    pmtag(s, "NOW", 2.75, 3.84, 0.5, "E0584A"); pmtag(s, "NEXT", 4.4, 3.84, 0.5, "2E6DB4"); pmtag(s, "LATER", 8.0, 3.84, 0.6, "6B7280");""",
+    "VALIDATION, RISKS AND THE ASK": r"""
     ring(s, 7.4, 6.12, 1.9, 0.82, "c"); dd(s, "arrow_c", 3.9, 5.1, 0.7, 0.45, 0);
-    sticky(s, 2.9, 3.62, 1.5, 0.3, "test the red ones first", "y", -3);''',
+    sticky(s, 2.9, 3.62, 1.5, 0.3, "test the red ones first", "y", -3);""",
+}
+INTENT = {
+    "CASE B  ·  NEXTUTE × FINANCE CLUB, IIT PATNA": "Aha moment first: the topic grid is the product in one picture. Benchmarking against a published rival (0.76 vs 0.75) anchors credibility.",
+    "EXECUTIVE SUMMARY\", 0]": "Primacy and chunking: situation, complication, resolution, then the rubric. One block, one colour.",
+    "THE PROBLEM: LEAKY REVENUE, MESSY DATA": "Loss aversion: the lost rupees are the one red number on the slide. Framing: the buyer's loss, not our features.",
+    "STRESS-TESTING THE GUIDE": "Pratfall effect and anchoring: we cut the guide's numbers ourselves, which earns belief in the numbers we keep.",
+    "THE PRODUCT\", 2]": "Jobs to be done: a mentor wants eight names, not 400. Show the work: both surfaces, one flow.",
+    "SYSTEM ARCHITECTURE: THREE LAYERS, FOUR STAGES": "Mental model: three layers and four stages map to how judges score (architecture, ML, privacy). Status chips show honest progress.",
+    "KNOW EVERY STUDENT'S WEAK TOPICS": "Labor perception: show how the estimate is made, then show it admits doubt. Zeigarnik: pending gates are open loops to close in Round 2.",
+    "EARLY WARNING: THE INTERVENTION JOURNEY": "Framing: supportive, never punitive. Authority: the locks make the legal walls visible.",
+    "HONEST RANGES AND SAFE PARENT REPORTS": "Show the work: the eight checks make safety visible instead of claimed.",
+    "PRIVACY, SAFETY AND DPDP COMPLIANCE": "Authority and trust: law cited by section; the lockbox is the single most important promise.",
+    "BUSINESS MODEL AND UNIT ECONOMICS": "Anchoring: the guide's 10.7x sits beside our 3.6x. We choose to look worse and be believed.",
+    "GO-TO-MARKET, MOAT AND ROADMAP": "Goal-gradient and chunking: Now, Next, Later makes the path feel short.",
+    "VALIDATION, RISKS AND THE ASK": "Peak-end: finish on a small, low-risk, falsifiable ask (two free pilots; we stop if it fails).",
 }
 for marker, js in OV.items():
     i = src.index(marker)
     j = src.index("    s.addNotes(", i)
     src = src[:j] + js.rstrip("\n") + "\n" + src[j:]
+    k = src.index('s.addNotes("', j) + len('s.addNotes("')
+    src = src[:k] + 'DESIGN INTENT: ' + INTENT[marker].replace('"', "'") + ' | ' + src[k:]
 (B / "deck_v4.js").write_text(src, encoding="utf-8")
 print("deck_v4.js written")

@@ -31,6 +31,22 @@ async function main() {
     ],
     slideNumber: { x: 12.3, y: 7.12, w: 0.58, h: 0.3, fontFace: F.body, fontSize: 13, bold: true, color: T.white, align: "center", valign: "middle" },
   });
+  pres.defineSlideMaster({
+    title: "CONTENT_SOFT", background: { path: path.join(__dirname, "..", "assets", "bg_dots_soft.png") },
+    objects: [
+      { rect: { x: 12.3, y: 7.12, w: 0.58, h: 0.3, fill: { color: T.tealDark } } },
+      { placeholder: { options: titleBox, text: "" } },
+    ],
+    slideNumber: { x: 12.3, y: 7.12, w: 0.58, h: 0.3, fontFace: F.body, fontSize: 13, bold: true, color: T.white, align: "center", valign: "middle" },
+  });
+  pres.defineSlideMaster({
+    title: "CONTENT_BLANK", background: { color: T.white },
+    objects: [
+      { rect: { x: 12.3, y: 7.12, w: 0.58, h: 0.3, fill: { color: T.tealDark } } },
+      { placeholder: { options: titleBox, text: "" } },
+    ],
+    slideNumber: { x: 12.3, y: 7.12, w: 0.58, h: 0.3, fontFace: F.body, fontSize: 13, bold: true, color: T.white, align: "center", valign: "middle" },
+  });
   pres.defineSlideMaster({ title: "FULL", background: { color: T.white }, objects: [] });
   pres.defineSlideMaster({
     title: "CLOSING", background: { color: T.white },
@@ -39,7 +55,7 @@ async function main() {
       { placeholder: { options: Object.assign({}, titleBox, { y: 0.3, h: 0.6, fontSize: 28 }), text: "" } },
     ],
   });
-  pres.defineSlideMaster({ title: "TITLE", background: { path: path.join(__dirname, "..", "assets", "bg_dots.png") }, objects: [
+  pres.defineSlideMaster({ title: "TITLE", background: { path: path.join(__dirname, "..", "assets", "bg_dots_soft.png") }, objects: [
     { rect: { x: 0, y: 0, w: 13.333, h: 0.1, fill: { color: T.tealDark } } },
     { placeholder: { options: { name: "title", type: "title", x: L, y: 1.15, w: 6.2, h: 1.2, fontFace: F.head, fontSize: 60, bold: true, color: T.tealDark, valign: "middle", margin: 0 }, text: "" } }] });
 
@@ -56,7 +72,7 @@ async function main() {
   };
   // content(section, subtitle, rubric, [HEADING, crumb index]); the rubric goes to the speaker notes
   const content = (section, title, rub, head) => {
-    const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: section });
+    const s = pres.addSlide({ masterName: (["THE PROBLEM","THE PRODUCT","HONEST RANGES","VALIDATION, RISKS"].some((k) => head[0].startsWith(k)) ? "CONTENT" : ["STRESS-TESTING","KNOW EVERY","GO-TO-MARKET"].some((k) => head[0].startsWith(k)) ? "CONTENT_SOFT" : "CONTENT_BLANK"), sectionTitle: section });
     rect(s, 0, 0, 13.333, 0.06, T.tealDark);
     crumb(s, head[1]);
     s.addText(head[0], { placeholder: "title" });
@@ -157,8 +173,8 @@ async function main() {
 
     ul(s, "swoosh", 0.45, 2.02, 3.5, 0.26); hl(s, "y", 2.05, 3.03, 1.32, 0.3);
     sticky(s, 4.55, 1.05, 1.55, 0.78, "Your Excel in. A weekly list out.", "y", -4); dd(s, "arrow_d", 6.1, 1.65, 0.7, 0.2, -10);
-    cur(s, "mentor", 10.25, 3.9); cur(s, "parent", 11.75, 5.2); ring(s, 0.62, 5.08, 1.65, 0.62, "c");
-    s.addNotes("Title. 0.76 is the next-answer AUC on ASSISTments 2009 (published DKT 0.754). Two public datasets: ASSISTments 2009 and OULAD. 3.6 rupees is the all-in cost per student per month (financial model v1.1, Base).");
+    cur(s, "mentor", 10.25, 3.9); cur(s, "parent", 11.75, 5.2);
+    s.addNotes("DESIGN INTENT: Aha moment first: the topic grid is the product in one picture. Benchmarking against a published rival (0.76 vs 0.75) anchors credibility. | Title. 0.76 is the next-answer AUC on ASSISTments 2009 (published DKT 0.754). Two public datasets: ASSISTments 2009 and OULAD. 3.6 rupees is the all-in cost per student per month (financial model v1.1, Base).");
   }
 
   // ================================================================ 2 EXECUTIVE SUMMARY
@@ -223,9 +239,9 @@ async function main() {
     note(s, 11.0, 0.7, 1.85, 0.42, "start with the weekly list", -2);
     foot(s, "Sources: NTA NEET UG 2025 result data; JEE Main 2025 unique registrations as reported (secondary); case guide baselines; public validation results; financial model v1.1 (Base). Full register: Appendix 8.");
 
-    hl(s, "y", 7.28, 0.83, 2.5, 0.3); cur(s, "owner", 12.0, 6.5); ring(s, 11.5, 1.17, 1.25, 0.62, "c");
+    cur(s, "owner", 12.0, 6.5);
     pmtag(s, "GOAL", 1.68, 1.12, 0.5, "E0584A"); pmtag(s, "USERS", 1.68, 2.2, 0.55, "2E6DB4"); pmtag(s, "METRIC", 1.68, 3.28, 0.62, "3C9664");
-    s.addNotes("Executive summary in situation, complication, resolution form. Public-data figures are measured. 1.7x owner return counts fees kept, staff time and a 1 % admissions uplift; 0.55x counts only fees kept and staff time. LTV/CAC 3.6x is discounted (4.8x undiscounted). All from financial model v1.1.");
+    s.addNotes("DESIGN INTENT: Primacy and chunking: situation, complication, resolution, then the rubric. One block, one colour. | Executive summary in situation, complication, resolution form. Public-data figures are measured. 1.7x owner return counts fees kept, staff time and a 1 % admissions uplift; 0.55x counts only fees kept and staff time. LTV/CAC 3.6x is discounted (4.8x undiscounted). All from financial model v1.1.");
   }
 
   // ================================================================ 3 PROBLEM
@@ -300,7 +316,7 @@ async function main() {
     foot(s, "Sources: Participant Guide §2, §6, §7 (illustrative baselines); NTA NEET UG 2025 result data; JEE Main 2025 statistics (secondary); NSO CMS Education 2025; vendor listings (research R1).");
 
     ul(s, "wave", 9.88, 3.4, 1.4, 0.14); sticky(s, 2.95, 3.68, 1.55, 0.4, "HMW tell mentors who to call?", "g", -3);
-    s.addNotes("The 8-15 percent dropout, 36,000 rupee loss per leaver and 17.3 lakh total are the guide's illustrative baselines (400 x 12 % x 36,000). Market numbers: financial/research/R7_market_check.md.");
+    s.addNotes("DESIGN INTENT: Loss aversion: the lost rupees are the one red number on the slide. Framing: the buyer's loss, not our features. | The 8-15 percent dropout, 36,000 rupee loss per leaver and 17.3 lakh total are the guide's illustrative baselines (400 x 12 % x 36,000). Market numbers: financial/research/R7_market_check.md.");
   }
 
   // ================================================================ STRESS-TEST THE GUIDE
@@ -346,8 +362,8 @@ async function main() {
     note(s, 11.0, 0.7, 1.85, 0.42, "we cut our own numbers first", 2);
     source(s, "Sources: case guide; financial/research (vendor listings R1, outreach trials R4); financial workbook (Base: 4.0 % reduction, 0.35x fees only); OULAD results in ml/public_validation; PLOS ONE 2026; DPDP Act 2023 s.9(3).");
 
-    hl(s, "y", 8.95, 2.58, 3.7, 0.5); ring(s, 2.15, 3.15, 2.9, 0.58, "c");
-    s.addNotes("This slide shows judges we tested the guide's illustrative numbers instead of copying them. Every 'what we do' value is a workbook output or a measured public-data result. Mentor capacity of eight per batch per week is the cap used in the mock-ups and the early-warning evaluation.");
+    hl(s, "y", 8.95, 2.58, 3.7, 0.5);
+    s.addNotes("DESIGN INTENT: Pratfall effect and anchoring: we cut the guide's numbers ourselves, which earns belief in the numbers we keep. | This slide shows judges we tested the guide's illustrative numbers instead of copying them. Every 'what we do' value is a workbook output or a measured public-data result. Mentor capacity of eight per batch per week is the cap used in the mock-ups and the early-warning evaluation.");
   }
 
   // ================================================================ PRODUCT
@@ -390,9 +406,9 @@ async function main() {
     });
     source(s, "Illustrative mock-ups with synthetic students. Both surfaces use one API; the phone app is a progressive web app installed from the browser (no app-store fee).");
 
-    cur(s, "owner", 3.9, 3.0); cur(s, "mentor", 9.7, 3.7); cur(s, "parent", 11.75, 2.2); ring(s, 7.02, 4.18, 1.9, 0.62, "c");
-    sticky(s, 4.75, 3.95, 1.75, 0.7, "As a mentor, I want 8 names, not 400.", "y", -3); dd(s, "arrow_a", 6.8, 3.9, 0.6, 0.3, 0);
-    s.addNotes("Product slide. Web console for the office, phone screens for scanning, mentors and parents. Who-sees-what follows the routing policy: risk lists only for mentors and owners; students and parents never see risk scores or ranks.");
+    cur(s, "owner", 3.9, 3.0); cur(s, "mentor", 9.7, 3.7); cur(s, "parent", 11.75, 2.2);
+    sticky(s, 4.55, 3.85, 1.95, 0.8, "Job to be done: when a test ends, who do I call?", "y", -3); dd(s, "arrow_a", 6.8, 3.9, 0.6, 0.3, 0);
+    s.addNotes("DESIGN INTENT: Jobs to be done: a mentor wants eight names, not 400. Show the work: both surfaces, one flow. | Product slide. Web console for the office, phone screens for scanning, mentors and parents. Who-sees-what follows the routing policy: risk lists only for mentors and owners; students and parents never see risk scores or ranks.");
   }
 
   // ================================================================ 5 ARCHITECTURE
@@ -460,7 +476,7 @@ async function main() {
     foot(s, "Sources: technical/contracts (31 tables, 23 endpoints, 380 topics); tenant isolation tested on PostgreSQL 16; test suites; financial model v1.1 (₹3.6 all-in, Base). Status: BUILT has working code and tests.");
 
     ring(s, 1.86, 3.88, 1.7, 1.12, "c"); sticky(s, 2.0, 5.1, 1.5, 0.34, "trust is the moat", "p", -2); cur(s, "owner", 11.9, 6.0);
-    s.addNotes("Layers on the left, build status on the right. Keywords in brackets are the technical names: IRT, LightGBM, conformal prediction, row-level security.");
+    s.addNotes("DESIGN INTENT: Mental model: three layers and four stages map to how judges score (architecture, ML, privacy). Status chips show honest progress. | Layers on the left, build status on the right. Keywords in brackets are the technical names: IRT, LightGBM, conformal prediction, row-level security.");
   }
 
   // ================================================================ 6 LEARNING ANALYTICS
@@ -502,8 +518,8 @@ async function main() {
     foot(s, "Sources: ml/public_validation (ASSISTments 2009, pyKT protocol; published DKT 0.754, SAKT 0.725, AKT 0.785); heat map is an illustrative mock-up. Gates pending Agent B.");
 
     hl(s, "y", 0.78, 5.02, 4.4, 0.3); cur(s, "mentor", 3.0, 2.55); dd(s, "arrow_a", 5.3, 1.2, 0.8, 0.4, 0);
-    sticky(s, 4.7, 6.0, 1.5, 0.42, "gates pending, not hidden", "o", 2);
-    s.addNotes("Plain-English headline with technical names as secondary labels. The three pending gates come from Agent B and must be filled before submission.");
+    sticky(s, 4.5, 6.0, 1.75, 0.42, "open loops: closed in Round 2", "o", 2);
+    s.addNotes("DESIGN INTENT: Labor perception: show how the estimate is made, then show it admits doubt. Zeigarnik: pending gates are open loops to close in Round 2. | Plain-English headline with technical names as secondary labels. The three pending gates come from Agent B and must be filled before submission.");
   }
 
   // ================================================================ 7 EARLY WARNING
@@ -554,8 +570,8 @@ async function main() {
     text(s, [{ text: "0.009 ", options: { bold: true, color: T.tealDark, fontSize: 12 } }, { text: "calibration error: “30 % risk” means 30 %. About a quarter of dropouts are sudden and cannot be predicted from academic data.", options: { fontSize: 8.5 } }], { x: 9.75, y: 5.98, w: 3.1, h: 0.9, valign: "middle" });
     foot(s, "Sources: ml/public_validation (OULAD, CC BY 4.0; day 28, student-grouped 5-fold; P@10 = precision at top 10 %); contracts/routing_policy.yaml; DPDP Act 2023 s.9. Early-warning lift on synthetic institutes is pending.");
 
-    ring(s, 6.5, 1.08, 1.0, 0.9, "c"); cur(s, "mentor", 2.2, 3.2); sticky(s, 11.0, 0.7, 1.85, 0.42, "a quarter of dropouts are sudden", "p", 2);
-    s.addNotes("Journey on top; evidence in the middle; compliance matrix on the right (locks are data walls). Our OULAD AUC is lower than the published 0.794 because the split is strictly by student; say so if asked.");
+    cur(s, "mentor", 2.2, 3.2); sticky(s, 11.0, 0.7, 1.85, 0.42, "a quarter of dropouts are sudden", "p", 2);
+    s.addNotes("DESIGN INTENT: Framing: supportive, never punitive. Authority: the locks make the legal walls visible. | Journey on top; evidence in the middle; compliance matrix on the right (locks are data walls). Our OULAD AUC is lower than the published 0.794 because the split is strictly by student; say so if asked.");
   }
 
   // ================================================================ 8 PERCENTILE RANGE AND PARENT REPORTS
@@ -598,7 +614,7 @@ async function main() {
 
     cur(s, "parent", 6.8, 3.6); dd(s, "arrow_d", 7.1, 5.72, 0.85, 0.25, 0); ul(s, "swoosh", 10.2, 4.2, 1.6, 0.14);
     sticky(s, 11.0, 0.7, 1.85, 0.42, "the range narrows as tests come in", "b", 2);
-    s.addNotes("Range mock-up is schematic until coverage results arrive. The report image uses real template output. Do not quote a verifier catch rate until the independent adversarial test passes after the E2 fixes.");
+    s.addNotes("DESIGN INTENT: Show the work: the eight checks make safety visible instead of claimed. | Range mock-up is schematic until coverage results arrive. The report image uses real template output. Do not quote a verifier catch rate until the independent adversarial test passes after the E2 fixes.");
   }
 
   // ================================================================ 9 PRIVACY
@@ -646,8 +662,8 @@ async function main() {
     note(s, 11.0, 0.7, 1.85, 0.42, "built in, not bolted on", 2);
     foot(s, "Sources: DPDP Act 2023 s.9, Rules 2025 (Rule 10); MoE Guidelines 2024; contracts/routing_policy.yaml; OULAD results (ml/public_validation); isolation tested on PostgreSQL 16. Not legal advice.");
 
-    ring(s, 5.75, 1.36, 1.2, 0.95, "c"); ul(s, "swoosh", 4.3, 2.4, 4.0, 0.12); cur(s, "parent", 1.2, 3.6);
-    s.addNotes("Lockbox: raw data stays in the institute's own environment; only item difficulty statistics reach a shared bank. A lawyer's check on the in-person ID flow is still recommended.");
+    ul(s, "swoosh", 4.3, 2.4, 4.0, 0.12); cur(s, "parent", 1.2, 3.6);
+    s.addNotes("DESIGN INTENT: Authority and trust: law cited by section; the lockbox is the single most important promise. | Lockbox: raw data stays in the institute's own environment; only item difficulty statistics reach a shared bank. A lawyer's check on the in-person ID flow is still recommended.");
   }
 
   // ================================================================ 10 BUSINESS MODEL
@@ -697,7 +713,7 @@ async function main() {
     foot(s, "Source: financial model v1.1 (Mid institute, 400 students, Base; CFO audit 22 Oct 2026). Model output from sourced and assumed inputs, not measured; willingness to pay is untested. ₹3.6 = all-in cost to serve.");
 
     ring(s, 0.38, 1.18, 1.7, 0.78, "c"); cur(s, "owner", 11.9, 1.6);
-    s.addNotes("v1.1 numbers. Return 1.7x counts fees kept, staff time and a 1 % admissions uplift; 0.55x counts fees and staff time only; 0.35x fees only. LTV/CAC 3.6x discounted, 4.8x undiscounted; payback 5.7 months simple. Cost stack from COGS at Base inputs.");
+    s.addNotes("DESIGN INTENT: Anchoring: the guide's 10.7x sits beside our 3.6x. We choose to look worse and be believed. | v1.1 numbers. Return 1.7x counts fees kept, staff time and a 1 % admissions uplift; 0.55x counts fees and staff time only; 0.35x fees only. LTV/CAC 3.6x discounted, 4.8x undiscounted; payback 5.7 months simple. Cost stack from COGS at Base inputs.");
   }
 
   // ================================================================ 11 GO-TO-MARKET
@@ -751,9 +767,9 @@ async function main() {
     text(s, "Year 3, Base case. Needs ₹45 L.", { x: 9.34, y: 6.45, w: 3.4, h: 0.22, fontSize: 8, italic: true, color: T.muted });
     foot(s, "Sources: vendor listings (financial/research R1; ? means not verifiable, not absent); financial model v1.1 (field vs channel economics; 3-year projection); roadmap dates are our plan.");
 
-    ring(s, 11.55, 5.7, 1.45, 0.8, "c"); cur(s, "owner", 4.0, 5.2);
+    cur(s, "owner", 4.0, 5.2);
     pmtag(s, "NOW", 2.75, 3.84, 0.5, "E0584A"); pmtag(s, "NEXT", 4.4, 3.84, 0.5, "2E6DB4"); pmtag(s, "LATER", 8.0, 3.84, 0.6, "6B7280");
-    s.addNotes("Small institutes: channel partners give LTV/CAC 3.4x against 1.5x by field sales. Year 3 Base: 58 paying institutes, revenue 65.3 lakh, EBITDA 11.9 lakh, funding need 45 lakh, break-even month 16. One field rep at 8 percent of the market.");
+    s.addNotes("DESIGN INTENT: Goal-gradient and chunking: Now, Next, Later makes the path feel short. | Small institutes: channel partners give LTV/CAC 3.4x against 1.5x by field sales. Year 3 Base: 58 paying institutes, revenue 65.3 lakh, EBITDA 11.9 lakh, funding need 45 lakh, break-even month 16. One field rep at 8 percent of the market.");
   }
 
   // ================================================================ 12 VALIDATION AND THE ASK
@@ -808,7 +824,7 @@ async function main() {
 
     ring(s, 7.4, 6.12, 1.9, 0.82, "c"); dd(s, "arrow_c", 3.9, 5.1, 0.7, 0.45, 0);
     sticky(s, 2.9, 3.62, 1.5, 0.3, "test the red ones first", "y", -3);
-    s.addNotes("State limits first. The ask is concrete and falsifiable. Bear needs 1 crore funding and does not break even within 36 months.");
+    s.addNotes("DESIGN INTENT: Peak-end: finish on a small, low-risk, falsifiable ask (two free pilots; we stop if it fails). | State limits first. The ask is concrete and falsifiable. Bear needs 1 crore funding and does not break even within 36 months.");
   }
 
   // ================================================================ APPENDIX A1: SCENARIOS AND SENSITIVITY (model v1.1)
