@@ -61,10 +61,10 @@ export default function OwnerPage() {
             return {
               type: "group",
               children: [
-                { type: "line", shape: { x1: lo[0], y1: lo[1], x2: hi[0], y2: hi[1] }, style: { stroke: "#1f6feb", lineWidth: 2 } },
-                { type: "line", shape: { x1: lo[0], y1: lo[1] - 5, x2: lo[0], y2: lo[1] + 5 }, style: { stroke: "#1f6feb", lineWidth: 2 } },
-                { type: "line", shape: { x1: hi[0], y1: hi[1] - 5, x2: hi[0], y2: hi[1] + 5 }, style: { stroke: "#1f6feb", lineWidth: 2 } },
-                { type: "circle", shape: { cx: mid[0], cy: mid[1], r: 5 }, style: { fill: "#1f6feb" } },
+                { type: "line", shape: { x1: lo[0], y1: lo[1], x2: hi[0], y2: hi[1] }, style: { stroke: "#1e4a8a", lineWidth: 2 } },
+                { type: "line", shape: { x1: lo[0], y1: lo[1] - 5, x2: lo[0], y2: lo[1] + 5 }, style: { stroke: "#1e4a8a", lineWidth: 2 } },
+                { type: "line", shape: { x1: hi[0], y1: hi[1] - 5, x2: hi[0], y2: hi[1] + 5 }, style: { stroke: "#1e4a8a", lineWidth: 2 } },
+                { type: "circle", shape: { cx: mid[0], cy: mid[1], r: 5 }, style: { fill: "#1e4a8a" } },
               ],
             };
           },
@@ -103,7 +103,7 @@ export default function OwnerPage() {
         yAxis: { type: "value", name: L("Difficulty calibration error", "कठिनाई अंशांकन त्रुटि"), scale: true },
         series: [
           { name: "low", type: "line", data: mo.points.map((p) => p.ci_low), lineStyle: { opacity: 0 }, stack: "ci", symbol: "none" },
-          { name: "band", type: "line", data: mo.points.map((p) => p.ci_high - p.ci_low), lineStyle: { opacity: 0 }, areaStyle: { color: "#1f6feb", opacity: 0.15 }, stack: "ci", symbol: "none" },
+          { name: "band", type: "line", data: mo.points.map((p) => p.ci_high - p.ci_low), lineStyle: { opacity: 0 }, areaStyle: { color: "#1e4a8a", opacity: 0.15 }, stack: "ci", symbol: "none" },
           { name: L("Error", "त्रुटि"), type: "line", data: mo.points.map((p) => p.calibration_error), symbolSize: 9, lineStyle: { width: 3 } },
         ],
       }

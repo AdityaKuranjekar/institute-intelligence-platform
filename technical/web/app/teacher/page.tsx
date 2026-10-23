@@ -1,114 +1,96 @@
 "use client";
 
-import { Check, X } from "lucide-react";
+import { Check } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { EChartsOption } from "echarts";
 import { EChart } from "@/components/echart";
-import { Badge, Button, Card, CardTitle, Note, Origin, PageHead, PageSkeleton, Select, Unavailable } from "@/components/ui";
+import { Badge, Button, Card, CardTitle, Note, Origin, PageHead, PageSkeleton, Select, Stat, Unavailable } from "@/components/ui";
 import { useApp, useData } from "@/lib/app-context";
+import { BAND_COLOR, BAND_LABEL, BAND_TONE, type Band } from "@/lib/bands";
 import { useStudents } from "@/lib/names";
 import { pct } from "@/lib/utils";
 
-const PAGE = 10;
+const PAGE = 8;
+const BANDS: Band[] = ["not_enough_data", "needs_support", "steady", "strong"];
+const SCALE = 3; // bar axis runs -SCALE..+SCALE on the ability scale (never shown as numbers)
 
 export default function TeacherPage() {
   const { L, lang } = useApp();
   const mastery = useData("mastery");
   const risk = useData("risk");
   const { nameOf, rollOf, loading: sl } = useStudents();
-  const [batchId, setBatchId] = useState<string>("");
-  const [topicId, setTopicId] = useState<string | null>(null);
+  const [batchId, setBatchId] = useState("");
+  const [sel, setSel] = useState<string | null>(null);
   const [done, setDone] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(0);
 
   const m = mastery.data;
   const batch = m?.batches.find((b) => b.batch_id === batchId) ?? m?.batches[0];
+  const tn = (t: { name_en: string; name_hi: string }) => (lang === "hi" ? t.name_hi : t.name_en);
+  const bl = (b: Band) => L(...BAND_LABEL[b]);
 
   const grid = useMemo(() => {
     if (!m || !batch) return null;
-    const ids = [...batch.student_ids].sort((a, b) => nameOf(a).localeCompare(nameOf(b)) || a.localeCompare(b));
-    const topics = m.topics;
+    const ids = [...batch.student_ids].sort((a, b) => rollOf(a).localeCompare(rollOf(b)));
     const cell = new Map(m.cells.map((c) => [`${c.student_id}|${c.topic_id}`, c]));
-    return { ids, topics, cell };
+    return { ids, topics: m.topics, cell };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [m, batch, sl]);
+
+  const bandAt = (sid: string, tid: string): Band => {
+    const c = grid?.cell.get(`${sid}|${tid}`);
+    return (c?.band as Band) ?? "not_enough_data";
+  };
 
   const option = useMemo<EChartsOption | null>(() => {
     if (!grid) return null;
     const data: unknown[] = [];
     grid.ids.forEach((sid, yi) =>
       grid.topics.forEach((t, xi) => {
-        const c = grid.cell.get(`${sid}|${t.topic_id}`);
-        if (t.probably_untaught) {
-          data.push({ value: [xi, yi, null], itemStyle: { color: "#e6e9ef" } });
-        } else if (!c || c.band === "not_enough_data") {
-          data.push({ value: [xi, yi, null], itemStyle: { color: "#f3f5f9", borderColor: "#d5dbe7", borderType: "dashed" } });
-        } else {
-          // Higher uncertainty -> lower opacity.
-          const op = Math.max(0.3, Math.min(1, 1.05 - c.se / 1.2));
-          data.push({ value: [xi, yi, c.theta], itemStyle: { opacity: op } });
-        }
+        const b = t.probably_untaught ? "not_enough_data" : bandAt(sid, t.topic_id);
+        data.push({ value: [xi, yi, BANDS.indexOf(b)], itemStyle: { color: BAND_COLOR[b], opacity: t.probably_untaught ? 0.55 : 1 } });
       })
     );
     return {
-      grid: { left: 8, right: 8, top: 8, bottom: 120, containLabel: true },
+      grid: { left: 8, right: 8, top: 8, bottom: 110, containLabel: true },
       tooltip: {
         formatter: (p: unknown) => {
-          const v = (p as { value: [number, number, number | null] }).value;
+          const v = (p as { value: [number, number, number] }).value; const bb = BANDS[v[2]];
           const t = grid.topics[v[0]];
           const sid = grid.ids[v[1]];
-          const c = grid.cell.get(`${sid}|${t.topic_id}`);
-          const nm = lang === "hi" ? t.name_hi : t.name_en;
-          if (t.probably_untaught) return `${nameOf(sid)}<br/>${nm}<br/>${L("Probably not taught yet", "शायद अभी पढ़ाया नहीं गया")}`;
-          if (!c || c.band === "not_enough_data") return `${nameOf(sid)}<br/>${nm}<br/>${L("Not enough data yet", "अभी पर्याप्त डेटा नहीं")}`;
-          return `${nameOf(sid)}<br/>${nm}<br/>θ ${c.theta.toFixed(2)} ± ${c.se.toFixed(2)} · ${c.band.replace("_", " ")}`;
+          const extra = t.probably_untaught ? `<br/>${L("Probably not taught yet", "शायद अभी पढ़ाया नहीं गया")}` : "";
+          return `${rollOf(sid)} · ${nameOf(sid)}<br/>${tn(t)}<br/><b>${bl(bb)}</b>${extra}`;
         },
       },
       xAxis: {
         type: "category",
-        data: grid.topics.map((t) => (lang === "hi" ? t.name_hi : t.name_en)),
+        position: "bottom",
+        data: grid.topics.map(tn),
         axisLabel: { rotate: 55, interval: 0, fontSize: 10, formatter: (s: string) => (s.length > 24 ? s.slice(0, 23) + "…" : s) },
-        splitArea: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false },
       },
-      yAxis: { type: "category", inverse: true, data: grid.ids.map((s) => `${nameOf(s)} ${rollOf(s).replace(/^.*-/, "")}`), axisLabel: { fontSize: 11 } },
+      yAxis: { type: "category", inverse: true, data: grid.ids.map((s) => rollOf(s)), axisLabel: { fontSize: 11, fontWeight: 600 }, axisLine: { show: false }, axisTick: { show: false } },
       visualMap: {
-        min: -1.5,
-        max: 1.5,
-        calculable: false,
-        orient: "horizontal",
-        left: "center",
-        bottom: 0,
-        itemWidth: 12,
-        itemHeight: 140,
-        text: [L("Stronger", "मज़बूत"), L("Needs support", "सहारा चाहिए")],
-        inRange: { color: ["#f3d9a4", "#e8eef9", "#7fb0f2", "#1f6feb"] },
-        seriesIndex: 0,
+        type: "piecewise",
+        show: false,
+        dimension: 2,
+        pieces: BANDS.map((b, i) => ({ value: i, color: BAND_COLOR[b] })),
       },
-      series: [{ type: "heatmap", data, itemStyle: { borderColor: "#fff", borderWidth: 1 }, emphasis: { itemStyle: { borderColor: "#17233b", borderWidth: 1 } } }],
+      series: [{ type: "heatmap", data, itemStyle: { borderColor: "#fff", borderWidth: 2, borderRadius: 3 } }],
     } as EChartsOption;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [grid, lang, sl]);
 
-  const topicDetail = useMemo(() => {
-    if (!m || !grid || !topicId) return null;
-    const t = m.topics.find((x) => x.topic_id === topicId)!;
-    const cells = grid.ids.map((s) => grid.cell.get(`${s}|${topicId}`)).filter(Boolean) as typeof m.cells;
-    const usable = cells.filter((c) => c.band !== "not_enough_data");
-    const counts: Record<string, number> = {};
-    cells.forEach((c) => (counts[c.band] = (counts[c.band] ?? 0) + 1));
-    const mean = usable.length ? usable.reduce((a, c) => a + c.theta, 0) / usable.length : null;
-    return { t, counts, mean, n: cells.length, usable: usable.length };
-  }, [m, grid, topicId]);
-
   if (mastery.loading || risk.loading) return <PageSkeleton />;
-  if (!m) return <Unavailable what="mastery" detail={mastery.error} />;
+  if (!m || !batch || !grid) return <Unavailable what="mastery" detail={mastery.error} />;
 
+  const untaught = m.topics.filter((t) => t.probably_untaught);
   const r = risk.data;
-  const supportRows = r
-    ? [...r.list].sort((a, b) => nameOf(a.student_id).localeCompare(nameOf(b.student_id)))
-    : [];
-  const pages = Math.ceil(supportRows.length / PAGE);
-  const shown = supportRows.slice(page * PAGE, page * PAGE + PAGE);
+  const rows = r ? [...r.list].sort((a, b) => nameOf(a.student_id).localeCompare(nameOf(b.student_id))) : [];
+  const pages = Math.ceil(rows.length / PAGE);
+  const shown = rows.slice(page * PAGE, page * PAGE + PAGE);
+  const adults = rows.filter((x) => x.track === "full").length;
   const baseRows = r
     ? [
         { key: "b1_attendance_rule", en: "Attendance < 75% rule", hi: "उपस्थिति < 75% नियम" },
@@ -116,7 +98,7 @@ export default function TeacherPage() {
         { key: "model", en: "Pragati model", hi: "प्रगति मॉडल" },
       ].filter((x) => r.baselines[x.key])
     : [];
-  const cmpOption: EChartsOption | null = r
+  const cmp: EChartsOption | null = r
     ? {
         legend: { bottom: 0 },
         xAxis: { type: "category", data: baseRows.map((b) => L(b.en, b.hi)) },
@@ -129,103 +111,118 @@ export default function TeacherPage() {
       }
     : null;
 
+  const selCells = sel ? grid.topics.map((t) => ({ t, c: grid.cell.get(`${sel}|${t.topic_id}`) })) : [];
+
   return (
     <div className="space-y-6">
       <PageHead
-        title={L("Teacher view", "शिक्षक दृश्य")}
-        sub={L("Where each batch stands, and who could use a hand this week.", "हर बैच की स्थिति, और इस सप्ताह किसे मदद चाहिए।")}
+        title={L("Home", "होम")}
+        sub={L(`${batch.name} · ${batch.exam.replace("_", " ")} · who needs a hand this week`, `${batch.name} · ${batch.exam.replace("_", " ")} · इस सप्ताह किसे मदद चाहिए`)}
         right={
           <Select
             label={L("Batch", "बैच")}
-            value={batch?.batch_id ?? ""}
+            value={batch.batch_id}
             onChange={(v) => {
               setBatchId(v);
-              setTopicId(null);
+              setSel(null);
             }}
             options={m.batches.map((b) => ({ value: b.batch_id, label: `${b.name} · ${b.exam.replace("_", " ")}` }))}
           />
         }
       />
 
+      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Stat label={L("Students in this batch", "इस बैच में विद्यार्थी")} value={batch.student_ids.length} origin="synthetic" />
+        <Stat label={L("On this week's list", "इस सप्ताह की सूची में")} value={rows.length} sub={r ? L(`cap ${r.capacity_per_week} (mentor time)`, `सीमा ${r.capacity_per_week} (मेंटर का समय)`) : undefined} origin="model" />
+        <Stat label={L("Topics tracked", "ट्रैक किए गए विषय")} value={m.topics.length} sub={L(`${untaught.length} probably not taught yet`, `${untaught.length} शायद अभी पढ़ाए नहीं गए`)} origin="model" />
+        <Stat label={L("Adults on list (own consent)", "सूची में वयस्क (स्वयं की सहमति)")} value={adults} sub={L("Others: academic support only", "बाकी: केवल शैक्षिक सहयोग")} origin="model" />
+      </section>
+
       <Card>
-        <CardTitle right={<Origin origin={m.origin} />}>{L("Topic mastery heatmap", "विषय-वार दक्षता हीटमैप")}</CardTitle>
-        <p className="mb-2 text-sm text-ink-soft">
-          {L(
-            "Darker blue is stronger. Faded cells carry more uncertainty. Grey: topic probably not taught yet. Dashed: not enough data yet. Students are listed by name.",
-            "गहरा नीला मतलब मज़बूत। फीके खाने में अनिश्चितता ज़्यादा है। स्लेटी: विषय शायद पढ़ाया नहीं गया। बिंदीदार: अभी पर्याप्त डेटा नहीं। विद्यार्थी नाम के क्रम में हैं।"
-          )}
-        </p>
-        {option && (
-          <div className="overflow-x-auto">
-            <div className="min-w-[760px]">
+        <CardTitle right={<Origin origin={m.origin} />}>{L("Topic mastery", "विषय-वार दक्षता")}</CardTitle>
+        <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-soft" aria-label="Legend">
+          {(["not_enough_data", "needs_support", "steady", "strong"] as Band[]).map((b) => (
+            <span key={b} className="inline-flex items-center gap-1.5">
+              <span className="h-3 w-3 rounded" style={{ background: BAND_COLOR[b], border: "1px solid #d5dbe7" }} />
+              {bl(b)}
+            </span>
+          ))}
+          <span className="text-ink-mute">· {L("Pale columns: topic probably not taught yet", "फीके कॉलम: विषय शायद अभी नहीं पढ़ाया गया")}</span>
+        </div>
+        <div className="overflow-x-auto">
+          <div className="min-w-[760px]">
+            {option && (
               <EChart
                 option={option}
-                height={Math.max(360, (grid?.ids.length ?? 10) * 18 + 190)}
+                height={Math.max(360, grid.ids.length * 20 + 180)}
                 label="Mastery heatmap"
                 onClick={(p) => {
-                  const v = (p.value as number[] | undefined) ?? [];
-                  if (grid && v.length) setTopicId(grid.topics[v[0]].topic_id);
+                  const v = (p.value as unknown[] | undefined) ?? [];
+                  if (typeof v[1] === "number") setSel(grid.ids[v[1]]);
                 }}
               />
-            </div>
+            )}
+          </div>
+        </div>
+        {untaught.length > 0 && (
+          <div className="mt-3">
+            <Note>
+              <b>{untaught.map(tn).slice(0, 3).join(", ")}</b>
+              {untaught.length > 3 ? ` +${untaught.length - 3}` : ""}:{" "}
+              {L("whole batch looks low. Likely not taught yet, not student weakness. Check the teaching plan first.", "पूरा बैच कमज़ोर दिखता है। संभवतः अभी पढ़ाया नहीं गया, विद्यार्थी की कमज़ोरी नहीं। पहले शिक्षण योजना देखें।")}
+            </Note>
           </div>
         )}
-        <p className="mt-1 text-xs text-ink-mute">{L("Click a cell to open that topic.", "किसी खाने पर क्लिक करके विषय खोलें।")}</p>
+        <p className="mt-2 text-xs text-ink-mute">{L("Click a row to see that student's topics with how sure we are.", "किसी पंक्ति पर क्लिक करें: उस विद्यार्थी के विषय और हमारी निश्चितता देखें।")}</p>
       </Card>
 
-      {topicDetail && (
-        <aside
-          role="dialog"
-          aria-label="Topic detail"
-          className="fixed inset-x-0 bottom-0 z-40 max-h-[70vh] overflow-y-auto rounded-t-2xl border border-line bg-white p-5 shadow-2xl sm:inset-x-auto sm:right-4 sm:top-24 sm:bottom-4 sm:w-96 sm:rounded-2xl"
-        >
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <Badge tone="brand">{topicDetail.t.subject}</Badge>
-              <h3 className="mt-2 font-semibold text-ink">{lang === "hi" ? topicDetail.t.name_hi : topicDetail.t.name_en}</h3>
-            </div>
-            <Button variant="ghost" aria-label={L("Close", "बंद करें")} onClick={() => setTopicId(null)}>
-              <X size={16} />
-            </Button>
-          </div>
-          {topicDetail.t.probably_untaught && (
-            <Note tone="calm">{L("This topic is probably not taught yet in this batch.", "यह विषय इस बैच में शायद अभी नहीं पढ़ाया गया।")}</Note>
-          )}
-          <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
-            <div>
-              <dt className="text-ink-mute">{L("Students with enough data", "पर्याप्त डेटा वाले विद्यार्थी")}</dt>
-              <dd className="text-lg font-semibold tabular-nums">
-                {topicDetail.usable} / {topicDetail.n}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-ink-mute">{L("Batch mean ability (θ)", "बैच औसत क्षमता (θ)")}</dt>
-              <dd className="text-lg font-semibold tabular-nums">{topicDetail.mean === null ? L("Not enough data yet", "अभी पर्याप्त डेटा नहीं") : topicDetail.mean.toFixed(2)}</dd>
-            </div>
-          </dl>
-          <ul className="mt-3 space-y-1 text-sm text-ink-soft">
-            {Object.entries(topicDetail.counts).map(([b, c]) => (
-              <li key={b} className="flex justify-between">
-                <span>{b.replace(/_/g, " ")}</span>
-                <span className="tabular-nums">{c}</span>
-              </li>
-            ))}
+      {sel && (
+        <Card>
+          <CardTitle
+            right={
+              <Button variant="ghost" onClick={() => setSel(null)}>
+                {L("Close", "बंद करें")}
+              </Button>
+            }
+          >
+            {L("Topic mastery with uncertainty", "अनिश्चितता सहित विषय-वार दक्षता")} · {rollOf(sel)} {nameOf(sel)}
+          </CardTitle>
+          <p className="mb-3 text-xs text-ink-soft">{L("Bar = likely range, tick = best estimate. A wide bar means we are less sure.", "पट्टी = संभावित सीमा, निशान = सर्वोत्तम अनुमान। चौड़ी पट्टी = कम निश्चितता।")}</p>
+          <ul className="grid gap-x-8 gap-y-2 md:grid-cols-2">
+            {selCells.map(({ t, c }) => {
+              const b: Band = t.probably_untaught ? "not_enough_data" : ((c?.band as Band) ?? "not_enough_data");
+              const showBar = c && b !== "not_enough_data";
+              const lo = c ? Math.max(-SCALE, c.theta - 1.28 * c.se) : 0;
+              const hi = c ? Math.min(SCALE, c.theta + 1.28 * c.se) : 0;
+              const at = (x: number) => ((x + SCALE) / (2 * SCALE)) * 100;
+              return (
+                <li key={t.topic_id} className="grid grid-cols-[1fr_120px_96px] items-center gap-2 text-xs">
+                  <span className="truncate text-ink" title={tn(t)}>{tn(t)}</span>
+                  <span className="relative h-2 rounded-full bg-[#e9edf4]">
+                    {showBar && c && (
+                      <>
+                        <span className="absolute h-2 rounded-full bg-brand/35" style={{ left: `${at(lo)}%`, width: `${Math.max(2, at(hi) - at(lo))}%` }} />
+                        <span className="absolute -top-0.5 h-3 w-1 rounded bg-brand" style={{ left: `${at(c.theta)}%` }} />
+                      </>
+                    )}
+                  </span>
+                  <Badge tone={BAND_TONE[b]} className="justify-center">{bl(b)}</Badge>
+                </li>
+              );
+            })}
           </ul>
-        </aside>
+        </Card>
       )}
 
       <div className="grid gap-6 lg:grid-cols-5">
         <Card className="lg:col-span-3">
-          <CardTitle right={<Origin origin={r?.origin} />}>{L("Support this week", "इस सप्ताह सहयोग सूची")}</CardTitle>
+          <CardTitle right={<Badge tone="calm">{L("Visible to mentor and owner only", "केवल मेंटर और मालिक को दिखता है")}</Badge>}>{L("Support list", "सहयोग सूची")}</CardTitle>
           {!r ? (
             <Unavailable what="risk" detail={risk.error} />
           ) : (
             <>
               <p className="mb-3 text-sm text-ink-soft">
-                {L(
-                  `Sized to mentor capacity (${r.capacity_per_week} students per week). Listed by name, not by priority. Each row shows why and what could help.`,
-                  `मेंटर क्षमता के अनुसार (${r.capacity_per_week} विद्यार्थी प्रति सप्ताह)। नाम के क्रम में, प्राथमिकता के क्रम में नहीं। हर पंक्ति में कारण और सहायक कदम हैं।`
-                )}
+                {L(`Sized to mentor capacity (${r.capacity_per_week}/week). Listed by name, not priority. Each row: why, and what could help.`, `मेंटर क्षमता के अनुसार (${r.capacity_per_week}/सप्ताह)। नाम के क्रम में। हर पंक्ति: कारण और सहायक कदम।`)}
               </p>
               <ul className="divide-y divide-line">
                 {shown.map((row) => {
@@ -234,22 +231,16 @@ export default function TeacherPage() {
                     <li key={row.student_id} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-start sm:justify-between">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-xs font-semibold text-brand-dark">{rollOf(row.student_id)}</span>
                           <span className="font-medium text-ink">{nameOf(row.student_id)}</span>
-                          <span className="text-xs text-ink-mute">{rollOf(row.student_id)}</span>
-                          {row.track === "full" ? (
-                            <Badge tone="teal">{L("Adult, own consent", "वयस्क, स्वयं की सहमति")}</Badge>
-                          ) : (
-                            <Badge tone="calm">{L("Academic support", "शैक्षिक सहयोग")}</Badge>
-                          )}
+                          {row.track === "full" ? <Badge tone="teal">{L("Adult, own consent", "वयस्क, स्वयं की सहमति")}</Badge> : <Badge tone="calm">{L("Academic support", "शैक्षिक सहयोग")}</Badge>}
                         </div>
                         <ul className="mt-1 list-disc pl-5 text-[13px] text-ink-soft">
                           {row.reasons.map((x) => (
                             <li key={x.code}>{lang === "hi" ? x.text_hi : x.text_en}</li>
                           ))}
                         </ul>
-                        <p className="mt-1 text-[13px] text-brand-dark">
-                          → {lang === "hi" ? row.supportive_action.text_hi : row.supportive_action.text_en}
-                        </p>
+                        <p className="mt-1 text-[13px] font-medium text-brand-dark">→ {lang === "hi" ? row.supportive_action.text_hi : row.supportive_action.text_en}</p>
                       </div>
                       <Button
                         variant={isDone ? "soft" : "ghost"}
@@ -258,12 +249,13 @@ export default function TeacherPage() {
                         onClick={() =>
                           setDone((d) => {
                             const n = new Set(d);
-                            n.has(row.student_id) ? n.delete(row.student_id) : n.add(row.student_id);
+                            if (n.has(row.student_id)) n.delete(row.student_id);
+                            else n.add(row.student_id);
                             return n;
                           })
                         }
                       >
-                        <Check size={14} /> {isDone ? L("Done", "हो गया") : L("Mark done", "पूरा करें")}
+                        <Check size={14} /> {isDone ? L("Done", "हो गया") : L("Log outcome", "नतीजा दर्ज करें")}
                       </Button>
                     </li>
                   );
@@ -271,15 +263,9 @@ export default function TeacherPage() {
               </ul>
               {pages > 1 && (
                 <div className="mt-3 flex items-center justify-between text-sm">
-                  <Button variant="ghost" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
-                    {L("Previous", "पिछला")}
-                  </Button>
-                  <span className="text-ink-mute">
-                    {page + 1} / {pages} · {done.size} {L("done", "पूरे")}
-                  </span>
-                  <Button variant="ghost" disabled={page >= pages - 1} onClick={() => setPage((p) => p + 1)}>
-                    {L("Next", "अगला")}
-                  </Button>
+                  <Button variant="ghost" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>{L("Previous", "पिछला")}</Button>
+                  <span className="text-ink-mute">{page + 1} / {pages} · {done.size} {L("done", "पूरे")}</span>
+                  <Button variant="ghost" disabled={page >= pages - 1} onClick={() => setPage((p) => p + 1)}>{L("Next", "अगला")}</Button>
                 </div>
               )}
             </>
@@ -289,12 +275,9 @@ export default function TeacherPage() {
         <div className="space-y-6 lg:col-span-2">
           <Card>
             <CardTitle right={<Origin origin="synthetic" />}>{L("Model vs your current rule", "मॉडल बनाम आपका मौजूदा नियम")}</CardTitle>
-            {cmpOption && <EChart option={cmpOption} height={240} label="Model vs attendance rule" />}
-            <p className="mt-2 text-xs text-ink-soft">
-              {r?.note} {L("Synthetic data: a real pilot settles the true uplift.", "कृत्रिम डेटा: असली लाभ पायलट से तय होगा।")}
-            </p>
+            {cmp && <EChart option={cmp} height={240} label="Model vs attendance rule" />}
+            <p className="mt-2 text-xs text-ink-soft">{r?.note} {L("Synthetic data: a real pilot settles the true uplift.", "कृत्रिम डेटा: असली लाभ पायलट से तय होगा।")}</p>
           </Card>
-
           <Card>
             <CardTitle>{L("Answer-key alerts", "उत्तर-कुंजी चेतावनियाँ")}</CardTitle>
             {m.wrong_key_flags.length === 0 ? (
@@ -302,11 +285,7 @@ export default function TeacherPage() {
             ) : (
               <ul className="space-y-2 text-sm">
                 {m.wrong_key_flags.map((f, i) => (
-                  <li key={i} className="rounded-xl bg-amber-soft p-2 text-[#7a4e05]">
-                    {Object.entries(f)
-                      .map(([k, v]) => `${k}: ${String(v)}`)
-                      .join(" · ")}
-                  </li>
+                  <li key={i} className="rounded-xl bg-amber-soft p-2 text-[#7a4e05]">{Object.entries(f).map(([k, v]) => `${k}: ${String(v)}`).join(" · ")}</li>
                 ))}
               </ul>
             )}

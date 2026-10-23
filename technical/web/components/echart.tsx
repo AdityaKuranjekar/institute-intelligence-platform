@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import type { EChartsOption, ECharts } from "echarts";
 
 // One consistent ECharts theme: calm blue / teal / amber, never red.
-export const PALETTE = ["#1f6feb", "#0e9f8e", "#d98a0b", "#5b6fb3", "#7886a3"];
+export const PALETTE = ["#1e4a8a", "#0e9f8e", "#d98a0b", "#5b6fb3", "#7886a3"];
 const BASE: EChartsOption = {
   color: PALETTE,
   textStyle: { fontFamily: "var(--font-inter), var(--font-deva), system-ui, sans-serif", color: "#4a5876" },

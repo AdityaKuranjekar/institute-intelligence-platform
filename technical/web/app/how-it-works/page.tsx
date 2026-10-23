@@ -142,6 +142,26 @@ export default function HowItWorksPage() {
       </Card>
 
       <Card>
+        <CardTitle>{L("What each person sees", "हर व्यक्ति को क्या दिखता है")}</CardTitle>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] text-left text-sm">
+            <thead className="text-xs text-ink-mute">
+              <tr>
+                <th className="pb-2 font-medium">{L("Behind the scenes", "पर्दे के पीछे")}</th>
+                <th className="pb-2 font-medium">{L("Teacher", "शिक्षक")}</th>
+                <th className="pb-2 font-medium">{L("Student / parent", "विद्यार्थी / अभिभावक")}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line">
+              <tr><td className="py-2">{L("Ability score (θ) and its error", "क्षमता अंक (θ) और उसकी त्रुटि")}</td><td className="py-2">{L("Bands plus a likely-range bar", "बैंड और संभावित सीमा की पट्टी")}</td><td className="py-2">{L("Building / Steady / Strong, and “right lately” %", "सीख रहे हैं / स्थिर / मज़बूत, और “हाल में सही” %")}</td></tr>
+              <tr><td className="py-2">{L("Dropout model weights", "ड्रॉपआउट मॉडल के भार")}</td><td className="py-2">{L("Plain reasons and a supportive action", "सरल कारण और सहायक कदम")}</td><td className="py-2">{L("Never shown; a counsellor invitation instead", "कभी नहीं दिखता; इसके बजाय काउंसलर का निमंत्रण")}</td></tr>
+              <tr><td className="py-2">{L("Percentile band and mapping table", "पर्सेंटाइल सीमा और मैपिंग तालिका")}</td><td className="py-2">{L("Range with assumption tag", "अनुमान टैग सहित सीमा")}</td><td className="py-2">{L("Range with “how to read it”", "“कैसे पढ़ें” सहित सीमा")}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      <Card>
         <CardTitle>{L("Well-being rules", "विद्यार्थी-हित के नियम")}</CardTitle>
         <ul className="list-disc space-y-1 pl-5 text-sm text-ink-soft">
           {RULES.map((r, i) => (

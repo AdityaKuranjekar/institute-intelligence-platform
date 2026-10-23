@@ -7,6 +7,7 @@ import { EChart } from "@/components/echart";
 import { PersonPicker } from "@/components/person-picker";
 import { Badge, Card, CardTitle, Note, Origin, PageHead, PageSkeleton, Unavailable } from "@/components/ui";
 import { useApp, useData } from "@/lib/app-context";
+import { BAND_LABEL, BAND_TONE, bandOf, trendWord } from "@/lib/bands";
 import { subjectLabel, useStudents } from "@/lib/names";
 
 function Sparkline({ values }: { values: number[] }) {
@@ -16,7 +17,7 @@ function Sparkline({ values }: { values: number[] }) {
   const pts = values.map((v, i) => `${(i / (values.length - 1)) * w},${h - 4 - v * (h - 8)}`).join(" ");
   return (
     <svg viewBox={`0 0 ${w} ${h}`} className="h-9 w-full" aria-hidden>
-      <polyline points={pts} fill="none" stroke="#1f6feb" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+      <polyline points={pts} fill="none" stroke="#1e4a8a" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
@@ -75,10 +76,14 @@ export default function StudentPage({ params }: { params: { id: string } }) {
           <Card key={m.subject} className="p-4">
             <p className="font-medium text-ink">{subjectLabel(m.subject, L)}</p>
             <Sparkline values={m.trend} />
-            <p className="text-[11px] text-ink-mute">{L("Share correct over time", "समय के साथ सही उत्तरों का अनुपात")}</p>
-            <p className="mt-1 text-xs text-ink-soft">
-              {L("Ability (θ)", "क्षमता (θ)")}: <span className="font-medium tabular-nums">{m.theta.toFixed(2)}</span>
-            </p>
+            <div className="mt-1 flex items-center justify-between gap-2">
+              <Badge tone={BAND_TONE[bandOf(m.theta)]}>{L(...BAND_LABEL[bandOf(m.theta)])}</Badge>
+              <span className="text-xs text-ink-soft">
+                {m.trend.length ? `${Math.round(m.trend[m.trend.length - 1] * 100)}% ${L("right lately", "हाल में सही")}` : ""}{" "}
+                {{ up: "↗", flat: "→", down: "↘" }[trendWord(m.trend)]}
+              </span>
+            </div>
+            <p className="mt-1 text-[11px] text-ink-mute">{L("Answers you got right, over time", "समय के साथ आपके सही उत्तर")}</p>
           </Card>
         ))}
       </section>
@@ -115,7 +120,7 @@ export default function StudentPage({ params }: { params: { id: string } }) {
               <label className="flex cursor-pointer items-start gap-3 rounded-xl p-2 hover:bg-bg">
                 <input
                   type="checkbox"
-                  className="mt-1 h-4 w-4 accent-[#1f6feb]"
+                  className="mt-1 h-4 w-4 accent-[#1e4a8a]"
                   checked={checked.has(i)}
                   onChange={() =>
                     setChecked((c) => {
@@ -137,7 +142,6 @@ export default function StudentPage({ params }: { params: { id: string } }) {
       <Card>
         <CardTitle right={<Origin origin="model" />}>{L("Your recent scores", "आपके हाल के अंक")}</CardTitle>
         <EChart option={trend} height={200} label="Score trend" />
-        {s.trend_note && <p className="mt-1 text-[11px] text-ink-mute">{L("Sparklines show the share of correct answers in four time chunks; θ is the ability scale.", "स्पार्कलाइन चार समय-खंडों में सही उत्तरों का अनुपात दिखाती हैं; θ क्षमता का पैमाना है।")}</p>}
       </Card>
 
       <Card>
@@ -159,9 +163,12 @@ export default function StudentPage({ params }: { params: { id: string } }) {
               {L("Likely between", "संभावित सीमा")} <b className="tabular-nums">{pRange.low}</b> {L("and", "से")} <b className="tabular-nums">{pRange.high}</b>
               {lang === "hi" ? " के बीच" : ""}
             </p>
-            <p className="mt-1 text-xs text-ink-soft">
-              {L("This is a range, not a promise. It depends on an editable mapping table that is an assumption until real exam outcomes are known.", "यह एक सीमा है, वादा नहीं। यह एक संपादन-योग्य मैपिंग तालिका पर निर्भर है, जो असली परीक्षा नतीजों तक अनुमान है।")}
-            </p>
+            <div className="mt-3">
+              <Note tone="amber">
+                <b>{L("How to read it:", "कैसे पढ़ें:")}</b>{" "}
+                {L("a likely range from our practice tests, mapped to the exam scale with an editable assumption table. It is not a promise or a rank. It narrows as you take more tests.", "हमारे अभ्यास टेस्ट से संभावित सीमा, जिसे संपादन-योग्य अनुमान तालिका से परीक्षा पैमाने पर रखा गया है। यह वादा या रैंक नहीं है। अधिक टेस्ट देने पर यह सँकरी होती है।")}
+              </Note>
+            </div>
           </>
         ) : (
           <p className="text-sm text-ink-soft">{L("Not enough data yet", "अभी पर्याप्त डेटा नहीं")}</p>

@@ -9,7 +9,7 @@ const config: Config = {
         card: "#ffffff",
         ink: { DEFAULT: "#17233b", soft: "#4a5876", mute: "#7886a3" },
         line: "#e3e8f1",
-        brand: { DEFAULT: "#1f6feb", soft: "#e8f0ff", dark: "#1650b0" },
+        brand: { DEFAULT: "#1e4a8a", soft: "#e6eef9", dark: "#173a6e" },
         teal: { DEFAULT: "#0e9f8e", soft: "#e2f6f3" },
         amber: { DEFAULT: "#d98a0b", soft: "#fff3dc" },
         calm: { DEFAULT: "#5b6fb3", soft: "#eceffa" },

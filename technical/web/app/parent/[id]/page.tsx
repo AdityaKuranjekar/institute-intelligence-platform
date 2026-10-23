@@ -79,6 +79,9 @@ export default function ParentPage({ params }: { params: { id: string } }) {
                       <span className="font-medium">Report_{ms.month}_{child}.pdf</span>
                     </div>
                   )}
+                  {Boolean((m as Record<string, unknown>).verified) && m.type === "monthly_report" && (
+                    <p className="mt-2 rounded-lg bg-teal-soft px-2 py-1 text-[11px] text-[#0a7467]">✓ {L("Every number checked against the data", "हर संख्या डेटा से मिलाई गई")}</p>
+                  )}
                   <div className="mt-1 flex items-center justify-end gap-1 text-[10px] text-ink-mute">
                     {timeOf(m.sent_at)} <Ticks status={m.status} />
                   </div>
