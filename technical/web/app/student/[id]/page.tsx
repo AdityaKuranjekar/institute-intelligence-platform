@@ -50,6 +50,25 @@ export default function StudentPage({ params }: { params: { id: string } }) {
     series: [{ type: "line", smooth: true, data: s.score_trend.map((x) => x.marks), areaStyle: { opacity: 0.08 }, symbolSize: 8 }],
   };
 
+  const fan = (r: { low: number; mid: number; high: number }): EChartsOption => {
+    const N = 5;
+    const ks = Array.from({ length: N }, (_, i) => i + 1);
+    const w = (k: number) => Math.sqrt(N / k); // widest at test 1, real range at test N
+    const low = ks.map((k) => Math.max(0, r.mid - (r.mid - r.low) * w(k)));
+    const high = ks.map((k) => Math.min(100, r.mid + (r.high - r.mid) * w(k)));
+    return {
+      grid: { left: 8, right: 16, top: 16, bottom: 28, containLabel: true },
+      tooltip: { trigger: "axis", formatter: (p: unknown) => { const i = (p as { dataIndex: number }[])[0].dataIndex; return `${L("After test", "टेस्ट के बाद")} ${ks[i]}: ${low[i].toFixed(0)}–${high[i].toFixed(0)}`; } },
+      xAxis: { type: "category", boundaryGap: false, data: ks.map((k) => `${L("Test", "टेस्ट")} ${k}`) },
+      yAxis: { type: "value", min: 0, max: 100 },
+      series: [
+        { type: "line", data: low, stack: "fan", symbol: "none", lineStyle: { opacity: 0 } },
+        { type: "line", data: high.map((h, i) => h - low[i]), stack: "fan", symbol: "none", lineStyle: { opacity: 0 }, areaStyle: { color: "#1e4a8a", opacity: 0.2 } },
+        { type: "line", data: ks.map(() => r.mid), symbolSize: 9, lineStyle: { width: 3 }, itemStyle: { color: "#1e4a8a" } },
+      ],
+    };
+  };
+
   return (
     <div className="mx-auto max-w-3xl space-y-5">
       <PageHead title={L(`Hi ${s.display_name}`, `नमस्ते ${s.display_name}`)} right={<PersonPicker base="student" id={s.student_id} />} />
@@ -148,17 +167,10 @@ export default function StudentPage({ params }: { params: { id: string } }) {
         <CardTitle right={<Origin origin="assumption" />}>{L("Predicted percentile range", "अनुमानित पर्सेंटाइल सीमा")}</CardTitle>
         {pRange ? (
           <>
-            <div className="relative mt-6 h-3 rounded-full bg-[#e9edf4]">
-              <div
-                className="absolute h-3 rounded-full bg-brand/40"
-                style={{ left: `${pRange.low}%`, width: `${Math.max(1, pRange.high - pRange.low)}%` }}
-              />
-              <div className="absolute -top-1 h-5 w-1.5 rounded bg-brand" style={{ left: `${pRange.mid}%` }} />
-            </div>
-            <div className="mt-2 flex justify-between text-[11px] text-ink-mute">
-              <span>0</span>
-              <span>100</span>
-            </div>
+            <EChart option={fan(pRange)} height={240} label="Predicted percentile range over time" />
+            <p className="text-[11px] text-ink-mute">
+              {L("Only the last point is today's real range; earlier points illustrate how the range narrows as tests add up.", "केवल आख़िरी बिंदु आज की असली सीमा है; पहले के बिंदु दिखाते हैं कि टेस्ट बढ़ने पर सीमा कैसे सँकरी होती है।")}
+            </p>
             <p className="mt-2 text-sm text-ink">
               {L("Likely between", "संभावित सीमा")} <b className="tabular-nums">{pRange.low}</b> {L("and", "से")} <b className="tabular-nums">{pRange.high}</b>
               {lang === "hi" ? " के बीच" : ""}
