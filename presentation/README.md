@@ -12,7 +12,7 @@ presentation/
   VERSIONS.md  what changed in each version and why
 ```
 
-**Use CURRENT (v4)** (`decks/AlphaQ_CaseB_Round1_CURRENT_v4.pptx`). Older versions are kept so progress can be tracked and any idea reused. Details in `VERSIONS.md`.
+**Use CURRENT (v5)** (`decks/AlphaQ_CaseB_Round1_CURRENT_v5.pptx`). Older versions are kept so progress can be tracked and any idea reused. Details in `VERSIONS.md`.
 
 ## Rebuild
 ```

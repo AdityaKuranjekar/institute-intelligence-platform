@@ -5,7 +5,7 @@
 | earlier 1 (v1) | `decks/AlphaQ_CaseB_Round1_earlier-1_v1.pptx` | 25 | Dense consulting layout, blue theme, bottom tab bar, boxed panels | v1.0 (**out of date**) | First complete deck. Kept as the reference for density and evidence slides |
 | earlier 2 (v2) | `decks/AlphaQ_CaseB_Round1_earlier-2_v2.pptx` | 21 | Spacious, plain English, one core graphic per slide, top breadcrumb | **v1.1** | New diagrams: Pragati loop, friction matrix, layered architecture, intervention journey, compliance matrix with locks, lockbox, gauge, cost stack, Gantt, hub-and-spoke, risk matrix. Judged too spacious |
 | earlier 3 (v3) | `decks/AlphaQ_CaseB_Round1_earlier-3_v3.pptx` | 22 | v1 density plus v2 diagrams, top breadcrumb, sticky-note touches | **v1.1** | Hybrid of v1 and v2; hand-made feel |
-| **CURRENT (v4)** | `decks/AlphaQ_CaseB_Round1_CURRENT_v4.pptx` | 22 | v3 plus whiteboard and product-manager layer: three canvases (dots, soft dots, plain), sticky notes, hand-drawn arrows, underlines, name-tag cursors, PM framing | **v1.1** | **Current.** One emphasis per slide; psychology-led design intent in speaker notes (`docs/PRESENTER_NOTES_v4.md`) |
+| earlier-4 (v4) | `decks/AlphaQ_CaseB_Round1_earlier-4_v4.pptx` | 22 | v3 plus whiteboard and product-manager layer: three canvases (dots, soft dots, plain), sticky notes, hand-drawn arrows, underlines, name-tag cursors, PM framing | **v1.1** | **Current.** One emphasis per slide; psychology-led design intent in speaker notes (`docs/PRESENTER_NOTES_v4.md`) |
 
 Lineage: v1 is built from `source/build/deck_v4_blue.js` (frozen base) and `parts/v5`; v2 from `parts/v2`; v3 from `parts/v3`; v4 is v3 with overlays added by `assemble_v4.py`. One-off migration scripts are in `source/build/legacy/`.
 
@@ -30,3 +30,7 @@ Real PowerPoint rendering (exported through PowerPoint itself, which the PIL pre
 
 ### Combined v5 (23 Oct 2026)
 `decks/AlphaQ_CaseB_Round1_COMBINED_v5.pptx` (23 slides): A's title, architecture, product, ranges and validation slides; B for the rest; flat finance icons on the business KPI cards. Polish step in `source/build/merge_decks.py`: slide-6 callout markers moved off the phone text; slide-13 risk-matrix quadrant labels (act now / plan the fix / watch / accept) and evidence tags on the scorecard (public data / code / next / not yet). Rebuild: `python merge_decks.py`.
+
+
+## CURRENT = v5 (24 Oct 2026)
+`decks/AlphaQ_CaseB_Round1_CURRENT_v5.pptx` (23 slides) is the combined deck: title, architecture, product, honest ranges and validation slides from candidate A (v2.2); executive summary, problem, stress test, weak topics, early warning, privacy, business model, go-to-market and all other appendix slides from candidate B (v4.2), with finance icons on the unit-economics cards. Built by `source/build/merge_decks.py`. A copy for submission is in `submission/round1/`. `COMBINED_v5.pptx` is a duplicate of it that was locked by PowerPoint; delete it.

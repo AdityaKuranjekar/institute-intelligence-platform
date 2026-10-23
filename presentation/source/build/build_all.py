@@ -8,7 +8,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DECKS = HERE.parent.parent / "decks"
 PREV = HERE.parent.parent / "previews"
-NAMES = {"v1": "earlier-1_v1", "v2": "earlier-2_v2", "v3": "earlier-3_v3", "v4": "CURRENT_v4", "v2.2": "candidate-A_v2.2", "v4.2": "candidate-B_v4.2"}
+NAMES = {"v1": "earlier-1_v1", "v2": "earlier-2_v2", "v3": "earlier-3_v3", "v4": "earlier-4_v4", "v2.2": "candidate-A_v2.2", "v4.2": "candidate-B_v4.2"}
 STEPS = {"v1": ("assemble_v5.py", "deck.js"), "v2": ("assemble_v2.py", "deck_v2.js"), "v3": ("assemble_v3.py", "deck_v3.js"), "v4": ("assemble_v4.py", "deck_v4.js"), "v2.2": ("assemble_v2.py", "deck_v22.js"), "v4.2": ("assemble_v4.py", "deck_v4r.js")}
 
 

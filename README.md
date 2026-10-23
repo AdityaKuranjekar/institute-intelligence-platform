@@ -29,7 +29,7 @@ cd financial/model && python verify_model.py --all           # recalculate the w
 ```
 
 ## Tracking progress
-- **Decks:** `presentation/VERSIONS.md` lists every version, what changed and why. Open `presentation/decks/AlphaQ_CaseB_Round1_CURRENT_v4.pptx`; earlier decks sit beside it (earlier-1, earlier-2, earlier-3).
+- **Decks:** `presentation/VERSIONS.md` lists every version, what changed and why. Open `presentation/decks/AlphaQ_CaseB_Round1_CURRENT_v5.pptx`; earlier decks sit beside it (earlier-1, earlier-2, earlier-3).
 - **Finance:** `financial/VERSIONS.md` (v1.0 and CURRENT v1.1), `financial/docs/MODEL_AUDIT.md` and `DECK_NUMBER_UPDATES.md` record each change to the numbers.
 - **Technical:** `technical/docs/agent_logs/` and `contract_change_requests.md` record what each agent did and every contract change.
 - **Git history** is the audit trail; commit per version.

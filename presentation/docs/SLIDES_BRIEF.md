@@ -3,7 +3,7 @@
 Last updated 2026-10-22. **Purpose:** one file you can hand to a person or an AI to build the deck without reading the whole repo. Every number says where it comes from and how much to trust it. Numbers marked PENDING must not appear on a slide until the named file exists.
 
 ## The deck exists (2026-10-22)
-`presentation/decks/AlphaQ_CaseB_Round1_CURRENT_v4.pptx` (19 slides, editable PowerPoint) with PNG previews in `presentation/previews/v4/`. Amber PENDING tags mark numbers that wait for model results; replace them before submission (see `presentation/README.md`).
+`presentation/decks/AlphaQ_CaseB_Round1_CURRENT_v5.pptx` (19 slides, editable PowerPoint) with PNG previews in `presentation/previews/v4/`. Amber PENDING tags mark numbers that wait for model results; replace them before submission (see `presentation/README.md`).
 
 ## Decisions and where the design lives (2026-10-22)
 | Decision | Value |
