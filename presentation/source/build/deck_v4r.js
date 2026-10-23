@@ -706,7 +706,9 @@ async function main() {
       const x = L + i * (kw + 0.1);
       rect(s, x, 1.22, kw, 1.0, i === 3 ? T.teal : T.tealDark);
       text(s, k[0], { x: x + 0.1, y: 1.24, w: 1.5, h: 0.62, fontSize: 30, bold: true, color: T.white, valign: "middle" });
-      text(s, k[1], { x: x + 1.6, y: 1.28, w: kw - 1.65, h: 0.55, fontSize: 11, bold: true, color: "C9DBF0", valign: "middle" });
+      text(s, k[1], { x: x + 1.6, y: 1.28, w: kw - 2.2, h: 0.55, fontSize: 11, bold: true, color: "C9DBF0", valign: "middle" });
+      s.addShape("ellipse", { x: x + kw - 0.58, y: 1.3, w: 0.5, h: 0.5, fill: { color: "F4F8FD" }, line: { type: "none" } });
+      pic(s, "flat/" + ["sales-performance", "overtime", "bullish", "donate"][i] + ".png", x + kw - 0.52, 1.36, 0.38, 0.38, "Icon");
       text(s, k[2], { x: x + 0.1, y: 1.86, w: kw - 0.2, h: 0.3, fontSize: 8.5, color: T.white });
     });
     frame(s, L, 2.35, 3.85, 4.0, "KEY ASSUMPTIONS (MID, BASE)");

@@ -68,6 +68,11 @@ def patch_chrome(js, kind="v2"):
         new = (old.replace('w: kw - 2.15', 'w: kw - 2.95') + chr(10) + '      s.addShape("ellipse", { x: x + kw - 0.85, y: 1.42, w: 0.7, h: 0.7, fill: { color: "F4F8FD" }, line: { type: "none" } });' + chr(10)
                + '      pic(s, "flat/" + ["sales-performance", "overtime", "bullish"][i] + ".png", x + kw - 0.77, 1.5, 0.54, 0.54, "Icon");')
         js = js.replace(old, new)
+    if kind != "v2":
+        old = 'text(s, k[1], { x: x + 1.6, y: 1.28, w: kw - 1.65, h: 0.55, fontSize: 11, bold: true, color: "C9DBF0", valign: "middle" });'
+        new = (old.replace('w: kw - 1.65', 'w: kw - 2.2') + chr(10) + '      s.addShape("ellipse", { x: x + kw - 0.58, y: 1.3, w: 0.5, h: 0.5, fill: { color: "F4F8FD" }, line: { type: "none" } });' + chr(10)
+               + '      pic(s, "flat/" + ["sales-performance", "overtime", "bullish", "donate"][i] + ".png", x + kw - 0.52, 1.36, 0.38, 0.38, "Icon");')
+        js = js.replace(old, new)
     js = js.replace("kit.srcY = 7.1; kit.srcH = 0.28;", "kit.srcY = 7.02; kit.srcH = 0.22;")
     js = js.replace("const foot = (s, t) => text(s, t, { x: L, y: 7.1, w: 11.6, h: 0.28,", "const foot = (s, t) => text(s, t, { x: L, y: 7.02, w: 12.4, h: 0.22,")
     return js
