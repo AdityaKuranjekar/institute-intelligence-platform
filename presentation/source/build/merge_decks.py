@@ -61,5 +61,42 @@ for e in order:
 dropped = [base_ids[i - 1] for i in DROP_FROM_B]
 for e in dropped:
     B.part.drop_rel(e.rId)
+def polish(prs):
+    """Small post-merge improvements: callout markers off the phone text (slide 6), quadrant labels and evidence tags (slide 13)."""
+    from pptx.util import Emu, Pt
+    from pptx.dml.color import RGBColor
+    from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+    u = 9144
+
+    def find(slide, text):
+        return next(sh for sh in slide.shapes if sh.has_text_frame and sh.text_frame.text.strip() == text)
+
+    def mover(slide, shape_idx, x, y):
+        for sh in list(slide.shapes)[shape_idx:shape_idx + 2]:
+            sh.left, sh.top = Emu(x * u), Emu(y * u)
+
+    def label(slide, x, y, w, h, text, size=9, color="5B6B82", bold=True, align=PP_ALIGN.LEFT):
+        tb = slide.shapes.add_textbox(Emu(x * u), Emu(y * u), Emu(w * u), Emu(h * u))
+        tf = tb.text_frame
+        tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+        tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        p = tf.paragraphs[0]
+        p.alignment = align
+        r = p.add_run()
+        r.text = text
+        r.font.size, r.font.bold = Pt(size), bold
+        r.font.color.rgb = RGBColor.from_string(color)
+        return tb
+
+    s6 = prs.slides[5]
+    mover(s6, 32, 1056, 128)   # marker 3 on phone 2 status bar
+    mover(s6, 34, 1248, 128)   # marker 4 on phone 3 status bar
+    s13 = prs.slides[12]
+    for text, x, y in [("ACT NOW", 711, 176), ("PLAN THE FIX", 526, 176), ("WATCH", 711, 348), ("ACCEPT", 526, 348)]:
+        label(s13, x - (0 if x < 700 else 0), y, 80, 16, text, size=9, color="8A6D2B" if text != "ACT NOW" else "B03A2E")
+    for y, tag in [(168, "PUBLIC DATA"), (228, "PUBLIC DATA"), (288, "PUBLIC DATA"), (348, "CODE"), (408, "NEXT"), (468, "NOT YET")]:
+        label(s13, 385, y + 4, 84, 14, tag, size=8, align=PP_ALIGN.RIGHT)
+
+polish(B)
 B.save(str(OUT))
 print("saved", OUT, len(B.slides._sldIdLst), "slides")

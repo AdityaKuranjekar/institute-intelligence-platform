@@ -27,3 +27,6 @@ Both candidates show a flat-colour icon (Icons8 "Flat Color Icons", CC BY 3.0, f
 
 ### Fix and financial icons (23 Oct 2026)
 Real PowerPoint rendering (exported through PowerPoint itself, which the PIL preview checker cannot do) showed titles centred and "PRAGATI" clipped on the title slide in the v4 family. Fixed in v2.2 and v4.2 by left-aligning the title placeholders. v2.2 also has finance icons on the three unit-economics KPI cards. Always check a deck with a real PowerPoint export before sending.
+
+### Combined v5 (23 Oct 2026)
+`decks/AlphaQ_CaseB_Round1_COMBINED_v5.pptx` (23 slides): A's title, architecture, product, ranges and validation slides; B for the rest; flat finance icons on the business KPI cards. Polish step in `source/build/merge_decks.py`: slide-6 callout markers moved off the phone text; slide-13 risk-matrix quadrant labels (act now / plan the fix / watch / accept) and evidence tags on the scorecard (public data / code / next / not yet). Rebuild: `python merge_decks.py`.
