@@ -8,6 +8,8 @@ export type Lang = "en" | "hi";
 type Ctx = {
   lang: Lang;
   setLang: (l: Lang) => void;
+  /** set language without remembering it (used for per-person defaults) */
+  softLang: (l: Lang) => void;
   langTouched: boolean;
   institute: string;
   setInstitute: (i: string) => void;
@@ -51,9 +53,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = lang;
   }, [lang]);
 
+  const softLang = useCallback((l: Lang) => setLangState(l), []);
   const value = useMemo<Ctx>(
-    () => ({ lang, setLang, langTouched, institute, setInstitute, L: (en, hi) => (lang === "hi" ? hi : en) }),
-    [lang, setLang, langTouched, institute, setInstitute]
+    () => ({ lang, setLang, softLang, langTouched, institute, setInstitute, L: (en, hi) => (lang === "hi" ? hi : en) }),
+    [lang, setLang, softLang, langTouched, institute, setInstitute]
   );
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>;
 }
