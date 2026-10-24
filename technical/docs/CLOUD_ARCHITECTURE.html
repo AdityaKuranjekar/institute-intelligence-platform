@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pragati Cloud Architecture</title>
+<style>
+:root{
+  --navy:#0B2545; --ink:#1B2A41; --teal:#0A6F71; --teal-on-dark:#19B5B7; --tint:#E3F2F2;
+  --line:#C9D3DF; --muted:#5B6B7F; --amber:#F2A900; --green:#1B7F4F; --bg:#FFFFFF; --card:#F4F7FA;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Calibri,"Segoe UI",system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 64px}
+header{background:var(--navy);color:#fff;padding:36px 0 28px;margin-bottom:28px}
+header .wrap{padding-bottom:0}
+h1{font:700 34px/1.15 Cambria,Georgia,serif;margin:6px 0 10px}
+h2{font:700 24px/1.2 Cambria,Georgia,serif;color:var(--navy);margin:44px 0 12px}
+h3{font-size:16px;color:var(--navy);margin:0 0 6px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-on-dark);font-weight:700}
+.lede{max-width:820px;color:#D6E2F0;margin:0}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;padding:2px 9px;border-radius:99px;border:1px solid var(--teal);color:var(--teal);background:#fff;vertical-align:middle}
+.tag.amber{background:var(--amber);border-color:var(--amber);color:var(--navy)}
+.tag.built{background:var(--teal);color:#fff}
+.stages{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 10px}
+.stages button{font:inherit;font-weight:700;color:var(--navy);background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer;text-align:left;min-width:200px;flex:1 1 200px}
+.stages button small{display:block;font-weight:400;color:var(--muted)}
+.stages button[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.stages button[aria-pressed=true] small{color:#BFD0E3}
+.stages button:focus-visible{outline:3px solid var(--teal-on-dark);outline-offset:2px}
+.diagram{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}
+svg{display:block;width:100%;height:auto}
+.node rect{fill:#fff;stroke:var(--navy);stroke-width:1.5;rx:9;transition:opacity .25s}
+.node text{fill:var(--navy);font:700 13px Calibri,"Segoe UI",sans-serif;text-anchor:middle}
+.node text.sub{font-weight:400;font-size:11px;fill:var(--muted)}
+.node.off{opacity:.18}
+.node.new rect{stroke:var(--teal);stroke-width:2.5;fill:var(--tint)}
+.lane-label{font:700 11px Calibri,"Segoe UI",sans-serif;fill:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.lane-bg{fill:#fff;stroke:var(--line)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:10px 4px 0}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px;border:1.5px solid var(--navy);background:#fff}
+.legend i.n{border-color:var(--teal);background:var(--tint);border-width:2.5px}
+.legend i.o{opacity:.25}
+.panel{background:#fff;border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:10px;padding:16px 18px;margin-top:14px}
+.panel ul{margin:6px 0 0;padding-left:20px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--card);border-radius:12px;padding:16px 18px}
+.card p{margin:0}
+ol.flow{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:8px}
+ol.flow li{counter-increment:s;background:var(--card);border-radius:10px;padding:10px 14px 10px 52px;position:relative}
+ol.flow li:before{content:counter(s);position:absolute;left:12px;top:9px;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th{background:var(--navy);color:#fff;text-align:left;padding:9px 12px;font-weight:700}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:var(--card)}
+td:first-child{font-weight:700;color:var(--navy)}
+.warn{border-left-color:var(--amber);background:#FFF9E8}
+.scroll{overflow-x:auto}
+footer{color:var(--muted);font-size:13px;margin-top:40px;border-top:1px solid var(--line);padding-top:14px}
+@media (max-width:640px){h1{font-size:26px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Pragati · Team AlphaQ · Technical appendix</div>
+    <h1>If Pragati runs in the cloud: four stages from one laptop to microservices</h1>
+    <p class="lede">Today the product is built to run on one local machine (Stage 0). This page shows how the same system grows into a hosted, multi-institute platform. <span class="tag built">STAGE 0 BUILT</span> <span class="tag amber">STAGES 1–3 DESIGNED, NOT BUILT</span></p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<h2 style="margin-top:0">1. Pick a stage</h2>
+<p>Click a stage. Boxes that exist at that stage turn solid; boxes that are new in that stage are teal.</p>
+<div class="stages" role="group" aria-label="Deployment stage">
+  <button data-stage="0" aria-pressed="true">Stage 0 · Local<small>One machine at the institute</small></button>
+  <button data-stage="1" aria-pressed="false">Stage 1 · Hosted single node<small>One India-region server per institute</small></button>
+  <button data-stage="2" aria-pressed="false">Stage 2 · Shared platform<small>Managed containers, many institutes</small></button>
+  <button data-stage="3" aria-pressed="false">Stage 3 · Microservices<small>Autoscaling, GPU pool, big-tenant silos</small></button>
+</div>
+
+<div class="diagram"><svg id="map" viewBox="0 0 1100 700" role="img" aria-label="Layered architecture diagram"></svg></div>
+<div class="legend"><span><i></i>exists at this stage</span><span><i class="n"></i>new at this stage</span><span><i class="o"></i>not yet</span></div>
+
+<div class="panel" id="stage-panel"></div>
+
+<h2>2. A test photo's journey (Stage 2 view)</h2>
+<ol class="flow">
+  <li><b>Phone uploads the OMR photo</b> over HTTPS. The gateway checks the login, the institute and the role.</li>
+  <li><b>Consent gate</b> checks that each student in the batch has valid consent for this purpose. No consent, no processing.</li>
+  <li>The photo goes to <b>object storage</b> (encrypted). A job goes on the <b>queue</b>, so the app stays fast when many institutes upload after the same exam weekend.</li>
+  <li>An <b>OMR worker</b> reads the bubbles with OpenCV. Unclear bubbles come back to the teacher for a one-tap fix.</li>
+  <li>The <b>mastery service</b> updates question difficulty and each student's topic mastery, and writes snapshots to Postgres (row-level security on every row).</li>
+  <li>The <b>risk service</b> routes by age and purpose: a model for academic support; plain rules for dropout and fees under 18. It writes the weekly list with reasons.</li>
+  <li>The <b>report service</b> drafts the parent message from a numbers file, the <b>verifier</b> runs eight checks, and a human-written template is used if any check fails.</li>
+  <li>The <b>notifier</b> sends it by WhatsApp. The photo is deleted after 7 days. The <b>audit log</b> records who saw what.</li>
+</ol>
+
+<h2>3. What changes at each stage</h2>
+<div class="scroll"><table>
+  <thead><tr><th></th><th>Stage 0 · Local</th><th>Stage 1 · Hosted node</th><th>Stage 2 · Shared platform</th><th>Stage 3 · Microservices</th></tr></thead>
+  <tbody>
+    <tr><td>Who runs it</td><td>The institute</td><td>We run it, one server per institute</td><td>We run it, many institutes share it</td><td>We run it with a platform engineer</td></tr>
+    <tr><td>Services</td><td>Modules inside one API</td><td>Same single app in containers</td><td>API and workers split; queue added</td><td>Each service deploys and scales alone</td></tr>
+    <tr><td>Database</td><td>Local Postgres</td><td>Postgres on the node, nightly backup</td><td>Managed Postgres, point-in-time recovery, row-level security</td><td>Same, plus a separate database for large tenants</td></tr>
+    <tr><td>AI model</td><td>Local Ollama, or templates</td><td>Small CPU model, or templates</td><td>Shared inference service</td><td>GPU pool, scale to zero when idle</td></tr>
+    <tr><td>Parent access</td><td>Weak (needs the office machine online)</td><td>Good</td><td>Good</td><td>Good</td></tr>
+    <tr><td>Fails if…</td><td>The machine breaks or has no backup</td><td>The node fails (restore from backup)</td><td>One bad tenant can slow others (needs limits)</td><td>Complexity: more to monitor and pay for</td></tr>
+    <tr><td>Move up when…</td><td>Owner wants parent access or has no IT help</td><td>Many institutes, uploads spike after exams</td><td>OMR or AI load blocks the API; a tenant needs its own isolation</td><td>(end state)</td></tr>
+  </tbody>
+</table></div>
+
+<h2>4. Design rules that stay the same at every stage</h2>
+<div class="grid">
+  <div class="card"><h3>Tenant isolation</h3><p>Every table has an institute id, and Postgres row-level security enforces it. Tested on PostgreSQL 16: another institute sees 0 rows.</p></div>
+  <div class="card"><h3>Privacy routing</h3><p>The same age- and purpose-aware router runs everywhere. Under 18: model for academic support only; plain rules for dropout and fees; no activity tracking.</p></div>
+  <div class="card"><h3>Safe reports</h3><p>Numbers come only from a numbers file. A verifier checks every number. A template is the fallback, so a report never depends on the AI model.</p></div>
+  <div class="card"><h3>Shared data is minimal</h3><p>Between institutes, only question difficulty numbers are shared. Never names, marks or risk lists.</p></div>
+  <div class="card"><h3>Same API contract</h3><p>The web app and phone app use the same OpenAPI contract at every stage, so moving up does not change the screens.</p></div>
+  <div class="card"><h3>Open export</h3><p>CSV and API export at every stage, so the institute can leave with its data.</p></div>
+</div>
+
+<h2>5. Honest limits of the cloud option</h2>
+<div class="panel warn">
+  <h3>The cloud changes the privacy story <span class="tag amber">READ THIS</span></h3>
+  <ul>
+    <li><b>Slide 10 promises that raw data never leaves the institute.</b> That is true only at Stage 0. From Stage 1 up, the data sits on our servers, so the promise becomes "isolated per institute, hosted in India, encrypted, deleted on request".</li>
+    <li>We stay the <b>data processor</b>. The institute stays the <b>data fiduciary</b>. A written data-processing agreement between us is needed before any hosted pilot.</li>
+    <li>Host in an <b>India region</b>. Keep audit logs for a year. Delete OMR photos after 7 days. Have a breach-notice process.</li>
+    <li>Cost: hosting adds cost beyond the ₹3.6 per student in the financial model. We have <b>not priced</b> the stages yet, so do not quote a cloud cost until the finance model is updated.</li>
+    <li>Nothing from Stage 1 up is built or load-tested. Treat this page as a design, not a result.</li>
+    <li>A hosted model needs a lawyer's view on consent for minors, as with Stage 0.</li>
+  </ul>
+</div>
+
+<footer>Source: technical/docs/TECH_PLAN.md §6 (architecture and "Production (slide only)" note); contracts (31 tables, 23 endpoints); DPDP Act 2023 s.9, Rules 2025. Not legal advice. Diagram is illustrative.</footer>
+</main>
+
+<script>
+(function(){
+  // [id, label, sub, firstStage]
+  var lanes = [
+    {t:"Clients", n:[["web","Web console","Next.js",0],["pwa","Phone app","installable web app",0],["wa","Parent report","WhatsApp + PDF",1]]},
+    {t:"Edge", n:[["cdn","CDN + firewall","static files, attack filter",2],["gw","API gateway","login, tenant, rate limit",2],["consent","Consent gate","no consent, no model",0]]},
+    {t:"Core services", n:[["ingest","Ingest","CSV / Excel mapper",0],["omr","OMR worker","OpenCV bubble reader",0],["mastery","Mastery","IRT difficulty + topics",0],["risk","Risk router","model + plain rules",0]]},
+    {t:"Output services", n:[["report","Report + verifier","8 checks, template fallback",0],["notify","Notifier","WhatsApp Cloud API",1],["sched","Scheduler","nightly recompute",0]]},
+    {t:"Messaging", n:[["queue","Job queue","uploads never block the app",2],["events","Event stream","service-to-service events",3]]},
+    {t:"Data", n:[["pg","Postgres + RLS","one DB, row-level security",0],["obj","Object storage","OMR photos, 7-day delete",1],["cache","Cache","fast reads",2],["bank","Shared item bank","difficulty numbers only",2],["silo","Own DB for big tenant","isolation on request",3]]},
+    {t:"Platform", n:[["llm","AI model service","Ollama → shared → GPU pool",0],["obs","Logs + metrics","alerts, tracing",1],["kms","Secrets + keys","per-tenant keys",2],["ci","Build + deploy","containers, canary releases",2],["k8s","Kubernetes","autoscale per service",3]]}
+  ];
+  var W=1100, LX=150, GAP=14, H=64, LG=18, PAD=10, y=10, NS="http://www.w3.org/2000/svg";
+  var svg=document.getElementById("map"), nodes=[];
+  function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e}
+  lanes.forEach(function(L){
+    el("rect",{x:4,y:y,width:W-8,height:H+2*PAD,rx:10,class:"lane-bg"});
+    var lt=el("text",{x:16,y:y+H/2+PAD+4,class:"lane-label"});lt.textContent=L.t;
+    var n=L.n.length, bw=(W-LX-16-GAP*(n-1))/n;
+    L.n.forEach(function(d,i){
+      var x=LX+i*(bw+GAP), g=el("g",{class:"node"});
+      el("rect",{x:x,y:y+PAD,width:bw,height:H},g);
+      var t1=el("text",{x:x+bw/2,y:y+PAD+27},g);t1.textContent=d[1];
+      var t2=el("text",{x:x+bw/2,y:y+PAD+46,class:"sub"},g);t2.textContent=d[2];
+      nodes.push({g:g,s:d[3]});
+    });
+    y+=H+2*PAD+LG;
+  });
+  svg.setAttribute("viewBox","0 0 "+W+" "+(y-LG+10));
+  var info=[
+    {h:"Stage 0 · Local (built)",l:["One laptop or small server at the institute, started with docker-compose or natively. It works with no internet.","All services are modules inside one FastAPI app. Postgres, row-level security and the consent gate are real and tested.","The AI model is optional. With no model, reports come from templates.","Weakness: one machine, so backups and remote help matter. Parents cannot easily reach it from outside."]},
+    {h:"Stage 1 · Hosted single node (designed)",l:["The same containers on one India-region server per institute (or one per few institutes). Nothing is rewritten.","New: encrypted nightly backups to object storage, WhatsApp sending, logs and alerts, and remote updates from us.","This fixes the 'laptop dies' and 'parents cannot reach it' problems at the lowest extra complexity.","Privacy note: data now lives on our server, so the 'never leaves the institute' claim changes."]},
+    {h:"Stage 2 · Shared platform (designed)",l:["Many institutes share one platform on managed containers. Postgres is managed, with point-in-time recovery.","New: CDN and firewall, API gateway, job queue, cache, per-tenant keys, and the shared item bank (difficulty numbers only).","The API and the workers split. OMR photo processing runs as queued jobs, so an exam-weekend upload spike does not slow the app.","Risk: tenants share capacity, so we need per-tenant rate limits."]},
+    {h:"Stage 3 · Microservices (designed)",l:["Each service (ingest, OMR, mastery, risk, report, notifier) deploys and scales on its own on Kubernetes.","New: event stream between services, a GPU pool for the AI model that scales to zero when idle, a separate database for large tenants, and canary releases for new model versions.","Only worth it at real scale and with someone to run it. For under about 200 institutes, Stage 2 is likely enough (our judgement, not measured).","Cost and complexity are the risk: more to monitor, secure and pay for."]}
+  ];
+  function show(s){
+    nodes.forEach(function(o){
+      o.g.setAttribute("class","node"+(o.s>s?" off":(o.s===s&&s>0?" new":"")));
+    });
+    document.querySelectorAll(".stages button").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.stage===s))});
+    var d=info[s];
+    document.getElementById("stage-panel").innerHTML="<h3>"+d.h+"</h3><ul>"+d.l.map(function(x){return"<li>"+x+"</li>"}).join("")+"</ul>";
+  }
+  document.querySelectorAll(".stages button").forEach(function(b){b.addEventListener("click",function(){show(+b.dataset.stage)})});
+  show(0);
+})();
+</script>
+</body>
+</html>
