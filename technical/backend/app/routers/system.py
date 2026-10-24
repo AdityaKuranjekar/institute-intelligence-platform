@@ -41,7 +41,8 @@ def version():
 
 
 class LoginIn(BaseModel):
-    institute: str  # slug (patna_jee) or institute uuid
+    institute: str | None = None  # slug (patna_jee) or institute uuid
+    institute_id: str | None = None  # front-end field name; same meaning
     role: str
     student_id: str | None = None  # for parent/student demo logins
 
@@ -57,6 +58,9 @@ def _me(p: deps.Principal, user: dict) -> dict:
 @router.post("/auth/login")
 def login(body: LoginIn):
     """Demo role switcher: no OTP. Resolves the tenant here with the admin connection, then issues a signed token."""
+    body.institute = body.institute or body.institute_id
+    if not body.institute:
+        raise HTTPException(422, "institute_id is required")
     if body.role not in deps.ROLES:
         raise HTTPException(422, f"role must be one of {deps.ROLES}")
     insts = deps.institutes_by_slug()
@@ -82,7 +86,9 @@ def login(body: LoginIn):
                 raise HTTPException(404, "student not found in this institute")
             sid = r["id"]
     p = deps.Principal(user_id=u["id"], institute_id=inst["id"], role=body.role, lang=u["lang"], student_id=sid)
-    return {"token": deps.make_token(p), "token_type": "bearer", "me": _me(p, u)}
+    tok, me = deps.make_token(p), _me(p, u)
+    return {"token": tok, "access_token": tok, "token_type": "bearer", "me": me,
+            "user": {"id": p.user_id, "role": p.role, "name": me["name"], "institute_id": deps.slug_of(p.institute_id), "student_id": sid}}
 
 
 def _phone_for(cur, user_id: str) -> str:

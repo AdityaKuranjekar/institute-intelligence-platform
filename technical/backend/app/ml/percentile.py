@@ -12,6 +12,7 @@ import lightgbm as lgb
 import pandas as pd
 
 from .. import config
+from . import risk as risk_mod
 
 PF = ["m3", "mall", "chap", "n"]
 
@@ -35,7 +36,7 @@ def features(tt: pd.DataFrame, asof: pd.Timestamp, strict: bool = False) -> pd.D
 
 @functools.lru_cache(maxsize=1)
 def _model() -> lgb.Booster:
-    return lgb.Booster(model_file=str(config.MODELS_DIR / "percentile_point.txt"))
+    return risk_mod.load_model_file(config.MODELS_DIR / "percentile_point.txt")
 
 
 @functools.lru_cache(maxsize=1)

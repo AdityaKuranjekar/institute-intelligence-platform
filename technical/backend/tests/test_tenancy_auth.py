@@ -133,12 +133,19 @@ def test_health_version_login_errors(client):
     assert client.post("/auth/login", json={"institute": "patna_jee"}).status_code == 422
 
 
-def test_mock_compatible_routes(client):
-    r = client.get("/api/v1/patna_jee/mastery")
+def test_mock_compatible_routes(client, teacher, login):
+    assert client.get("/api/v1/patna_jee/mastery").status_code == 401
+    r = client.get("/api/v1/patna_jee/mastery", headers=teacher)
     assert r.status_code == 200 and r.json()["schema"] == "mastery/1"
-    assert client.get("/api/v1/global/scaling").status_code == 200
-    assert client.get("/api/v1/..%2f..%2fsecrets/x").status_code in (400, 404)
-    assert client.get("/api/v1/patna_jee/nothing_here").status_code == 404
-    assert client.get("/api/v1/Bad-Name/mastery").status_code == 400
+    assert client.get("/api/v1/global/scaling", headers=teacher).status_code == 200
+    assert client.get("/api/v1/gaya_both/mastery", headers=teacher).status_code == 403
+    assert client.get("/api/v1/..%2f..%2fsecrets/x", headers=teacher).status_code in (400, 404)
+    assert client.get("/api/v1/patna_jee/nothing_here", headers=teacher).status_code == 404
+    assert client.get("/api/v1/Bad-Name/mastery", headers=teacher).status_code == 400
     ref = json.load(open(__import__("app.config", fromlist=["x"]).ARTIFACTS / "patna_jee" / "risk.json", encoding="utf-8"))
-    assert client.get("/api/v1/patna_jee/risk").json()["capacity_per_week"] == ref["capacity_per_week"]
+    assert client.get("/api/v1/patna_jee/risk", headers=teacher).json()["capacity_per_week"] == ref["capacity_per_week"]
+    parent = login("patna_jee", "parent")
+    sid = client.get("/me", headers=parent).json()["student_id"]
+    body = client.get("/api/v1/patna_jee/student", headers=parent).json()
+    assert all(x["student_id"] == sid for x in body["students"])
+    assert all(x["student_id"] == sid for x in client.get("/api/v1/patna_jee/risk", headers=parent).json()["list"])

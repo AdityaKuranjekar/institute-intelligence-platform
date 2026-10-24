@@ -13,6 +13,7 @@ import psycopg2.extras
 
 from .. import config
 from . import analytics, ingest_parse as ip, scoring
+ref = ip.ref
 from .analytics import qdf
 
 CACHE_DIR = Path(config.PG_DATA_DIR).parent / ".ingest_cache"
@@ -97,10 +98,26 @@ def preview(conn, institute_id: str, user_id: str, kind: str, filename: str, dat
                           else "this exact file was already uploaded; returning the existing preview")
         return out
 
+    try:
+        itype, rows, errors, warnings, resolved, status, mapping = _analyze(conn, kind, filename, data, params)
+    except IngestError:
+        raise
+    job_id = str(uuid.uuid4())
+    payload = {"rows": rows, "resolved": resolved, "params": opts, "ingest_type": itype, "filename": filename, "kind": kind, "warnings": warnings}
+    _payload_path(job_id).write_text(json.dumps(payload, ensure_ascii=False, default=str), encoding="utf-8")
+    _payload_path(job_id).with_suffix(".bin").write_bytes(data)
+    db_type = ip.DB_TYPE.get(itype, itype)
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO ingest_jobs (id, institute_id, file_hash, type, status, mapping, errors, rows_ok, rows_failed) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                    (job_id, institute_id, file_hash, db_type, status, json.dumps(mapping), json.dumps(errors[:2000]), len(rows), len(errors)))
+    return _job_view(job_id, status, itype, filename, mapping, errors, warnings, rows, resolved, params, committed=False, kind=kind)
+
+
+def _analyze(conn, kind, filename, data, params):
     override = json.loads(params["mapping"]) if params.get("mapping") else None
     hint = float(params["max_marks"]) if params.get("max_marks") else None
     try:
-        parsed = ip.parse(data, filename, override, hint)
+        parsed = ip.parse(data, filename, override, hint, kind)
     except ip.ParseError as ex:
         raise IngestError(422, str(ex))
     except Exception as ex:  # corrupted xlsx, binary junk
@@ -108,7 +125,6 @@ def preview(conn, institute_id: str, user_id: str, kind: str, filename: str, dat
     itype = parsed["ingest_type"]
     if itype not in ip.KIND_TO_TYPES[kind]:
         raise IngestError(422, f"this file looks like '{itype}' data, not '{kind}'; use the matching upload", {"detected_type": itype})
-
     errors, warnings = list(parsed["errors"]), []
     rows = parsed["canonical_rows"]
     resolved: dict = {}
@@ -119,27 +135,83 @@ def preview(conn, institute_id: str, user_id: str, kind: str, filename: str, dat
                          "columns": parsed["missing_required"]})
     else:
         rows, errors, warnings, resolved = _validate(conn, itype, rows, errors, warnings, params)
-
-    job_id = str(uuid.uuid4())
-    payload = {"rows": rows, "resolved": resolved, "params": opts, "ingest_type": itype, "filename": filename, "kind": kind, "warnings": warnings}
-    _payload_path(job_id).write_text(json.dumps(payload, ensure_ascii=False, default=str), encoding="utf-8")
-    db_type = ip.DB_TYPE.get(itype, itype)
     mapping = {"detected": parsed["mapping"], "unmapped": parsed["unmapped_columns"], "missing_required": parsed["missing_required"],
                "header_row": parsed["header_row"], "question_columns": len(parsed["question_columns"])}
+    return itype, rows, errors, warnings, resolved, status, mapping
+
+
+def remap(conn, job_id: str, mapping_in: dict) -> dict:
+    """Re-run parsing and validation of the stored file with the user's column choices."""
+    with _rc(conn) as cur:
+        cur.execute("SELECT status FROM ingest_jobs WHERE id=%s FOR UPDATE", (job_id,))
+        j = cur.fetchone()
+    if not j:
+        raise IngestError(404, "job not found")
+    if j["status"] == "confirmed":
+        raise IngestError(409, "this job was already committed")
+    pp = _payload_path(job_id)
+    if not pp.exists() or not pp.with_suffix(".bin").exists():
+        raise IngestError(410, "the uploaded file is no longer cached; upload it again")
+    old = json.loads(pp.read_text(encoding="utf-8"))
+    params = dict(old["params"])
+    params["mapping"] = json.dumps({k: v for k, v in mapping_in.items() if v})
+    itype, rows, errors, warnings, resolved, status, mapping = _analyze(conn, old["kind"], old["filename"], pp.with_suffix(".bin").read_bytes(), params)
+    payload = {**old, "rows": rows, "resolved": resolved, "params": params, "ingest_type": itype, "warnings": warnings}
+    pp.write_text(json.dumps(payload, ensure_ascii=False, default=str), encoding="utf-8")
     with conn.cursor() as cur:
-        cur.execute("INSERT INTO ingest_jobs (id, institute_id, file_hash, type, status, mapping, errors, rows_ok, rows_failed) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                    (job_id, institute_id, file_hash, db_type, status, json.dumps(mapping), json.dumps(errors[:2000]), len(rows), len(errors)))
-    return _job_view(job_id, status, itype, filename, mapping, errors, warnings, rows, resolved, params, committed=False)
+        cur.execute("UPDATE ingest_jobs SET status=%s, mapping=%s, errors=%s, rows_ok=%s, rows_failed=%s, type=%s WHERE id=%s",
+                    (status, json.dumps(mapping), json.dumps(errors[:2000]), len(rows), len(errors), ip.DB_TYPE.get(itype, itype), job_id))
+    return _job_view(job_id, status, itype, old["filename"], mapping, errors, warnings, rows, resolved, params, committed=False, kind=old["kind"])
 
 
-def _job_view(job_id, status, itype, filename, mapping, errors, warnings, rows, resolved, params, committed, result=None):
-    return {"job_id": job_id, "status": status, "ingest_type": itype, "filename": filename, "mapping": mapping,
+def _job_view(job_id, status, itype, filename, mapping, errors, warnings, rows, resolved, params, committed, result=None, kind=None):
+    base = {"job_id": job_id, "status": status, "ingest_type": itype, "filename": filename, "mapping": mapping,
             "rows_ok": len(rows), "rows_failed": len(errors),
             "errors": [{**e, "message": e.get("message") or _MSG.get(e["code"], e["code"])} for e in errors[:500]],
             "errors_truncated": max(0, len(errors) - 500), "warnings": warnings,
             "preview_rows": [{k: v for k, v in r.items() if k != "_row"} for r in rows[:15]],
             "target": resolved.get("target"), "committed": committed, "duplicate": False, "result": result,
             "can_commit": status == "preview_ready" and len(rows) > 0}
+    return {**base, **_contract(base, status, itype, kind, mapping, errors, warnings, rows)}
+
+
+_WARN_CODES = {"hidden_row_skipped", "trailing_totals_row"}
+_STATE: dict[str, dict] = {}
+
+
+def _targets(itype: str, mapping: dict) -> list[dict]:
+    cols = list(ref.CANONICAL_EXPECTED_COLS.get({"results_long": "results_marks_only"}.get(itype, itype), []))
+    if itype == "results_responses":
+        cols = ["test_name", "test_date", "roll_no"] + [f"q{i}" for i in range(1, max(mapping.get("question_columns", 5), 1) + 1)]
+    if itype == "results_long":
+        cols = ["test_name", "test_date", "roll_no", "question_no", "response"]
+    req = set(ip.REQUIRED.get(itype, []))
+    return [{"id": c, "required": c in req, "label_en": c.replace("_", " "), "label_hi": c.replace("_", " ")} for c in cols]
+
+
+def _contract(base, status, itype, kind, mapping, errors, warnings, rows):
+    from . import ingest_parse as _ip  # noqa: F401
+
+    cstatus = {"confirmed": "done", "failed": "failed"}.get(status, "preview")
+    detected = mapping.get("detected", [])
+    cols = [{"source": d["column"], "target": d["canonical"], "confidence": d["confidence"], "alternatives": []} for d in detected]
+    cols += [{"source": u, "target": None, "confidence": 0.0, "alternatives": []} for u in mapping.get("unmapped", [])]
+    c2s = {d["canonical"]: d["column"] for d in detected}
+    samples = [{c2s.get(k, k): ("" if v is None else str(v)) for k, v in r.items() if not k.startswith("_")} for r in rows[:8]]
+    cerrors = [{"row_number": int(e.get("row_number") or 0), "field": str(e.get("field") or ""), "message": e.get("message") or _MSG.get(e["code"], e["code"]),
+                "row": int(e.get("row_number") or 0), "column": str(e.get("field") or ""), "code": e["code"],
+                "severity": "warning" if e["code"] in _WARN_CODES else "error", "value": str(e.get("value", "")),
+                "message_en": e.get("message") or _MSG.get(e["code"], e["code"]), "message_hi": e.get("message") or _MSG.get(e["code"], e["code"])}
+               for e in errors[:500]]
+    cerrors += [{"row_number": 0, "field": "", "message": w["message"], "row": 0, "column": "", "code": w["code"], "severity": "warning", "value": "", "message_en": w["message"], "message_hi": w["message"]} for w in warnings]
+    n_err = sum(1 for e in cerrors if e["severity"] == "error")
+    st = _STATE.get(base["job_id"])
+    return {"status": st["status"] if st else cstatus, "db_status": status, "kind": kind or "", "stage": st["stage"] if st else ("done" if cstatus == "done" else "reading"),
+            "progress": st["progress"] if st else (1.0 if cstatus == "done" else 0.0), "row_count": len(rows) + len(errors), "accepted_count": len(rows),
+            "error_count": n_err, "warning_count": len(cerrors) - n_err, "rejected_rows": len(errors), "columns": cols, "targets": _targets(itype, mapping),
+            "missing_required": mapping.get("missing_required", []), "one_of": None, "one_of_missing": False,
+            "errors": cerrors, "errors_truncated": len(errors) > 500, "sample_rows": samples,
+            "redirect": "/teacher" if cstatus == "done" else None}
 
 
 _MSG = {
@@ -341,7 +413,7 @@ def get_job(conn, job_id: str) -> dict:
     p = _payload_path(job_id)
     payload = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"rows": [], "resolved": {}, "params": {}, "ingest_type": j["type"], "filename": ""}
     view = _job_view(job_id, j["status"], payload["ingest_type"], payload.get("filename", ""), j["mapping"], j["errors"], payload.get("warnings", []),
-                     payload["rows"], payload.get("resolved", {}), payload.get("params", {}), committed=j["status"] == "confirmed", result=payload.get("result"))
+                     payload["rows"], payload.get("resolved", {}), payload.get("params", {}), committed=j["status"] == "confirmed", result=payload.get("result"), kind=payload.get("kind"))
     view["rows_ok"], view["rows_failed"] = j["rows_ok"], j["rows_failed"]
     return view
 
@@ -361,7 +433,7 @@ def commit(conn, institute_id: str, job_id: str) -> dict:
     if j["status"] == "confirmed":
         return {"job_id": job_id, "status": "confirmed", "idempotent": True, "message": "already committed", "result": payload.get("result")}
     if j["status"] != "preview_ready":
-        raise IngestError(409, f"job is '{j['status']}' and cannot be committed")
+        raise IngestError(422, "Missing required columns: " + ", ".join(json.loads(json.dumps(payload.get("warnings", [{}])[0].get("columns", []))) or ["see mapping"]) if j["status"] == "pending_mapping" else f"job is '{j['status']}' and cannot be committed")
     itype, rows, params = payload["ingest_type"], payload["rows"], payload["params"]
     if not rows:
         raise IngestError(422, "no valid rows to commit")

@@ -45,7 +45,7 @@ def test_dirty_files_through_api(client, teacher, path):
     if exp["ingest_type"] == "answer_key":
         assert r.status_code == 422  # a target test is mandatory for keys
         return
-    assert r.status_code == 200, r.text
+    assert r.status_code == 201, r.text
     j = r.json()
     assert j["ingest_type"] == exp["ingest_type"]
     got = {(e["row_number"], e["code"]) for e in j["errors"]}
@@ -65,7 +65,9 @@ def test_wrong_kind_is_rejected(client, teacher):
 def test_garbage_files_are_clean_errors(client, teacher):
     for blob, nm in [(b"\x00\x01\x02garbage", "x.xlsx"), (b"just,some\n1,2\n", "x.csv"), (b"", "x.csv"), (b"a", "x.pdf")]:
         r = client.post("/api/v1/ingest/attendance", headers=teacher, files={"file": (nm, blob)})
-        assert r.status_code in (413, 422), (nm, r.status_code, r.text[:200])
+        assert r.status_code in (201, 413, 422), (nm, r.status_code, r.text[:200])
+        if r.status_code == 201:
+            assert r.json()["can_commit"] is False and r.json()["missing_required"]
 
 
 def _roster(client, teacher, batch_id, n=12):
@@ -83,7 +85,7 @@ def test_marks_only_e2e_idempotent_and_recompute(client, teacher, batch_id, rese
                 [("LIVE-MARKS-1", "2026-08-27", s["roll_no"], 60 + i, 20, 20, 20 + i) for i, s in enumerate(ros)] +
                 [("LIVE-MARKS-1", "2026-08-27", "NOPE-1", 10, 1, 1, 1), ("LIVE-MARKS-1", "2026-08-27", ros[0]["roll_no"], 70, 20, 20, 30)])
     r = client.post("/api/v1/ingest/results", headers=teacher, files={"file": ("m.csv", csv_)})
-    assert r.status_code == 200, r.text
+    assert r.status_code == 201, r.text
     j = r.json()
     assert j["rows_ok"] == len(ros) and j["can_commit"]
     codes = {e["code"] for e in j["errors"]}
@@ -91,7 +93,7 @@ def test_marks_only_e2e_idempotent_and_recompute(client, teacher, batch_id, rese
     assert any(w["code"] == "new_tests_will_be_created" for w in j["warnings"])
     t = time.perf_counter()
     c = client.post(f"/api/v1/ingest/jobs/{j['job_id']}/commit", headers=teacher)
-    assert c.status_code == 200, c.text
+    assert c.status_code == 202, c.text
     assert c.json()["result"]["score_rows_written"] == len(ros) and c.json()["result"]["tests_created"] == 1
     assert time.perf_counter() - t < 5
     again = client.post(f"/api/v1/ingest/jobs/{j['job_id']}/commit", headers=teacher).json()
@@ -110,7 +112,7 @@ def test_answer_key_then_wide_responses_e2e(client, teacher, batch_id, reseed):
                 (3, "numeric", "Mathematics", topic, "42.5", 0.1, "false"), (4, "mcq_single", "Physics", topic, "D", 0.0, "false"),
                 (5, "mcq_single", "Chemistry", topic, "B", 0.0, "true")])
     r = client.post("/api/v1/ingest/answer-key", headers=teacher, files={"file": ("k.csv", key)}, data={"test_name": "LIVE-WIDE-1", "batch_id": batch_id, "test_date": "2026-08-26", "commit": "true"})
-    assert r.status_code == 200, r.text
+    assert r.status_code == 201, r.text
     assert r.json()["committed"] and r.json()["commit"]["result"]["test_created"]
     rows = [("LIVE-WIDE-1", "26/08/2026", s["roll_no"], "A", "A|C", "-", "B", "42.5") for s in ros]
     wide = _csv(["Mock Test", "Pariksha Tithi", "Roll No", "Q.1", "Ques 2", "प्र. 3", "Q4", "Q5"], rows)
@@ -140,7 +142,7 @@ def test_students_upload_with_underage_and_unknown_batch(client, teacher, batche
     assert any(w["code"] == "underage_enrolment_lt_16" for w in j["warnings"])
     assert any(w["code"] == "minors_need_consent" for w in j["warnings"])
     c = client.post(f"/api/v1/ingest/jobs/{j['job_id']}/commit", headers=teacher)
-    assert c.status_code == 200 and c.json()["result"]["students_written"] == 1
+    assert c.status_code == 202 and c.json()["result"]["students_written"] == 1
 
 
 def test_attendance_upload_warns_after_as_of(client, teacher, batch_id, reseed):
@@ -166,17 +168,17 @@ def test_xlsx_upload_with_merged_title_row(client, teacher, batch_id, reseed):
     wb.save(bio)
     j = client.post("/api/v1/ingest/attendance", headers=teacher, files={"file": ("a.xlsx", bio.getvalue())})
     # "Date" alone is not a known synonym: expect a clear request to map columns, not a crash
-    assert j.status_code in (200, 422)
+    assert j.status_code in (201, 422)
 
 
 def test_manual_mapping_override(client, teacher, batch_id, reseed):
     ros = _roster(client, teacher, batch_id, 4)
     csv_ = _csv(["ID", "Day", "Here"], [(s["roll_no"], "2026-08-20", "Y") for s in ros])
     r = client.post("/api/v1/ingest/attendance", headers=teacher, files={"file": ("a.csv", csv_)})
-    assert r.status_code == 422  # unmappable headers
+    assert r.status_code == 201 and r.json()["can_commit"] is False and r.json()["missing_required"]  # mapping screen, not an error
     m = json.dumps({"ID": "roll_no", "Day": "attendance_date", "Here": "present_flag"})
     r = client.post("/api/v1/ingest/attendance", headers=teacher, files={"file": ("a.csv", csv_)}, data={"mapping": m, "commit": "true"})
-    assert r.status_code == 200, r.text
+    assert r.status_code == 201, r.text
     assert r.json()["rows_ok"] == 4 and r.json()["committed"]
 
 
@@ -190,7 +192,7 @@ def test_2000_student_file_under_30s(client, teacher, batch_id, reseed):
     t = time.perf_counter()
     r = client.post("/api/v1/ingest/attendance", headers=teacher, files={"file": ("big.csv", csv_)}, data={"commit": "true"})
     dt_ = time.perf_counter() - t
-    assert r.status_code == 200 and r.json()["committed"]
+    assert r.status_code == 201 and r.json()["committed"]
     assert dt_ < 30, dt_
 
 
