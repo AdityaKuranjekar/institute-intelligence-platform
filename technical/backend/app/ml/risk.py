@@ -85,9 +85,15 @@ def snapshot_features(asof: pd.Timestamp, ids: pd.Index | list, att: pd.DataFram
 _lock = threading.Lock()
 
 
+def load_model_file(path) -> lgb.Booster:
+    """Load a saved LightGBM model; tolerates CRLF line endings that Windows git autocrlf can introduce."""
+    txt = open(path, "r", encoding="utf-8", newline="").read().replace(chr(13) + chr(10), chr(10))
+    return lgb.Booster(model_str=txt)
+
+
 @functools.lru_cache(maxsize=None)
 def load_booster(name: str) -> lgb.Booster:
-    return lgb.Booster(model_file=str(config.MODELS_DIR / f"risk_{name}.txt"))
+    return load_model_file(config.MODELS_DIR / f"risk_{name}.txt")
 
 
 def models_available() -> bool:

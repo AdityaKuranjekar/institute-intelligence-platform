@@ -49,7 +49,20 @@ def _after_edit(conn, p, sr: dict, before: dict, t0: float, extra: dict) -> dict
     note = None
     if after.get("model") == "A":
         note = "this student is scored on test results only (tier A: under 18 or institute tier A), so attendance and fee edits do not change the score"
+    sc = res["scores"]
+    track = analytics._track(after["model"], bool(res["elig"].at[sr["id"], "is_minor"])) if after.get("scored") else "none"
+    minor = sr["id"] in res["elig"].index and bool(res["elig"].at[sr["id"], "is_minor"])
+    effect = "rule_only" if minor else ("model" if after.get("model") not in (None, "A") else "none")
+    en = {"model": "The model used the new attendance and recomputed the support list.",
+          "rule_only": "Under 18: attendance is not used by the model; only the transparent attendance rule applies.",
+          "none": "Attendance does not change this student's score at the current privacy tier."}[effect]
+    hi = {"model": "मॉडल ने नई उपस्थिति से सहायता सूची दोबारा बनाई।",
+          "rule_only": "18 वर्ष से कम: मॉडल उपस्थिति का उपयोग नहीं करता; केवल पारदर्शी नियम लागू है।",
+          "none": "वर्तमान गोपनीयता स्तर पर उपस्थिति इस विद्यार्थी का स्कोर नहीं बदलती।"}[effect]
+    ms = round((time.perf_counter() - t0) * 1000)
     return {"student_id": sr["id"], **extra, "before": before, "after": after, "note": note, "support_list": sl,
+            "attendance_pct": extra.get("edited", {}).get("attendance_pct_now"), "track": track, "effect": effect,
+            "on_support_list": after["on_support_list"], "recompute_ms": ms, "message_en": en, "message_hi": hi,
             "recompute_seconds": round(time.perf_counter() - t0, 3)}
 
 
@@ -166,6 +179,7 @@ def patch_fees(student_id: str, body: FeeEdit, p=Depends(MANAGE), conn=Depends(d
 
 # ---------------------------------------------------------------- answer key
 class KeyEdit(BaseModel):
+    key: str | None = Field(None, description="front-end form: 'A' or 'A|C'")
     accepted_answers: list[str] = Field(default_factory=list)
     numeric_tolerance: float = Field(0.0, ge=0)
     dropped: bool = False
@@ -187,7 +201,7 @@ def fix_answer_key(test_id: str, question_no: int, body: KeyEdit, p=Depends(MANA
     if not len(row):
         raise HTTPException(404, f"question {question_no} is not in this test (1 to {int(keys.position.max())})")
     k = row.iloc[0]
-    acc = [a.strip() for a in body.accepted_answers if a.strip()]
+    acc = [a.strip() for a in (body.accepted_answers or (body.key or "").split("|")) if a.strip()]
     if not body.dropped:
         if not acc:
             raise HTTPException(422, "give at least one accepted answer (or set dropped=true)")
@@ -201,7 +215,7 @@ def fix_answer_key(test_id: str, question_no: int, body: KeyEdit, p=Depends(MANA
         elif k.q_type == "mcq_single" and len(acc) > 1:
             raise HTTPException(422, "single-answer question: give exactly one option")
         acc = [a.upper() for a in acc] if k.q_type != "numeric" else acc
-    before_flags = {f["question_id"] for f in flagged_for_test(conn, test_id)}
+    before_flags = {f["question_id"] for f in flagged_for_test(conn, test_id) if f["status"] == "open"}
     with _rc(conn) as cur:
         cur.execute("SELECT batch_id::text, institute_id::text FROM tests WHERE id=%s", (test_id,))
         t = cur.fetchone()
@@ -216,113 +230,14 @@ def fix_answer_key(test_id: str, question_no: int, body: KeyEdit, p=Depends(MANA
         mean_after = cur.fetchone()["m"]
     audit(conn, p, "update_answer_key", "test_question", f"{test_id}:{question_no}")
     res = analytics.recompute(conn, p.institute_id, t["batch_id"])
-    after_flags = {f["question_id"] for f in flagged_for_test(conn, test_id)}
+    after_all = flagged_for_test(conn, test_id)
+    after_flags = {f["question_id"] for f in after_all if f["status"] == "open"}
     return {"test_id": test_id, "question_no": question_no, "version": int(k.version) + 1, "previous_key": k.accepted, "new_key": acc,
             "rescore": rs, "mean_score_before": None if mean_before is None else round(float(mean_before), 2),
             "mean_score_after": None if mean_after is None else round(float(mean_after), 2),
             "flagged_before": k.question_id in before_flags, "flagged_after": k.question_id in after_flags,
-            "recompute_seconds": round(time.perf_counter() - t0, 3), "batch_recompute_seconds": res["seconds"]}
-
-
-# ---------------------------------------------------------------- consents
-class ConsentIn(BaseModel):
-    student_id: str
-    purpose: Literal["analytics", "risk_alerts", "parent_reports", "benchmarking", "engagement_tracking"]
-    verification_method: Literal["in_person_id_check", "otp_known_parent", "digilocker_token", "self_adult"]
-    notice_lang: Literal["en", "hi"] = "hi"
-
-
-@router.get("/consents")
-def list_consents(student_id: str | None = None, purpose: str | None = None, active_only: bool = False,
-                  p=Depends(deps.current_principal), conn=Depends(deps.tenant)):
-    if p.is_family:
-        student_id = p.student_id
-    elif p.role == "mentor":
-        raise HTTPException(403, "role 'mentor' may not view the consent ledger")
-    q = ("SELECT c.id::text, c.student_id::text, c.purpose, c.verification_method, c.verified_at, c.revoked_at, c.notice_version, c.notice_lang, s.roll_no "
-         "FROM consents c JOIN students s ON s.id=c.student_id WHERE TRUE")
-    args: list = []
-    if student_id:
-        q += " AND c.student_id=%s"
-        args.append(student_id)
-    if purpose:
-        q += " AND c.purpose=%s"
-        args.append(purpose)
-    if active_only:
-        q += " AND c.revoked_at IS NULL"
-    q += " ORDER BY c.verified_at DESC LIMIT 500"
-    try:
-        with _rc(conn) as cur:
-            cur.execute(q, args)
-            rows = [{**dict(r), "verified_at": r["verified_at"].isoformat(), "revoked_at": r["revoked_at"].isoformat() if r["revoked_at"] else None} for r in cur.fetchall()]
-    except psycopg2.errors.InvalidTextRepresentation:
-        conn.rollback()
-        raise HTTPException(422, "student id is not a valid uuid")
-    return {"consents": rows, "count": len(rows)}
-
-
-@router.post("/consents", status_code=201)
-def grant_consent(body: ConsentIn, p=Depends(MANAGE), conn=Depends(deps.tenant)):
-    t0 = time.perf_counter()
-    sr = _check_student(p, conn, body.student_id)
-    minor = (analytics.asof_ts() - pd.Timestamp(sr["dob"])).days / 365.25 < 18
-    if minor and body.verification_method == "self_adult":
-        raise HTTPException(422, "a minor cannot consent for themselves; use a parental verification method")
-    if not minor and body.verification_method != "self_adult":
-        raise HTTPException(422, "an adult student gives their own consent: use verification_method self_adult")
-    if minor and body.purpose == "engagement_tracking":
-        raise HTTPException(422, "engagement tracking is never used for minors (DPDP s.9(3)); consent cannot be recorded")
-    with _rc(conn) as cur:
-        gid = None
-        if minor:
-            cur.execute("SELECT id::text FROM guardians WHERE student_id=%s ORDER BY created_at LIMIT 1", (body.student_id,))
-            g = cur.fetchone()
-            if not g:
-                raise HTTPException(422, "no guardian on record for this minor; add the guardian first")
-            gid = g["id"]
-        cur.execute("UPDATE consents SET revoked_at=now() WHERE student_id=%s AND purpose=%s AND revoked_at IS NULL", (body.student_id, body.purpose))
-        cur.execute("INSERT INTO consents (institute_id, student_id, guardian_id, purpose, verification_method, verified_by_user_id, notice_version, notice_lang) "
-                    "VALUES (%s,%s,%s,%s,%s,%s,'v1',%s) RETURNING id::text", (p.institute_id, body.student_id, gid, body.purpose, body.verification_method, p.user_id, body.notice_lang))
-        cid = cur.fetchone()["id"]
-    audit(conn, p, "grant_consent", "consent", cid)
-    res = analytics.recompute(conn, p.institute_id, sr["batch_id"])
-    return {"id": cid, "student_id": body.student_id, "purpose": body.purpose, "status": "active", "standing": _standing(res, body.student_id),
-            "recompute_seconds": round(time.perf_counter() - t0, 3)}
-
-
-@router.delete("/consents/{consent_id}")
-def withdraw_consent(consent_id: str, p=Depends(deps.current_principal), conn=Depends(deps.tenant)):
-    """Withdrawal halts processing at once: derived scores are purged and the student leaves every list."""
-    t0 = time.perf_counter()
-    try:
-        with _rc(conn) as cur:
-            cur.execute("SELECT c.id::text, c.student_id::text, c.purpose, c.revoked_at FROM consents c WHERE c.id=%s", (consent_id,))
-            c = cur.fetchone()
-    except psycopg2.errors.InvalidTextRepresentation:
-        conn.rollback()
-        raise HTTPException(422, "consent id is not a valid uuid")
-    if not c:
-        raise HTTPException(404, "consent not found")
-    if p.is_family:
-        deps.guard_student(p, c["student_id"])
-    elif p.role == "mentor":
-        raise HTTPException(403, "role 'mentor' may not change consents")
-    if c["revoked_at"]:
-        return {"id": consent_id, "status": "already_revoked"}
-    sr = profiles.student_row(conn, c["student_id"])
-    purged = []
-    with _rc(conn) as cur:
-        cur.execute("UPDATE consents SET revoked_at=now() WHERE id=%s", (consent_id,))
-        if c["purpose"] in ("analytics", "risk_alerts"):
-            for tbl in ("mastery_snapshots", "risk_scores", "predictions"):
-                cur.execute(f"DELETE FROM {tbl} WHERE student_id=%s", (c["student_id"],))
-                purged.append(tbl)
-    audit(conn, p, "revoke_consent", "consent", consent_id)
-    res = analytics.recompute(conn, p.institute_id, sr["batch_id"])
-    return {"id": consent_id, "student_id": c["student_id"], "purpose": c["purpose"], "status": "revoked",
-            "halted": {"risk_scoring": c["purpose"] in ("analytics", "risk_alerts"), "parent_reports": c["purpose"] == "parent_reports"},
-            "derived_rows_purged_from": purged, "standing": _standing(res, c["student_id"]),
-            "recompute_seconds": round(time.perf_counter() - t0, 3)}
+            "recompute_seconds": round(time.perf_counter() - t0, 3), "batch_recompute_seconds": res["seconds"],
+            "key": "|".join(acc), "rescored_students": rs["students_changed"], "recompute_ms": round((time.perf_counter() - t0) * 1000), "flagged": after_all}
 
 
 # ---------------------------------------------------------------- privacy tier
@@ -331,10 +246,14 @@ TIERS = {"A": ("Test results only", "A"), "B": ("Tests + attendance", "AB"), "C"
 
 
 class TierIn(BaseModel):
-    tier: Literal["A", "B", "C", "D"]
+    tier: Literal["A", "B", "C", "D", "full", "academic_only"]
     minor_ml_risk_enabled: bool | None = None
     legal_opinion_ref: str | None = Field(None, max_length=200)
     batch_id: str | None = None
+
+
+def _letter(t: str) -> str:
+    return {"full": "D", "academic_only": "A"}.get(t, t)
 
 
 def _tier_view(conn, p, res=None) -> dict:
@@ -342,7 +261,21 @@ def _tier_view(conn, p, res=None) -> dict:
         cur.execute("SELECT minor_ml_risk_enabled, active_feature_tier, legal_opinion_ref FROM legal_settings LIMIT 1")
         ls = dict(cur.fetchone())
     ab = analytics.ablation()
-    return {"active_tier": ls["active_feature_tier"], "minor_ml_risk_enabled": ls["minor_ml_risk_enabled"], "legal_opinion_ref": ls["legal_opinion_ref"],
+    with _rc(conn) as cur:
+        cur.execute("SELECT COALESCE(sum(mentor_capacity_per_week),0) AS c FROM batches WHERE academic_year=%s", (config.CURRENT_YEAR,))
+        cap = int(cur.fetchone()["c"]) or None
+    fe = "academic_only" if ls["active_feature_tier"] == "A" else "full"
+    lst = None
+    try:
+        r_ = analytics.state(conn, p.institute_id, None)
+        lst = int(min(cap or 0, len(r_["scores"]))) if cap else int(len(r_["scores"]))
+    except Exception:
+        pass
+    mt = lambda k: {m: round(ab[k][m], 4) for m in ("auc", "precision", "recall", "lead_time_days")}
+    fe_extra = {"tier": fe, "minors_always_academic": not ls["minor_ml_risk_enabled"], "list_size": lst, "capacity_per_week": cap, "origin": "synthetic",
+                "options": [{"tier": "full", "label_en": "Full: tests, attendance, fees, engagement (adults with own consent)", "label_hi": "पूर्ण: टेस्ट, उपस्थिति, फ़ीस, सहभागिता (सहमति वाले वयस्क)", "metrics": mt("ABCD")},
+                            {"tier": "academic_only", "label_en": "Academic only: test results", "label_hi": "केवल शैक्षणिक: टेस्ट परिणाम", "metrics": mt("A")}]}
+    return {**fe_extra, "active_tier": ls["active_feature_tier"], "minor_ml_risk_enabled": ls["minor_ml_risk_enabled"], "legal_opinion_ref": ls["legal_opinion_ref"],
             "tiers": {k: {"label": v[0], "model": v[1], **{m: round(ab[v[1]][m], 4) for m in ("auc", "precision", "recall", "lead_time_days")}} for k, v in TIERS.items()},
             "baselines": {"b2_ranked_attendance": {m: round(ab["B2_ranked_attendance"][m], 4) for m in ("auc", "precision", "recall")}},
             "ablation_note": "numbers are measured once, offline, on the 2026 synthetic test snapshots (capacity 5 % per institute); the list below is recomputed live",
@@ -365,7 +298,7 @@ def put_tier(body: TierIn, p=Depends(OWNER), conn=Depends(deps.tenant)):
         old = dict(cur.fetchone())
         new_flag = old["minor_ml_risk_enabled"] if body.minor_ml_risk_enabled is None else body.minor_ml_risk_enabled
         cur.execute("UPDATE legal_settings SET active_feature_tier=%s, minor_ml_risk_enabled=%s, legal_opinion_ref=COALESCE(%s, legal_opinion_ref), updated_by=%s, updated_at=now()",
-                    (body.tier, new_flag, body.legal_opinion_ref, p.user_id))
+                    (_letter(body.tier), new_flag, body.legal_opinion_ref, p.user_id))
     audit(conn, p, "update_privacy_tier", "legal_settings", p.institute_id)
     analytics.bump(p.institute_id)
     out = _tier_view(conn, p)
@@ -383,7 +316,8 @@ def put_tier(body: TierIn, p=Depends(OWNER), conn=Depends(deps.tenant)):
 
 # ---------------------------------------------------------------- reports (P6)
 class ReportIn(BaseModel):
-    lang: Literal["hi", "en"] = "hi"
+    lang: Literal["hi", "en"] | None = None
+    language: Literal["hi", "en"] | None = None
     use_llm: bool | None = Field(None, description="null: use the local model only if Ollama runs and the model is pulled; false: template only")
 
 
@@ -396,10 +330,15 @@ def make_report(student_id: str, body: ReportIn, p=Depends(deps.current_principa
         cur.execute("SELECT 1 FROM consents WHERE student_id=%s AND purpose='parent_reports' AND revoked_at IS NULL", (student_id,))
         if not cur.fetchone():
             raise HTTPException(403, "no active parent_reports consent for this student: reports are not generated without it")
-    out = reports.generate(conn, p.institute_id, deps.slug_of(p.institute_id), student_id, body.lang, use_llm=body.use_llm)
+    lang = body.language or body.lang or "hi"
+    out = reports.generate(conn, p.institute_id, deps.slug_of(p.institute_id), student_id, lang, use_llm=body.use_llm)
+    out["llm_requested"] = bool(body.use_llm)
+    out["llm_available"] = out["ollama_model_available"] is not None
+    out["fallback_used"] = out["source"] != "llm" and bool(body.use_llm)
+    out["fallback_reason"] = out["fallback_reason"] or (None if out["source"] == "llm" else ("model not installed or Ollama not running" if body.use_llm else None))
     with _rc(conn) as cur:
         cur.execute("INSERT INTO reports (institute_id, student_id, period, lang, numbers_json, content, verified, path, model_version, sent_via) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'none') RETURNING id::text",
-                    (p.institute_id, student_id, out["month"], body.lang, json.dumps(out["numbers_json"]), out["body"], True, out["source"], config.MODEL_VERSION))
+                    (p.institute_id, student_id, out["month"], lang, json.dumps(out["numbers_json"]), out["body"], True, out["source"], config.MODEL_VERSION))
         out["id"] = cur.fetchone()["id"]
     audit(conn, p, "generate_report", "student", student_id)
     return out

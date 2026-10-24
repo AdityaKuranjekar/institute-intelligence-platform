@@ -193,11 +193,36 @@ def norm(value: str, table: dict[str, str], default: str = "") -> str:
 
 
 # ---------------------------------------------------------------- the parser
-def parse(data: bytes, filename: str, override: dict[str, str] | None = None, max_marks_hint: float | None = None) -> dict:
+KIND_DEFAULT_TYPE = {"students": "students", "guardians": "guardians", "attendance": "attendance", "fees": "fees", "results": "results_marks_only", "answer-key": "answer_key"}
+
+
+def _fallback_header(rows, override):
+    """No row with 3 known headers: use the first row that has any text, so the caller can show a mapping screen."""
+    for pos, (_r, vals, _h) in enumerate(rows):
+        if any(v is not None and str(v).strip() for v in vals):
+            colmap = {}
+            for c_i, v in enumerate(vals):
+                canon, conf, method = map_header(v, override)
+                if canon:
+                    colmap[c_i] = (canon, conf, method, str(v).strip())
+            return pos, colmap
+    raise ParseError("the file has no rows")
+
+
+def parse(data: bytes, filename: str, override: dict[str, str] | None = None, max_marks_hint: float | None = None, kind: str | None = None) -> dict:
     rows = read_rows(data, filename)
-    hdr_pos, colmap = find_header(rows, override)
+    fallback = False
+    try:
+        hdr_pos, colmap = find_header(rows, override)
+    except ParseError:
+        if not kind:
+            raise
+        hdr_pos, colmap = _fallback_header(rows, override)
+        fallback = True
     canon_set = {m[0] for m in colmap.values()}
     itype = detect_type(canon_set)
+    if kind and (fallback or len(canon_set) < 3):
+        itype = KIND_DEFAULT_TYPE[kind]
     qcols = sorted({c for c in canon_set if re.fullmatch(r"q\d+", c)}, key=lambda c: int(c[1:]))
     mapping = [{"column": m[3], "canonical": m[0], "confidence": m[1], "method": m[2]} for _, m in sorted(colmap.items())]
     header_cells = rows[hdr_pos][1]

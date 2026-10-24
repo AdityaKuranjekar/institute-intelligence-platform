@@ -42,6 +42,14 @@ def main() -> None:
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=8000)
     a = ap.parse_args()
+    try:
+        from .ml import percentile, risk
+
+        for n in risk.MODEL_FEATURES:
+            risk.load_booster(n)
+        percentile._model()
+    except Exception as ex:  # noqa: BLE001
+        raise SystemExit(f"a saved model failed to load ({type(ex).__name__}: {str(ex)[:150]}). Run `python -m app.ml.train` to rebuild ml/artifacts/models/ and try again.")
     info = bootstrap()
     print(info)
     if a.command == "demo":
