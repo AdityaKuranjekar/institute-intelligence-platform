@@ -26,3 +26,8 @@ presentation/video/voice-samples/
 presentation/video/ref/
 *.mp4
 *.wav
+
+# Local TTS/video tooling
+presentation/video/.tts-venv/
+presentation/video/**/work/
+presentation/video/**/node_modules/
