@@ -33,3 +33,18 @@ test-genai:
 
 
 
+
+# === Backend (Windows-friendly; run from technical/) ===
+.PHONY: train seed demo-native test-api
+train:
+	cd backend && python -X utf8 -m app.ml.train
+
+seed:
+	cd backend && python -X utf8 -m app.db.seed
+
+# start the local database, seed if empty, serve the API on http://127.0.0.1:8000
+demo-native:
+	cd backend && python -X utf8 -m app.cli demo
+
+test-api:
+	cd backend && python -X utf8 -m pytest tests -q

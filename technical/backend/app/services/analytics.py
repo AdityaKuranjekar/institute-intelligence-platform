@@ -234,6 +234,14 @@ def heatmap_json(res: dict, slug: str, batch_id: str, top_topics: int = 25, flag
             "wrong_key_flags": flags or [], "as_of": str(res["as_of"].date()), "recompute_seconds": res["seconds"]}
 
 
+def _track(model: str, is_minor: bool) -> str:
+    """academic_support: tier A only. full: adults with more than tier A. retention_minor_opt_in: a minor, only when the institute
+    recorded a legal opinion (never includes engagement)."""
+    if model == "A":
+        return "academic_support"
+    return "retention_minor_opt_in" if is_minor else "full"
+
+
 def support_list_json(res: dict, slug: str, capacity: int | None = None) -> dict:
     sc = res["scores"]
     elig = res["elig"]
@@ -243,7 +251,7 @@ def support_list_json(res: dict, slug: str, capacity: int | None = None) -> dict
     for i, (sid, r) in enumerate(top.iterrows()):
         reasons, action = risk.reasons_for(r.contrib)
         lst.append({"student_id": sid, "week": str(res["as_of"].date()), "priority_slot": i + 1,
-                    "track": "academic_support" if r.model == "A" else "full", "reasons": reasons,
+                    "track": _track(r.model, bool(elig.at[sid, "is_minor"])), "reasons": reasons,
                     "supportive_action": action, "consent_ok": bool(elig.at[sid, "consent_ok"]),
                     "p": round(float(r.p), 4), "model": r.model, "roll_no": None})
     names = res["students"].set_index("id")
