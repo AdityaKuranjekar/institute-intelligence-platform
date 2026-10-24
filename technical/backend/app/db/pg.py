@@ -120,6 +120,6 @@ def apply_schema(force: bool = False) -> bool:
         if exists and not force:
             return False
         if exists and force:
-            cur.execute("DROP SCHEMA public CASCADE; CREATE SCHEMA public;")
+            cur.execute("DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT USAGE ON SCHEMA public TO PUBLIC;")
         cur.execute((config.CONTRACTS / "schema.sql").read_text(encoding="utf-8"))
     return True

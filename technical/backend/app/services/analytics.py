@@ -42,7 +42,7 @@ def qdf(conn, sql: str, params: tuple = ()) -> pd.DataFrame:
         buf = io.StringIO()
         cur.copy_expert(f"COPY ({q}) TO STDOUT WITH (FORMAT csv, HEADER true)", buf)
     buf.seek(0)
-    return pd.read_csv(buf, dtype_backend="numpy_nullable") if buf.getvalue() else pd.DataFrame()
+    return pd.read_csv(buf, dtype_backend="numpy_nullable", true_values=["t"], false_values=["f"]) if buf.getvalue() else pd.DataFrame()
 
 
 @functools.lru_cache(maxsize=1)
