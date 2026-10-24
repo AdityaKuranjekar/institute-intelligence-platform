@@ -1,0 +1,3 @@
+# Saved model files must keep LF line endings (LightGBM text format breaks with CRLF)
+technical/ml/artifacts/models/** -text
+*.txt text eol=lf
