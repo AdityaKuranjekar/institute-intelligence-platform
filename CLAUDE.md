@@ -1,5 +1,5 @@
 # CLAUDE.md — Project handoff (read this first)
-Last updated: 2026-10-22 (folder cleanup: technical / financial / presentation) · Owner: ankita2401cs07@gmail.com
+Last updated: 2026-10-22 (folder cleanup: technical / financial / presentation) · Owner: adityak12work@gmail.com
 
 If you are an AI assistant (Claude, Gemini, etc.) or a teammate opening this folder or zip: this page is enough to get up to speed in 2 minutes. Then read the files in the order listed in §3.
 

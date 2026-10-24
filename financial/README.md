@@ -1,5 +1,5 @@
 # Financial Model — handoff (read this before making slides)
-Last updated: 2026-10-22 · Model **v1.1 (CFO audit)** · Owner: ankita2401cs07@gmail.com
+Last updated: 2026-10-22 · Model **v1.1 (CFO audit)** · Owner: adityak12work@gmail.com
 
 > **v1.1 replaced v1.0 on 2026-10-22.** Every finance number from v1.0 (6.6%, 2.9x, 0.75x, 3.5 students) is out of date. `MODEL_AUDIT.md` explains what changed and why; `DECK_NUMBER_UPDATES.md` lists old → new numbers for the deck.
 
