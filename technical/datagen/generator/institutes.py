@@ -78,25 +78,30 @@ def generate_institutes_batches_students(
         n_students_total = int(inst_cfg["students"])
         prefix = inst_key[:3].upper()
 
-        # Split institute's total student count across academic_years:
-        # If multi-year [2024, 2025, 2026], allocate 10% historical 2024, 25% 2025, and 65% active 2026 cohort
-        # so total students = 3,450 (full preset) and minor fraction (< 18 on 2026-10-01) >= 0.55 while all students are >= 16 at join_date!
-        if len(academic_years) == 3:
-            yr_shares = [0.10, 0.25, 0.65]
-        elif len(academic_years) == 2:
-            yr_shares = [0.30, 0.70]
-        else:
-            yr_shares = [1.0 / len(academic_years)] * len(academic_years)
-
+        # Cohort sizes: see cfg['cohort_size_mode'] (per_year default; total_split = legacy 10/25/65 split).
+        mode = cfg.get("cohort_size_mode", "per_year")
         yr_counts: dict[int, int] = {}
-        rem_students = n_students_total
-        for idx_y, yr in enumerate(academic_years):
-            if idx_y < len(academic_years) - 1:
-                c_y = max(30, int(round(n_students_total * yr_shares[idx_y])))
-                yr_counts[yr] = c_y
-                rem_students -= c_y
+        if mode == "per_year":
+            # configured size = size of EACH academic-year cohort
+            for yr in academic_years:
+                yr_counts[yr] = max(30, n_students_total)
+        elif mode == "total_split":
+            if len(academic_years) == 3:
+                yr_shares = [0.10, 0.25, 0.65]
+            elif len(academic_years) == 2:
+                yr_shares = [0.30, 0.70]
             else:
-                yr_counts[yr] = max(30, rem_students)
+                yr_shares = [1.0 / len(academic_years)] * len(academic_years)
+            rem_students = n_students_total
+            for idx_y, yr in enumerate(academic_years):
+                if idx_y < len(academic_years) - 1:
+                    c_y = max(30, int(round(n_students_total * yr_shares[idx_y])))
+                    yr_counts[yr] = c_y
+                    rem_students -= c_y
+                else:
+                    yr_counts[yr] = max(30, rem_students)
+        else:
+            raise ValueError(f"Unknown cohort_size_mode '{mode}'")
 
         # Track some class_11 students who transition to class_12 next year (same student_key in truth)
         prev_year_c11_keys: list[dict[str, Any]] = []

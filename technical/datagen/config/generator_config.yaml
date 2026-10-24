@@ -4,6 +4,7 @@
 seed: 42
 academic_year_start: "2026-04-15"            # source: R4 Indian coaching calendar (April batch start), confidence: med
 academic_years: [2024, 2025, 2026]           # source: CCR-007 multi-year cohorts for temporal evaluation, confidence: high
+cohort_size_mode: per_year                   # per_year = `students` is the size of EACH academic-year cohort (full: 3,450/yr, ~620 dropout events/yr); total_split = legacy 10/25/65 % split of `students` (tiny tests only). source: R1_A2 fix 1 (ML needs >= 550 events/yr), confidence: assumption
 months_simulated: 12                         # source: standard 1-year coaching cycle, confidence: high
 
 institutes:          # sizes span the realistic range; profile drives base rates; source: R4 coaching directory survey, confidence: med
