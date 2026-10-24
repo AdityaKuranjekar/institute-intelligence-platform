@@ -28,7 +28,8 @@ test("upload CSV: mapping preview, row errors, manual override, commit, jump to 
 
   await page.getByTestId("commit").click();
   await expect(page.getByTestId("progress")).toBeVisible();
-  await expect(page).toHaveURL(/\/teacher\?uploaded=job_/, { timeout: 15_000 });
+  await expect(page).toHaveURL(/\/teacher/, { timeout: 15_000 });
+  await expect(page.getByText(/Saved 3 rows from attendance_messy.csv \(3 skipped\)/)).toBeVisible();
 });
 
 test("OMR photo: uncertain bubbles need one-tap fixes before confirm", async ({ page }) => {
@@ -47,7 +48,8 @@ test("OMR photo: uncertain bubbles need one-tap fixes before confirm", async ({ 
   await expect(confirm).toBeEnabled();
   await confirm.click();
   await expect(page.getByText(/Sheet scored/)).toBeVisible();
-  await expect(page).toHaveURL(/\/teacher\?uploaded=omr_/, { timeout: 15_000 });
+  await expect(page).toHaveURL(/\/teacher/, { timeout: 15_000 });
+  await expect(page.getByText(/OMR sheet sheet.jpg was scored and saved/)).toBeVisible();
 });
 
 test("OMR photo that is too small asks for a retake", async ({ page }) => {

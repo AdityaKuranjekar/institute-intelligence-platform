@@ -54,7 +54,7 @@ export default function CapturePage() {
               </div>
             ))}
           </div>
-          {clean.note && <p className="mt-2 text-xs text-ink-soft">{clean.note}</p>}
+          <p className="mt-2 text-xs text-ink-soft">{L("Illustrative examples only; a measured cleaning rate was not computed in this build.", "केवल उदाहरण; इस संस्करण में सफ़ाई की मापी गई दर नहीं निकाली गई।")}</p>
         </Card>
       )}
     </div>

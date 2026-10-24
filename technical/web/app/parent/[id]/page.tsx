@@ -94,7 +94,7 @@ export default function ParentPage({ params }: { params: { id: string } }) {
         </div>
 
         <div className="space-y-5">
-          {lang === "hi" && rep.data && !rep.data.hi_reviewed && <Note>Hindi text pending native review · हिंदी पाठ की मूल-भाषी समीक्षा बाकी है</Note>}
+          {lang === "hi" && rep.data && !rep.data.hi_reviewed && <Note>हिंदी पाठ की मूल-भाषी समीक्षा बाकी है</Note>}
           <section className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <Card className="p-4">
               <p className="text-xs text-ink-mute">{L("Attendance", "उपस्थिति")}</p>
@@ -112,11 +112,11 @@ export default function ParentPage({ params }: { params: { id: string } }) {
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <p className="text-xs text-ink-mute">{L("Strongest topic", "सबसे मज़बूत विषय")}</p>
-                  <p className="text-sm font-medium text-[#0a7467]">{ms.strongest_topic ?? L("Not enough data yet", "अभी पर्याप्त डेटा नहीं")}</p>
+                  <p data-gap="topic names are English-only in parent.json" className="text-sm font-medium text-[#0a7467]">{ms.strongest_topic ?? L("Not enough data yet", "अभी पर्याप्त डेटा नहीं")}</p>
                 </div>
                 <div>
                   <p className="text-xs text-ink-mute">{L("Topic to practise", "अभ्यास का विषय")}</p>
-                  <p className="text-sm font-medium text-[#3f4f8c]">{ms.focus_topic ?? L("Not enough data yet", "अभी पर्याप्त डेटा नहीं")}</p>
+                  <p data-gap="topic names are English-only in parent.json" className="text-sm font-medium text-[#3f4f8c]">{ms.focus_topic ?? L("Not enough data yet", "अभी पर्याप्त डेटा नहीं")}</p>
                 </div>
               </div>
             </Card>
@@ -197,7 +197,7 @@ export default function ParentPage({ params }: { params: { id: string } }) {
             <ul className="space-y-3 text-sm">
               {p.faq.map((f, i) => (
                 <li key={i}>
-                  <p className="font-medium">{faqText(f, "q")}</p>
+                  <p data-gap="faq has q_en only" className="font-medium">{faqText(f, "q")}</p>
                   <p className="text-ink-soft">{faqText(f, "a")}</p>
                 </li>
               ))}

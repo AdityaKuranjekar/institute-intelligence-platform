@@ -8,8 +8,8 @@ export async function signIn(page: Page, role: Role, institute = "patna_jee") {
   // the UI language is remembered once touched; pin English so assertions are stable
   await page.addInitScript(() => localStorage.setItem("pragati.lang", localStorage.getItem("pragati.lang") ?? "en"));
   await page.goto("/login");
-  await page.getByRole("radio", { name: new RegExp(`^${role}`, "i") }).check({ force: true });
-  await page.getByLabel("Institute", { exact: true }).selectOption(institute);
+  await page.getByTestId(`role-${role}`).check({ force: true });
+  await page.locator("select").first().selectOption(institute);
   await page.getByTestId("login-submit").click();
   await expect(page).not.toHaveURL(/\/login/);
 }

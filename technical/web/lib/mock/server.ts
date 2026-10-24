@@ -8,7 +8,7 @@ import { guessMapping, KINDS, ONE_OF, parseCsv, TARGETS, type ColumnGuess, type 
 
 type Role = "owner" | "teacher" | "mentor" | "student" | "parent";
 type User = { id: string; role: Role; name: string; institute_id: string; student_id: string | null };
-type J = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+type J = Record<string, any>;
 export type MockReq = { method: string; path: string[]; search: URLSearchParams; token: string | null; json?: J; form?: FormData };
 export type MockRes = { status: number; body: unknown };
 

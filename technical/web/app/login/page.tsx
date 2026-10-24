@@ -84,7 +84,7 @@ function LoginForm() {
                   role === r.role ? "border-brand bg-brand-soft" : "border-line bg-white hover:bg-bg"
                 )}
               >
-                <input type="radio" name="role" value={r.role} checked={role === r.role} onChange={() => setRole(r.role)} className="sr-only" />
+                <input type="radio" name="role" data-testid={`role-${r.role}`} value={r.role} checked={role === r.role} onChange={() => setRole(r.role)} className="sr-only" />
                 <r.icon size={18} className="mt-0.5 text-brand" />
                 <span>
                   <span className="block text-sm font-medium text-ink">{L(r.en, r.hi)}</span>

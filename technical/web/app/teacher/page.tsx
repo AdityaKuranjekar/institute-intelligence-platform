@@ -336,7 +336,7 @@ export default function TeacherPage() {
           <Card>
             <CardTitle right={<Origin origin="synthetic" />}>{L("Model vs your current rule", "मॉडल बनाम आपका मौजूदा नियम")}</CardTitle>
             {cmp && <EChart option={cmp} height={240} label="Model vs attendance rule" />}
-            <p className="mt-2 text-xs text-ink-soft">{r?.note} {L("Synthetic data: a real pilot settles the true uplift.", "कृत्रिम डेटा: असली लाभ पायलट से तय होगा।")}</p>
+            <p className="mt-2 text-xs text-ink-soft">{L("Operating point is pooled over 4 institutes (2026 test snapshots); capacity is the sum of mentor time per week.", "ऑपरेटिंग पॉइंट 4 संस्थानों के 2026 टेस्ट स्नैपशॉट पर आधारित है; क्षमता = प्रति सप्ताह मेंटर समय का योग।")} {L("Synthetic data: a real pilot settles the true uplift.", "कृत्रिम डेटा: असली लाभ पायलट से तय होगा।")}</p>
           </Card>
           <Card>
             <CardTitle>{L("Try an attendance change", "उपस्थिति बदलकर देखें")}</CardTitle>

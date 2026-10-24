@@ -103,7 +103,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 onClick={() => switchRole(r.role)}
                 aria-pressed={role === r.role}
                 className={cn(
-                  "flex-1 rounded-lg px-3 py-1.5 text-center text-sm font-medium transition-colors sm:flex-none",
+                  "min-w-0 flex-1 rounded-lg px-1 py-1.5 text-center text-[13px] font-medium transition-colors sm:flex-none sm:px-3 sm:text-sm",
                   role === r.role ? "bg-white text-brand-dark shadow-soft" : "text-ink-soft hover:text-ink"
                 )}
               >

@@ -122,7 +122,7 @@ function TierCard() {
       </div>
       {result && <p role="status" data-testid="tier-result" className="mt-3 rounded-xl bg-teal-soft px-3 py-2 text-sm text-[#0a7467]">{result}</p>}
       {err && <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#7a4e05]">{err}</p>}
-      {tier.note && <p className="mt-3 text-xs text-ink-mute">{tier.note}</p>}
+      <p className="mt-3 text-xs text-ink-mute">{L("Numbers come from the synthetic 2026 test cohort (3 snapshots, 45-day horizon, capacity 5% of active students). A real pilot settles the true values.", "आँकड़े कृत्रिम 2026 टेस्ट समूह के हैं (3 स्नैपशॉट, 45 दिन की अवधि, क्षमता सक्रिय विद्यार्थियों का 5%)। असली मान पायलट से तय होंगे।")}</p>
     </Card>
   );
 }
