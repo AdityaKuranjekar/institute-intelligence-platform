@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 export default function DataCardPage() {
   const { L } = useApp();
-  const { data: d, loading, error } = useData("datacard");
+  const { data: d, loading, error, status } = useData("datacard");
   const [step, setStep] = useState(0);
   const [q, setQ] = useState("");
   const [missing, setMissing] = useState<Set<string>>(new Set());
@@ -20,7 +20,7 @@ export default function DataCardPage() {
   }, [d, q]);
 
   if (loading) return <PageSkeleton />;
-  if (!d) return <Unavailable what="datacard" detail={error} />;
+  if (!d) return <Unavailable what="datacard" detail={error} status={status} />;
   const st = d.story_steps[Math.min(step, d.story_steps.length - 1)];
   const tone = (c: string) => (c === "high" ? "teal" : c === "medium" ? "amber" : "calm");
 

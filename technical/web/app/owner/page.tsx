@@ -23,7 +23,7 @@ export default function OwnerPage() {
 
   if (owner.loading) return <PageSkeleton />;
   const o = owner.data;
-  if (!o) return <Unavailable what="owner" detail={owner.error} />;
+  if (!o) return <Unavailable what="owner" detail={owner.error} status={owner.status} />;
 
   const batchName = (id: string) => mastery.data?.batches.find((b) => b.batch_id === id)?.name ?? id.slice(0, 6);
   const months = o.retention.monthly;
@@ -177,7 +177,7 @@ export default function OwnerPage() {
         </Card>
         <Card>
           <CardTitle right={<Origin origin={mo?.origin ?? "synthetic"} />}>{L("The data moat", "डेटा मोट")}</CardTitle>
-          {moatOpt ? <EChart option={moatOpt} height={240} label="Calibration error vs institutes" /> : <Unavailable what="moat" detail={moat.error} />}
+          {moatOpt ? <EChart option={moatOpt} height={240} label="Calibration error vs institutes" /> : <Unavailable what="moat" detail={moat.error} status={moat.status} />}
           <p className="mt-1 text-sm text-ink-soft">{L("Only question difficulty is shared across institutes, never student data. More institutes means better difficulty estimates for everyone.", "संस्थानों के बीच केवल प्रश्नों की कठिनाई साझा होती है, विद्यार्थियों का डेटा कभी नहीं। अधिक संस्थान, सबके लिए बेहतर कठिनाई अनुमान।")}</p>
           {mo?.note && <p className="mt-1 text-xs text-ink-mute">{mo.note}</p>}
         </Card>

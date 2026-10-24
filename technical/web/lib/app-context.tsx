@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { fetchFile } from "./api";
+import { ApiError } from "./http";
 import type { FileKey, FileType } from "./types";
 
 export type Lang = "en" | "hi";
@@ -67,21 +68,30 @@ export function useApp() {
   return c;
 }
 
-type State<T> = { data: T | null; error: string | null; loading: boolean };
+type State<T> = { data: T | null; error: string | null; status: number | null; loading: boolean };
+type Loaded<T> = State<T> & { refreshing: boolean; reload: () => void; mutate: (d: T) => void };
 
 /** Load + zod-validate one artifact file for the selected institute. */
-export function useData<K extends FileKey>(file: K): State<FileType<K>> {
+export function useData<K extends FileKey>(file: K): Loaded<FileType<K>> {
   const { institute } = useApp();
-  const [state, setState] = useState<State<FileType<K>>>({ data: null, error: null, loading: true });
+  const [state, setState] = useState<State<FileType<K>>>({ data: null, error: null, status: null, loading: true });
+  const [tick, setTick] = useState(0);
+  const lastKey = useRef("");
   useEffect(() => {
     let alive = true;
-    setState({ data: null, error: null, loading: true });
+    // keep showing the old data while a manual reload runs
+    const key = `${file}|${institute}`;
+    const same = lastKey.current === key;
+    lastKey.current = key;
+    setState((s) => (same ? { ...s, loading: true } : { data: null, error: null, status: null, loading: true }));
     fetchFile(file, institute)
-      .then((data) => alive && setState({ data, error: null, loading: false }))
-      .catch((e: Error) => alive && setState({ data: null, error: e.message, loading: false }));
+      .then((data) => alive && setState({ data, error: null, status: 200, loading: false }))
+      .catch((e: Error) => alive && setState({ data: null, error: e.message, status: e instanceof ApiError ? e.status : 0, loading: false }));
     return () => {
       alive = false;
     };
-  }, [file, institute]);
-  return state;
+  }, [file, institute, tick]);
+  const reload = useCallback(() => setTick((t) => t + 1), []);
+  const mutate = useCallback((d: FileType<K>) => setState({ data: d, error: null, status: 200, loading: false }), []);
+  return { ...state, loading: state.loading && state.data === null, refreshing: state.loading && state.data !== null, reload, mutate };
 }

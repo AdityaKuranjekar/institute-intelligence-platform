@@ -15,7 +15,7 @@ const config: Config = {
         calm: { DEFAULT: "#5b6fb3", soft: "#eceffa" },
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "var(--font-deva)", "system-ui", "sans-serif"],
+        sans: ["Inter Variable", "Noto Sans Devanagari Variable", "system-ui", "sans-serif"],
       },
       borderRadius: { xl: "14px", "2xl": "20px" },
       boxShadow: { soft: "0 1px 2px rgba(23,35,59,.05), 0 6px 20px -8px rgba(23,35,59,.10)" },

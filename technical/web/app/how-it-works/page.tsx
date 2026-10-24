@@ -28,7 +28,7 @@ export default function HowItWorksPage() {
   const md = useData("models");
   if (sc.loading) return <PageSkeleton />;
   const s = sc.data;
-  if (!s) return <Unavailable what="scaling" detail={sc.error} />;
+  if (!s) return <Unavailable what="scaling" detail={sc.error} status={sc.status} />;
 
   const lineKeys = Array.from(new Set(s.cost_per_student.flatMap((c) => Object.keys(c.lines))));
   const cost: EChartsOption = {
@@ -137,7 +137,7 @@ export default function HowItWorksPage() {
             <Note tone="calm">{L("These are synthetic-data results. We show weak numbers too. A real pilot settles the true uplift over the attendance rule.", "ये कृत्रिम डेटा के नतीजे हैं। कमज़ोर संख्याएँ भी दिखाई गई हैं। असली लाभ पायलट से तय होगा।")}</Note>
           </div>
         ) : (
-          <Unavailable what="models" detail={md.error} />
+          <Unavailable what="models" detail={md.error} status={md.status} />
         )}
       </Card>
 

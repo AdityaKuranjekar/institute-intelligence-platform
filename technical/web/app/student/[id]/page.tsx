@@ -37,7 +37,7 @@ export default function StudentPage({ params }: { params: { id: string } }) {
   useEffect(() => setChecked(new Set()), [id]);
 
   if (st.loading) return <PageSkeleton />;
-  if (!st.data) return <Unavailable what="student" detail={st.error} />;
+  if (!st.data) return <Unavailable what="student" detail={st.error} status={st.status} />;
   if (!s) return <Unavailable what="student" detail="Pick a student above." />;
 
   const pRange = s.percentile_range ?? pr.data?.students.find((x) => x.student_id === s.student_id) ?? null;

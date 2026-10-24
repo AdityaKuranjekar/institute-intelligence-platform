@@ -1,33 +1,58 @@
 "use client";
 
-import { BookOpen, Building2, Database, GraduationCap, LayoutGrid, Smartphone, Upload, Users } from "lucide-react";
+import { BookOpen, Building2, Database, GraduationCap, LayoutGrid, LogOut, ShieldCheck, Smartphone, Upload, Users } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useApp } from "@/lib/app-context";
+import { ROLE_HOME, useAuth } from "@/lib/auth";
+import type { Role } from "@/lib/http";
 import { INSTITUTES } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Select } from "./ui";
 
-const ROLES = [
-  { href: "/owner", en: "Owner", hi: "मालिक" },
-  { href: "/teacher", en: "Teacher", hi: "शिक्षक" },
-  { href: "/student/_", en: "Student", hi: "विद्यार्थी", match: "/student" },
-  { href: "/parent/_", en: "Parent", hi: "अभिभावक", match: "/parent" },
+const ROLES: { role: Role; en: string; hi: string }[] = [
+  { role: "owner", en: "Owner", hi: "मालिक" },
+  { role: "teacher", en: "Teacher", hi: "शिक्षक" },
+  { role: "mentor", en: "Mentor", hi: "मेंटर" },
+  { role: "student", en: "Student", hi: "विद्यार्थी" },
+  { role: "parent", en: "Parent", hi: "अभिभावक" },
 ];
-const NAV = [
+const ALL_NAV = [
   { href: "/capture", en: "Capture", hi: "डेटा जोड़ें", icon: Upload },
   { href: "/teacher", en: "Teacher", hi: "शिक्षक", icon: LayoutGrid },
   { href: "/student/_", en: "Student", hi: "विद्यार्थी", icon: GraduationCap, match: "/student" },
   { href: "/parent/_", en: "Parent", hi: "अभिभावक", icon: Smartphone, match: "/parent" },
   { href: "/owner", en: "Owner", hi: "मालिक", icon: Building2 },
+  { href: "/privacy", en: "Consent & privacy", hi: "सहमति और गोपनीयता", icon: ShieldCheck },
   { href: "/data-card", en: "Data card", hi: "डेटा कार्ड", icon: Database },
   { href: "/how-it-works", en: "How it works", hi: "यह कैसे काम करता है", icon: BookOpen },
 ];
 
+const NAV_BY_ROLE: Record<Role, string[]> = {
+  owner: ["Capture", "Teacher", "Owner", "Consent & privacy", "Data card", "How it works"],
+  teacher: ["Capture", "Teacher", "Consent & privacy", "Data card", "How it works"],
+  mentor: ["Teacher", "How it works"],
+  student: ["Student", "How it works"],
+  parent: ["Parent", "How it works"],
+};
+
 export function Shell({ children }: { children: ReactNode }) {
   const { lang, setLang, institute, setInstitute, L } = useApp();
+  const { session, ready, login, logout } = useAuth();
+  const router = useRouter();
   const path = usePathname() ?? "";
+  if (path === "/login") return <>{children}</>;
+  if (!ready || !session) return <div className="grid min-h-screen place-items-center text-sm text-ink-mute" aria-busy="true">{L("Loading…", "लोड हो रहा है…")}</div>;
+  const role = session.user.role;
+  const NAV = ALL_NAV.filter((n) => NAV_BY_ROLE[role].includes(n.en));
+  const switchRole = async (r: Role) => {
+    if (r === role) return;
+    try {
+      await login(r, institute);
+      router.push(ROLE_HOME[r]);
+    } catch {}
+  };
   const active = (x: { href: string; match?: string }) => path.startsWith(x.match ?? x.href);
   const inst = INSTITUTES.find((i) => i.id === institute)?.label ?? institute;
 
@@ -71,25 +96,29 @@ export function Shell({ children }: { children: ReactNode }) {
           <Link href="/" className="flex items-center gap-2 font-semibold text-ink lg:hidden">
             <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand text-white">P</span>
           </Link>
-          <div role="group" aria-label={L("Role", "भूमिका")} className="order-3 flex w-full gap-1 rounded-xl bg-bg p-1 sm:order-none sm:w-auto">
+          <div role="group" aria-label={L("Signed in as (demo role switch)", "इस रूप में साइन इन (डेमो भूमिका बदलें)")} className="order-3 flex w-full gap-1 rounded-xl bg-bg p-1 sm:order-none sm:w-auto">
             {ROLES.map((r) => (
-              <Link
-                key={r.en}
-                href={r.href}
+              <button
+                key={r.role}
+                onClick={() => switchRole(r.role)}
+                aria-pressed={role === r.role}
                 className={cn(
                   "flex-1 rounded-lg px-3 py-1.5 text-center text-sm font-medium transition-colors sm:flex-none",
-                  active(r) ? "bg-white text-brand-dark shadow-soft" : "text-ink-soft hover:text-ink"
+                  role === r.role ? "bg-white text-brand-dark shadow-soft" : "text-ink-soft hover:text-ink"
                 )}
               >
                 {L(r.en, r.hi)}
-              </Link>
+              </button>
             ))}
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Select
               label={L("Institute", "संस्थान")}
               value={institute}
-              onChange={setInstitute}
+              onChange={(v) => {
+                setInstitute(v);
+                void login(role, v);
+              }}
               options={INSTITUTES.map((i) => ({ value: i.id, label: i.label }))}
             />
             <div role="group" aria-label="Language" className="flex rounded-xl border border-line p-0.5 text-sm">
@@ -104,6 +133,9 @@ export function Shell({ children }: { children: ReactNode }) {
                 </button>
               ))}
             </div>
+            <button onClick={logout} aria-label={L("Sign out", "साइन आउट")} title={L("Sign out", "साइन आउट")} className="grid h-9 w-9 place-items-center rounded-xl border border-line text-ink-soft hover:bg-bg">
+              <LogOut size={16} />
+            </button>
           </div>
         </div>
         <nav aria-label="Demo screens" className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 pb-2 text-sm lg:hidden">

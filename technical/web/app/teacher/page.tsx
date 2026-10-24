@@ -83,7 +83,7 @@ export default function TeacherPage() {
   }, [grid, lang, sl]);
 
   if (mastery.loading || risk.loading) return <PageSkeleton />;
-  if (!m || !batch || !grid) return <Unavailable what="mastery" detail={mastery.error} />;
+  if (!m || !batch || !grid) return <Unavailable what="mastery" detail={mastery.error} status={mastery.status} />;
 
   const untaught = m.topics.filter((t) => t.probably_untaught);
   const r = risk.data;
@@ -218,7 +218,7 @@ export default function TeacherPage() {
         <Card className="lg:col-span-3">
           <CardTitle right={<Badge tone="calm">{L("Visible to mentor and owner only", "केवल मेंटर और मालिक को दिखता है")}</Badge>}>{L("Support list", "सहयोग सूची")}</CardTitle>
           {!r ? (
-            <Unavailable what="risk" detail={risk.error} />
+            <Unavailable what="risk" detail={risk.error} status={risk.status} />
           ) : (
             <>
               <p className="mb-3 text-sm text-ink-soft">

@@ -39,7 +39,7 @@ export default function ParentPage({ params }: { params: { id: string } }) {
   }, [p, langTouched, softLang]);
 
   if (pa.loading) return <PageSkeleton />;
-  if (!pa.data) return <Unavailable what="parent" detail={pa.error} />;
+  if (!pa.data) return <Unavailable what="parent" detail={pa.error} status={pa.status} />;
   if (!p || !id) return <Unavailable what="parent" detail="Pick a child above." />;
 
   const child = nameOf(p.student_id);
