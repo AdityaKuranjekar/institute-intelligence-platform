@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import type { EChartsOption } from "echarts";
 import { EChart } from "@/components/echart";
 import { PersonPicker } from "@/components/person-picker";
+import { ReportGenerator } from "@/components/report-generator";
 import { Badge, Card, CardTitle, Note, Origin, PageHead, PageSkeleton, Unavailable } from "@/components/ui";
 import { useApp, useData } from "@/lib/app-context";
 import { BAND_LABEL, BAND_TONE, bandOf, trendWord } from "@/lib/bands";
@@ -186,6 +187,8 @@ export default function StudentPage({ params }: { params: { id: string } }) {
           <p className="text-sm text-ink-soft">{L("Not enough data yet", "अभी पर्याप्त डेटा नहीं")}</p>
         )}
       </Card>
+
+      <ReportGenerator studentId={s.student_id} />
 
       <Card className="border-teal/30 bg-teal-soft">
         <div className="flex items-start gap-3">

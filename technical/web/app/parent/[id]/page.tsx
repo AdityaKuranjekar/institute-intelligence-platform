@@ -3,6 +3,7 @@
 import { Check, CheckCheck, FileText, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PersonPicker } from "@/components/person-picker";
+import { ReportGenerator } from "@/components/report-generator";
 import { Badge, Card, CardTitle, Note, Origin, PageHead, PageSkeleton, Unavailable } from "@/components/ui";
 import { useApp, useData } from "@/lib/app-context";
 import { useStudents } from "@/lib/names";
@@ -143,6 +144,8 @@ export default function ParentPage({ params }: { params: { id: string } }) {
               </ul>
             </Card>
           </div>
+
+          <ReportGenerator studentId={p.student_id} />
 
           <Card>
             <CardTitle right={<Origin origin={rep.data?.origin ?? "model"} />}>{L("Report verification", "रिपोर्ट सत्यापन")}</CardTitle>
