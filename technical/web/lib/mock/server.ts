@@ -494,6 +494,11 @@ export async function handle(req: MockReq): Promise<MockRes> {
   const { method, path: p } = req;
   const [a, b, c] = p;
   if (a === "auth" && b === "login" && method === "POST") return login(req.json);
+  if (a === "dev" && b === "reset" && method === "POST") {
+    // test helper: forget every edit, upload and consent change (tokens survive)
+    S.attendance.clear(); S.fixedKeys.clear(); S.jobs.clear(); S.omr.clear(); S.consents.clear(); S.tier.clear(); S.rolls.clear();
+    return ok({ reset: true });
+  }
   if (a === "health") return ok({ status: "ok", db: "mock", ollama: "mock", mock: true });
   if (a === "version") return ok({ api: "mock", model_version: "v1.1.0" });
   const u = req.token ? S.tokens.get(req.token) : undefined;

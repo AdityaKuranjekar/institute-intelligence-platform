@@ -13,3 +13,8 @@ export async function signIn(page: Page, role: Role, institute = "patna_jee") {
 }
 
 export const fixture = (name: string) => path.join(__dirname, "fixtures", name);
+
+/** Mock-only: forget edits so every spec starts from the seeded state. */
+export async function resetMock(page: Page) {
+  await page.request.post("/api/mock/dev/reset");
+}

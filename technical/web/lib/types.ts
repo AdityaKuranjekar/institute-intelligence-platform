@@ -61,6 +61,7 @@ export const RiskSchema = z
         reasons: z.array(z.object({ code: z.string(), text_en: z.string(), text_hi: z.string(), weight: num })),
         supportive_action: z.object({ code: z.string(), ...bi }),
         consent_ok: z.boolean(),
+        attendance_pct: num.optional(),
       })
     ),
     baselines: z.record(z.object({ precision: num, recall: num })),

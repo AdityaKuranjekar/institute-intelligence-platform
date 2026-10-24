@@ -1,14 +1,18 @@
 "use client";
 
-import { Check } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Check, RefreshCw } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import type { EChartsOption } from "echarts";
 import { EChart } from "@/components/echart";
-import { Badge, Button, Card, CardTitle, Note, Origin, PageHead, PageSkeleton, Select, Stat, Unavailable } from "@/components/ui";
+import { Badge, Button, Card, CardTitle, Empty, Note, Origin, PageHead, PageSkeleton, Select, Stat, Unavailable } from "@/components/ui";
 import { useApp, useData } from "@/lib/app-context";
 import { BAND_COLOR, BAND_LABEL, BAND_TONE, type Band } from "@/lib/bands";
 import { useStudents } from "@/lib/names";
+import { apiFetch } from "@/lib/http";
+import type { AttendanceResult } from "@/lib/teacher-api";
 import { pct } from "@/lib/utils";
+import { AttendanceEditor } from "./attendance-editor";
+import { FlaggedPanel } from "./flagged-panel";
 
 const PAGE = 8;
 const BANDS: Band[] = ["not_enough_data", "needs_support", "steady", "strong"];
@@ -18,11 +22,38 @@ export default function TeacherPage() {
   const { L, lang } = useApp();
   const mastery = useData("mastery");
   const risk = useData("risk");
-  const { nameOf, rollOf, loading: sl } = useStudents();
+  const { nameOf, rollOf, list: studentList, loading: sl } = useStudents();
+  const rollsAll = studentList.map((x) => x.student_id);
   const [batchId, setBatchId] = useState("");
   const [sel, setSel] = useState<string | null>(null);
   const [done, setDone] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(0);
+  const [note, setNote] = useState<{ en: string; hi: string } | null>(null);
+  const [whatIf, setWhatIf] = useState("");
+  const [upload, setUpload] = useState<string | null>(null);
+
+  // Banner after Capture jumps here: read the job that just finished.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("uploaded");
+    if (!id) return;
+    apiFetch<{ kind?: string; filename: string; accepted_count?: number; rejected_rows?: number; result?: { roll_no?: string | null } }>(id.startsWith("omr_") ? `/ingest/omr/${id}` : `/ingest/jobs/${id}`)
+      .then((j) =>
+        setUpload(
+          j.accepted_count !== undefined
+            ? L(`Saved ${j.accepted_count} rows from ${j.filename} (${j.rejected_rows ?? 0} skipped). The list below is up to date.`, `${j.filename} से ${j.accepted_count} पंक्तियाँ सहेजी गईं (${j.rejected_rows ?? 0} छोड़ी गईं)। नीचे की सूची अद्यतन है।`)
+            : L(`OMR sheet ${j.filename} was scored and saved.`, `OMR शीट ${j.filename} का अंकन हुआ और सहेजी गई।`)
+        )
+      )
+      .catch(() => {});
+    window.history.replaceState(null, "", "/teacher");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const saved = (r: AttendanceResult) => {
+    setNote({ en: r.message_en, hi: r.message_hi ?? r.message_en });
+    if (r.support_list) risk.mutate(r.support_list);
+    else risk.reload();
+  };
 
   const m = mastery.data;
   const batch = m?.batches.find((b) => b.batch_id === batchId) ?? m?.batches[0];
@@ -89,7 +120,10 @@ export default function TeacherPage() {
   const r = risk.data;
   const rows = r ? [...r.list].sort((a, b) => nameOf(a.student_id).localeCompare(nameOf(b.student_id))) : [];
   const pages = Math.ceil(rows.length / PAGE);
-  const shown = rows.slice(page * PAGE, page * PAGE + PAGE);
+  const safePage = Math.min(page, Math.max(0, pages - 1));
+  const shown = rows.slice(safePage * PAGE, safePage * PAGE + PAGE);
+  const rollSorted = [...new Set([...(r?.list ?? []).map((x) => x.student_id), ...rollsAll])].sort((a, b) => rollOf(a).localeCompare(rollOf(b)));
+  const att = new Map((r?.list ?? []).map((x) => [x.student_id, x.attendance_pct]));
   const adults = rows.filter((x) => x.track === "full").length;
   const baseRows = r
     ? [
@@ -130,6 +164,12 @@ export default function TeacherPage() {
           />
         }
       />
+
+      {upload && (
+        <div role="status">
+          <Note tone="brand">{upload}</Note>
+        </div>
+      )}
 
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label={L("Students in this batch", "इस बैच में विद्यार्थी")} value={batch.student_ids.length} origin="synthetic" />
@@ -216,7 +256,18 @@ export default function TeacherPage() {
 
       <div className="grid gap-6 lg:grid-cols-5">
         <Card className="lg:col-span-3">
-          <CardTitle right={<Badge tone="calm">{L("Visible to mentor and owner only", "केवल मेंटर और मालिक को दिखता है")}</Badge>}>{L("Support list", "सहयोग सूची")}</CardTitle>
+          <CardTitle
+            right={
+              <div className="flex items-center gap-2">
+                <Badge tone="calm">{L("Visible to mentor and owner only", "केवल मेंटर और मालिक को दिखता है")}</Badge>
+                <Button variant="ghost" className="border border-line px-2.5 py-1.5" onClick={() => risk.reload()} disabled={risk.refreshing} aria-label={L("Refresh the list", "सूची ताज़ा करें")} data-testid="refresh-list">
+                  <RefreshCw size={14} className={risk.refreshing ? "animate-spin motion-reduce:animate-none" : ""} /> {L("Refresh", "ताज़ा करें")}
+                </Button>
+              </div>
+            }
+          >
+            {L("Support list", "सहयोग सूची")}
+          </CardTitle>
           {!r ? (
             <Unavailable what="risk" detail={risk.error} status={risk.status} />
           ) : (
@@ -224,11 +275,17 @@ export default function TeacherPage() {
               <p className="mb-3 text-sm text-ink-soft">
                 {L(`Sized to mentor capacity (${r.capacity_per_week}/week). Listed by name, not priority. Each row: why, and what could help.`, `मेंटर क्षमता के अनुसार (${r.capacity_per_week}/सप्ताह)। नाम के क्रम में। हर पंक्ति: कारण और सहायक कदम।`)}
               </p>
-              <ul className="divide-y divide-line">
+              {note && (
+                <p role="status" data-testid="edit-note" className="mb-3 rounded-xl bg-teal-soft px-3 py-2 text-sm text-[#0a7467]">
+                  {L(note.en, note.hi)}
+                </p>
+              )}
+              {rows.length === 0 && <Empty>{L("Nobody is on this week's list.", "इस सप्ताह की सूची में कोई नहीं है।")}</Empty>}
+              <ul className="divide-y divide-line" data-testid="support-list">
                 {shown.map((row) => {
                   const isDone = done.has(row.student_id);
                   return (
-                    <li key={row.student_id} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-start sm:justify-between">
+                    <li key={row.student_id} data-student={row.student_id} data-track={row.track} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-start sm:justify-between">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="text-xs font-semibold text-brand-dark">{rollOf(row.student_id)}</span>
@@ -241,6 +298,9 @@ export default function TeacherPage() {
                           ))}
                         </ul>
                         <p className="mt-1 text-[13px] font-medium text-brand-dark">→ {lang === "hi" ? row.supportive_action.text_hi : row.supportive_action.text_en}</p>
+                        <div className="mt-1.5">
+                          <AttendanceEditor studentId={row.student_id} current={row.attendance_pct} onSaved={saved} />
+                        </div>
                       </div>
                       <Button
                         variant={isDone ? "soft" : "ghost"}
@@ -263,9 +323,9 @@ export default function TeacherPage() {
               </ul>
               {pages > 1 && (
                 <div className="mt-3 flex items-center justify-between text-sm">
-                  <Button variant="ghost" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>{L("Previous", "पिछला")}</Button>
-                  <span className="text-ink-mute">{page + 1} / {pages} · {done.size} {L("done", "पूरे")}</span>
-                  <Button variant="ghost" disabled={page >= pages - 1} onClick={() => setPage((p) => p + 1)}>{L("Next", "अगला")}</Button>
+                  <Button variant="ghost" disabled={safePage === 0} onClick={() => setPage(safePage - 1)}>{L("Previous", "पिछला")}</Button>
+                  <span className="text-ink-mute">{safePage + 1} / {pages} · {done.size} {L("done", "पूरे")}</span>
+                  <Button variant="ghost" disabled={safePage >= pages - 1} onClick={() => setPage(safePage + 1)}>{L("Next", "अगला")}</Button>
                 </div>
               )}
             </>
@@ -279,17 +339,19 @@ export default function TeacherPage() {
             <p className="mt-2 text-xs text-ink-soft">{r?.note} {L("Synthetic data: a real pilot settles the true uplift.", "कृत्रिम डेटा: असली लाभ पायलट से तय होगा।")}</p>
           </Card>
           <Card>
-            <CardTitle>{L("Answer-key alerts", "उत्तर-कुंजी चेतावनियाँ")}</CardTitle>
-            {m.wrong_key_flags.length === 0 ? (
-              <p className="text-sm text-ink-soft">{L("No suspicious answer keys in recent tests.", "हाल के टेस्ट में कोई संदिग्ध उत्तर-कुंजी नहीं मिली।")}</p>
-            ) : (
-              <ul className="space-y-2 text-sm">
-                {m.wrong_key_flags.map((f, i) => (
-                  <li key={i} className="rounded-xl bg-amber-soft p-2 text-[#7a4e05]">{Object.entries(f).map(([k, v]) => `${k}: ${String(v)}`).join(" · ")}</li>
-                ))}
-              </ul>
-            )}
+            <CardTitle>{L("Try an attendance change", "उपस्थिति बदलकर देखें")}</CardTitle>
+            <p className="mb-2 text-xs text-ink-soft">{L("Pick any student, type a new attendance %, and watch the list update. Under-18 students are on the academic track: attendance is saved but the model does not use it.", "कोई भी विद्यार्थी चुनें, नई उपस्थिति % लिखें और सूची को बदलते देखें। 18 से कम उम्र के विद्यार्थी शैक्षिक ट्रैक पर हैं: उपस्थिति सहेजी जाती है पर मॉडल उसे इस्तेमाल नहीं करता।")}</p>
+            <Select
+              label={L("Student", "विद्यार्थी")}
+              value={whatIf || rollSorted[0] || ""}
+              onChange={setWhatIf}
+              options={rollSorted.map((id) => ({ value: id, label: `${rollOf(id)} · ${nameOf(id)}` }))}
+            />
+            <div className="mt-3">
+              {(whatIf || rollSorted[0]) && <AttendanceEditor key={whatIf || rollSorted[0]} studentId={whatIf || rollSorted[0]} current={att.get(whatIf || rollSorted[0])} onSaved={saved} alwaysOpen />}
+            </div>
           </Card>
+          <FlaggedPanel batchId={batch.batch_id} />
         </div>
       </div>
     </div>
