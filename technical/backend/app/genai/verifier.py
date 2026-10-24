@@ -12,6 +12,7 @@ from typing import Any
 
 import jsonschema
 
+from .verifier_extra import extra_checks
 from .models import (
     Lang,
     NumbersJson,
@@ -626,5 +627,15 @@ def verify(
         sigs = HOME_TIP_SIGNATURES.get(tip_id, {}).get(lang, ())
         if sigs and not any(_norm_phrase(sig) in norm_body for sig in sigs):
             failures.append(f"missing_home_tip: tip '{tip_id}' signature not found in {lang} body")
+
+    extra_checks(
+        combined_text=combined_text,
+        body=body,
+        norm_full_text=norm_full_text,
+        trend=trend,
+        allowed_topics=allowed_topics,
+        period=numbers_obj.period,
+        failures=failures,
+    )
 
     return VerifyResult(ok=(len(failures) == 0), failures=failures)

@@ -1,0 +1,348 @@
+# Extra verifier lexicon (outside contracts/; see CCR-010: move into contracts/reason_templates.yaml in v1.0.1).
+# Matching rules (verifier.py):
+#   en: regular expressions (case-insensitive) run on NFKC-lowercased text with '-', '_' collapsed to spaces.
+#   hi: literal strings; folded (NFKC, nukta removed, chandrabindu -> anusvara) on both sides; matched at a word START
+#       (so inflections such as चिंतित, चिंताजनक, छोड़ने are caught) but not inside another Devanagari word.
+#   Both language lists are applied to BOTH report languages (transliterations and mixed-script tricks).
+banned:
+  mental_health:
+    en:
+      - '\bstress'
+      - '\banxi'
+      - '\bworr(y|ies|ied|ying)'
+      - '\bdepress'
+      - '\btension'
+      - '\btense\b'
+      - '\bfear'
+      - '\bscar(ed|y)\b'
+      - '\bpanic'
+      - '\bnervous'
+      - '\bupset'
+      - '\bsad(ness)?\b'
+      - '\bunhappy'
+      - '\bfrustrat'
+      - '\bburn ?out'
+      - '\boverwhelm'
+      - '\bmental'
+      - '\bemotion'
+      - '\bpressure'
+      - '\btrauma'
+      - '\bpsycholog'
+      - '\bcounsel'
+      - '\btherap'
+    hi:
+      - तनाव
+      - टेंशन
+      - टेन्शन
+      - स्ट्रेस
+      - चिंता
+      - चिन्ता
+      - चिंतित
+      - फ़िक्र
+      - फिक्र
+      - डर
+      - भय
+      - घबराह
+      - घबरा
+      - बेचैन
+      - उदास
+      - निराश
+      - एंग्जायटी
+      - एन्जायटी
+      - डिप्रेशन
+      - दबाव
+      - मानसिक
+      - भावनात्मक
+      - काउंसलिंग
+      - परेशान
+  guarantee:
+    en:
+      - '\bguarantee'
+      - '\bassur(ed|e|es|ance)\b'
+      - '\bsure to\b'
+      - '\bsure (of|about) (success|selection)'
+      - '\bcertain(ly|ty)?\b'
+      - '\bdefinite(ly)?\b'
+      - '\bpromis'
+      - '\bbound to\b'
+      - '\bwill (surely|definitely|certainly )?(get|crack|clear|qualify|secure|be selected|be admitted|achieve|score|rank)'
+      - '\b(selection|success|admission|seat) (is|will be|is going to be) (sure|certain|assured|guaranteed|yours)'
+      - '\b(expected|likely|set) to (score|clear|qualify|crack)'
+      - '\bpredict'
+      - '\bforecast'
+      - '\bchances? of (selection|success|getting|clearing)'
+    hi:
+      - गारंटी
+      - गारन्टी
+      - पक्का
+      - पक्की
+      - निश्चित चयन
+      - निश्चित रूप से चयन
+      - निश्चित सफलता
+      - चयन निश्चित
+      - सफलता निश्चित
+      - चयन तय
+      - चयन होगा
+      - चयन हो जाएगा
+      - चयन हो जाएगी
+      - सफल होगा
+      - सफल होगी
+      - सफल हो जाएगा
+      - वादा
+      - यकीनन
+      - अवश्य चयन
+      - भविष्यवाणी
+      - अनुमान
+  leave_risk:
+    en:
+      - '\brisks?\b'
+      - '\brisky\b'
+      - '\bquit'
+      - '\bdrop(ping|ped|s)?\b'
+      - '\bleav(e|es|ing)\b'
+      - '\bleft the\b'
+      - '\bwithdraw'
+      - '\bdiscontinu'
+      - '\bdanger'
+      - '\bthreat'
+      - '\bstop(ping)? (attending|coming|studying)'
+      - '\bgive up\b'
+      - '\bgiving up\b'
+      - '\bwarning\b'
+      - '\balarm'
+    hi:
+      - जोखिम
+      - रिस्क
+      - छोड़
+      - छोड
+      - छूट जाए
+      - खतरा
+      - ख़तरा
+      - चेतावनी
+      - कोर्स बीच में
+      - पढ़ाई बंद
+      - हार मान
+  money:
+    en:
+      - '\bfees?\b'
+      - '\bpay(s|ing|ment|ments)?\b'
+      - '\bpaid\b'
+      - '\bdues?\b(?! to)'
+      - '\boverdue\b'
+      - '\bpending\b'
+      - '\bfines?\b'
+      - '\brupees?\b'
+      - '\brs\b'
+      - '\binstal+ments?\b'
+      - '\brefund'
+      - '\btuition'
+      - '\bcost'
+      - '\bprice'
+      - '\bcharges?\b'
+      - '\bbill'
+      - '\binvoice'
+      - '\bamount\b'
+      - '\bscholarship'
+      - '\bdiscount'
+      - '\bbalance\b'
+      - '₹'
+      - '\$'
+    hi:
+      - फीस
+      - फ़ीस
+      - शुल्क
+      - बकाया
+      - भुगतान
+      - पेमेंट
+      - रुपये
+      - रुपए
+      - रूपये
+      - पैसे
+      - राशि
+      - जुर्माना
+      - किस्त
+      - रिफंड
+      - बिल
+      - छूट राशि
+      - जमा करें
+      - जमा कराएँ
+      - जमा कराएं
+  rank_topper:
+    en:
+      - '\btop(per|pers)?\b'
+      - '\branks?\b'
+      - '\branked\b'
+      - '\branking'
+      - '\bleaderboard'
+      - '\bfirst (place|rank|position)\b'
+      - '\bfirst in (the |his |her |their )?(class|batch|institute)'
+      - '\bnumber (one|1)\b'
+      - '\bbest (in|of) (the )?(class|batch|institute)'
+      - '\bhighest (in|of) (the )?(class|batch|institute)'
+      - '\bahead of\b'
+      - '\bbehind (the )?(class|batch|others)'
+      - '\bbottom\b'
+      - '\blast (place|rank|in)\b'
+      - '\btoppers?\b'
+    hi:
+      - अव्वल
+      - टॉपर
+      - टॉप
+      - रैंक
+      - रैकिंग
+      - पहला स्थान
+      - प्रथम स्थान
+      - पहली रैंक
+      - पहले स्थान
+      - सर्वश्रेष्ठ
+      - शीर्ष
+      - नंबर वन
+      - नम्बर वन
+      - सबसे आगे
+      - सबसे पीछे
+      - सबसे आगे
+      - लीडरबोर्ड
+      - बैच में पहला
+  peer_family:
+    en:
+      - '\bbrothers?\b'
+      - '\bsisters?\b'
+      - '\bsibling'
+      - '\bclassmates?\b'
+      - '\bbatch ?mates?\b'
+      - '\bpeers?\b'
+      - '\bother (kids|children|students|learners|pupils|boys|girls)\b'
+      - '\b(his|her|their) friends\b'
+      - '\bfriends\b'
+      - '\bcousin'
+      - '\bunlike\b'
+      - '\bin contrast\b'
+      - '\bwhereas\b'
+      - '\bcompar'
+      - '\bversus\b'
+      - '\bvs\b'
+      - '\bthan (other|the rest|most|many)'
+      - '\bthe rest of (the )?(class|batch)'
+      - '\bagainst (the )?(class|batch)'
+    hi:
+      - भाई
+      - बहन
+      - सहपाठी
+      - सहपाठियों
+      - दूसरे बच्चे
+      - दूसरे बच्चों
+      - अन्य बच्चे
+      - अन्य बच्चों
+      - बाकी बच्चे
+      - साथी छात्र
+      - साथियों
+      - दोस्तों
+      - मित्रों
+      - कज़िन
+      - के उलट
+      - के विपरीत
+      - की तुलना
+      - तुलना
+      - बनाम
+      - बाकी बैच
+      - बाकी कक्षा
+      - बैच के बाकी
+  prompt_injection:
+    en:
+      - '\bignore\b'
+      - '\bdisregard'
+      - '\boverrid'
+      - '\bprevious instruction'
+      - '\bsystem prompt'
+      - '\binstructions?\b'
+      - '\bprompt\b'
+      - '\breveal'
+      - '\bjailbreak'
+      - '\bas an ai\b'
+      - '\blanguage model'
+      - '\bllm\b'
+      - '\bassistant\b'
+      - '\bpassword'
+      - '\bapi key'
+      - '\bdeveloper mode'
+    hi:
+      - निर्देश
+      - अनदेखा
+      - नज़रअंदाज़
+      - नजरअंदाज
+      - प्रॉम्प्ट
+      - सिस्टम
+      - पासवर्ड
+
+# Trend vocabulary (verify check g2). A report must contain NO word from the vocabulary of any trend other than
+# numbers.trend. Both language lists are applied to both languages.
+trend_vocab:
+  improving:
+    en:
+      - '\bimprov'
+      - '\bupward'
+      - '\buptick'
+      - '\bris(ing|es|en)\b'
+      - '\bgrowing\b'
+      - '\bgains?\b'
+      - '\bbetter\b'
+      - '\bprogressing well\b'
+      - '\bon the rise\b'
+    hi:
+      - सुधार
+      - सुधर
+      - बेहतर
+      - बेहतरी
+      - बढ़त
+      - उन्नति
+      - ऊपर की ओर
+      - ऊर्ध्व
+  steady:
+    en:
+      - '\bsteady\b'
+      - '\bsteadily\b'
+      - '\bstable\b'
+      - '\bstability\b'
+      - '\bplateau'
+      - '\bunchanged\b'
+      - '\bflat\b'
+      - '\bholding level\b'
+    hi:
+      - स्थिर
+      - स्थिरता
+      - ठहराव
+      - यथावत
+      - समान स्तर
+  declining:
+    en:
+      - '\bdeclin'
+      - '\bdownward'
+      - '\bdip(s|ped|ping)?\b'
+      - '\bdrop(s|ped|ping)?\b'
+      - '\bsoften'
+      - '\bslow(s|ed|er|ing)?\b'
+      - '\bfall(s|ing|en)?\b'
+      - '\bfell\b'
+      - '\bweak(er|ened|ening)?\b'
+      - '\bworse'
+      - '\bdecreas'
+      - '\bdeteriorat'
+      - '\bregress'
+      - '\bslump'
+      - '\blower\b'
+    hi:
+      - गिरावट
+      - गिरा
+      - गिरत
+      - उतार
+      - कमी
+      - धीमी
+      - धीमा
+      - नरम
+      - कमज़ोर
+      - कमजोर
+      - घट
+      - पिछड़
+      - पिछड
+      - अवनति
+      - ह्रास

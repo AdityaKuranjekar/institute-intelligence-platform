@@ -520,28 +520,73 @@ def export_hindi_rubric_csv(output_path: Path | None = None, seed: int = 42) -> 
     return target
 
 
+def run_independent_set() -> dict[str, Any]:
+    """Run the reviewer's 50 independent adversarial cases (tests/test_adversarial_independent.py).
+    The harmless NFKC-equal 'fullwidth digits' case is excluded from the denominator and asserted to pass."""
+    import importlib.util
+
+    path = GENAI_DIR / "tests" / "test_adversarial_independent.py"
+    spec = importlib.util.spec_from_file_location("_adv_independent", path)
+    mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
+    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    total = caught = 0
+    missed: list[str] = []
+    harmless_ok = True
+    for lang in ("en", "hi"):
+        n, c = mod._mk(lang)
+        for name, nb in mod._cases(lang, c["body"]):
+            if nb == c["body"]:
+                continue
+            cc = dict(c)
+            cc["body"] = nb
+            cc["word_count"] = len(nb.split())
+            ok = verify(cc, n, lang).ok
+            if name in mod.HARMLESS:
+                harmless_ok = harmless_ok and ok
+                continue
+            total += 1
+            if ok:
+                missed.append(f"{lang}:{name}")
+            else:
+                caught += 1
+    return {"total": total, "caught": caught, "catch_rate": caught / total, "missed": missed, "harmless_ok": harmless_ok}
+
+
 def write_genai_artifacts(version: str = "v1.0.0", seed: int = 42) -> dict[str, Any]:
     """
-    Compute the deterministic GenAI metrics (`genai_verifier_injected_error_catch_rate` and
-    `genai_unverified_reports_shipped`), validate against `contracts/metrics.schema.json`,
-    and write `ml/artifacts/v1.0.0/metrics.json` (or update the genai rows if already present)
-    and `backend/app/genai/model_card.md`.
+    Compute the deterministic GenAI metrics, validate against `contracts/metrics.schema.json`, and write
+    `backend/app/genai/artifacts/<version>/{metrics.json,manifest.json,model_card.md}`.
+    `genai_verifier_injected_error_catch_rate` is reported on (a) own fuzz (500), (b) the reviewer's independent
+    set, (c) the second 100-case set; the contract value is the LOWER of (a) and (b) (and (c) is in the notes).
     """
+    import hashlib
+
     import jsonschema
 
+    from .adversarial_set2 import run_second_set
+
     fuzz_res = run_fuzz_500(seed=seed)
+    ind_res = run_independent_set()
+    set2_res = run_second_set()
     mix_res = run_1000_fake_client_mix(seed=seed)
+    rate = min(float(fuzz_res["catch_rate"]), float(ind_res["catch_rate"]))
 
     new_results = [
         {
             "metric_key": "genai_verifier_injected_error_catch_rate",
             "module": "genai",
             "dataset_origin": "synthetic",
-            "value": float(fuzz_res["catch_rate"]),
-            "ci_low": 1.0 if fuzz_res["catch_rate"] == 1.0 else float(fuzz_res["catch_rate"]),
+            "value": rate,
+            "ci_low": rate,
             "ci_high": 1.0,
-            "passed_bar": bool(fuzz_res["catch_rate"] >= 1.0),
-            "notes": f"n=500 corrupted outputs across 12 categories; caught={fuzz_res['caught']}/500.",
+            "passed_bar": bool(rate >= 1.0),
+            "notes": (
+                f"value = min(a, b). (a) own fuzz {fuzz_res['caught']}/500 (own generator, not independent); "
+                f"(b) reviewer-written independent set {ind_res['caught']}/{ind_res['total']} "
+                f"(missed: {ind_res['missed'] or 'none'}; fullwidth-digit case excluded as NFKC-equal numbers); "
+                f"(c) second 100-case set by Agent E {set2_res['caught']}/{set2_res['total']} "
+                f"(still passing: {set2_res['still_passing'] or 'none'}). Not a proof of completeness."
+            ),
         },
         {
             "metric_key": "genai_unverified_reports_shipped",
@@ -558,37 +603,65 @@ def write_genai_artifacts(version: str = "v1.0.0", seed: int = 42) -> dict[str, 
         },
     ]
 
-    artifacts_dir = REPO_ROOT / "ml" / "artifacts" / version
+    artifacts_dir = GENAI_DIR / "artifacts" / version
     artifacts_dir.mkdir(parents=True, exist_ok=True)
     metrics_path = artifacts_dir / "metrics.json"
-
-    if metrics_path.exists():
-        with open(metrics_path, encoding="utf-8") as f:
-            existing = json.load(f)
-        other_rows = [r for r in existing.get("results", []) if r.get("module") != "genai"]
-        combined_rows = other_rows + new_results
-    else:
-        combined_rows = new_results
 
     metrics_doc = {
         "contract_version": "1.0.0",
         "model_version": version,
         "evaluated_at": datetime.now(timezone.utc).isoformat(),
         "generator_seed": seed,
-        "results": combined_rows,
+        "results": new_results,
     }
-
-    schema_path = REPO_ROOT / "contracts" / "metrics.schema.json"
-    with open(schema_path, encoding="utf-8") as f:
-        metrics_schema = json.load(f)
-    jsonschema.validate(instance=metrics_doc, schema=metrics_schema)
-
+    with open(REPO_ROOT / "contracts" / "metrics.schema.json", encoding="utf-8") as f:
+        jsonschema.validate(instance=metrics_doc, schema=json.load(f))
     with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(metrics_doc, f, ensure_ascii=False, indent=2)
+
+    card_src = GENAI_DIR / "model_card.md"
+    card_dst = artifacts_dir / "model_card.md"
+    if card_src.exists():
+        card_dst.write_bytes(card_src.read_bytes())
+    else:
+        card_dst.write_text("# GenAI report pipeline model card\n", encoding="utf-8")
+
+    def sha(p: Path) -> str:
+        return hashlib.sha256(p.read_bytes()).hexdigest()
+
+    import platform
+
+    manifest = {
+        "contract_version": "1.0.0",
+        "version": version,
+        "trained_at": metrics_doc["evaluated_at"],
+        "data_version": {"generator_seed": seed, "generator_config_sha256": hashlib.sha256(b"genai-no-training-data").hexdigest()},
+        "files": [
+            {"path": "metrics.json", "sha256": sha(metrics_path), "kind": "metrics"},
+            {"path": "model_card.md", "sha256": sha(card_dst), "kind": "model_card"},
+        ],
+        # CCR-010: the manifest schema has no 'genai' module value and requires >= 1 model; there is no trained model here
+        # (verifier + templates are code). 'tagging' is the closest allowed enum value; see docs/contract_change_requests.md.
+        "models": [{
+            "model_id": "genai_verified_report_pipeline_v1",
+            "module": "tagging",
+            "target": None,
+            "feature_tier": "A",
+            "features_used": [],
+            "minor_eligible": True,
+        }],
+        "library_versions": {"python": platform.python_version(), "numpy": "not_used", "lightgbm": "not_used", "scikit_learn": "not_used"},
+    }
+    with open(REPO_ROOT / "contracts" / "artifact_manifest.schema.json", encoding="utf-8") as f:
+        jsonschema.validate(instance=manifest, schema=json.load(f))
+    with open(artifacts_dir / "manifest.json", "w", encoding="utf-8") as f:
+        json.dump(manifest, f, ensure_ascii=False, indent=2)
 
     return {
         "metrics_path": str(metrics_path),
         "fuzz": fuzz_res,
+        "independent": ind_res,
+        "set2": set2_res,
         "mix": mix_res,
         "metrics_doc": metrics_doc,
     }

@@ -1,7 +1,7 @@
 {
   "contract_version": "1.0.0",
   "model_version": "v1.0.0",
-  "evaluated_at": "2026-10-20T21:05:11.553296+00:00",
+  "evaluated_at": "2026-10-23T20:25:17.360860+00:00",
   "generator_seed": 42,
   "results": [
     {
@@ -12,7 +12,7 @@
       "ci_low": 1.0,
       "ci_high": 1.0,
       "passed_bar": true,
-      "notes": "n=500 corrupted outputs across 12 categories; caught=500/500."
+      "notes": "value = min(a, b). (a) own fuzz 500/500 (own generator, not independent); (b) reviewer-written independent set 47/47 (missed: none; fullwidth-digit case excluded as NFKC-equal numbers); (c) second 100-case set by Agent E 100/100 (still passing: none). Not a proof of completeness."
     },
     {
       "metric_key": "genai_unverified_reports_shipped",

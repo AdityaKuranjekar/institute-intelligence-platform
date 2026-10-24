@@ -1,0 +1,37 @@
+{
+  "contract_version": "1.0.0",
+  "version": "v1.0.0",
+  "trained_at": "2026-10-23T20:25:17.360860+00:00",
+  "data_version": {
+    "generator_seed": 42,
+    "generator_config_sha256": "6e50c5c11bde0692a28ea79610ae91c44b1561fc71cce167c6551a26b083bebf"
+  },
+  "files": [
+    {
+      "path": "metrics.json",
+      "sha256": "1569807015b1e78146a1938d45baf5e12572be3f35fb99daf52078b132cb7925",
+      "kind": "metrics"
+    },
+    {
+      "path": "model_card.md",
+      "sha256": "1ae7409ca8ab57949e1f0d97afa85f18d26704725bb4af2f906f23cf4e27f74c",
+      "kind": "model_card"
+    }
+  ],
+  "models": [
+    {
+      "model_id": "genai_verified_report_pipeline_v1",
+      "module": "tagging",
+      "target": null,
+      "feature_tier": "A",
+      "features_used": [],
+      "minor_eligible": true
+    }
+  ],
+  "library_versions": {
+    "python": "3.12.10",
+    "numpy": "not_used",
+    "lightgbm": "not_used",
+    "scikit_learn": "not_used"
+  }
+}

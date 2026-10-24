@@ -32,11 +32,18 @@
    - **(h) Home Tips:** Verifies both rule-selected `home_tips` appear in the report body.
 5. **`generate_report(...) -> Report`**: Tries LLM → `verify` → 1 retry with `retry_corrections_required` → deterministic template fallback. Guaranteed `verified=True`.
 
-## 4. Quantitative Validation Metrics (`ml/artifacts/v1.0.0/metrics.json`)
+## 4. Quantitative Validation Metrics (`backend/app/genai/artifacts/v1.0.0/metrics.json`)
+
+Verifier catch rate is reported on three separate sets; the contract value is the LOWER of (a) and (b):
+(a) own fuzz 500/500 (written by the same agent as the verifier, so NOT independent); (b) the reviewer's independent
+cases (48 EN+HI, fullwidth digits excluded as NFKC-equal numbers), all caught after the R1_E2 fix (the same set caught
+only 38/48 before it); (c) a second 100-case set written after the fix (paraphrases, spacing/mixed-script, markup,
+URL/phone, Unicode runs): 100/100 after one extra fix (letter-spaced Devanagari with matras). This is evidence, not a
+proof of completeness. Known residual surface: an unknown topic named in a sentence WITHOUT a study verb.
 
 | Metric Key (`metrics_bars.yaml`) | Dataset Origin | Target Bar | Measured Value | 95% CI | Gate Status |
 |---|---|---|---|---|---|
-| `genai_verifier_injected_error_catch_rate` | `synthetic` | `>= 1.0` (blocking) | **`1.0000`** (`500 / 500` caught across 12 corruption types) | `[1.0, 1.0]` | **PASS** |
+| `genai_verifier_injected_error_catch_rate` | `synthetic` | `>= 1.0` (blocking) | **`1.0000`** = min(fuzz 500/500, independent set 48/48) | `[1.0, 1.0]` | **PASS** |
 | `genai_unverified_reports_shipped` | `synthetic` | `<= 0.0` (blocking) | **`0.0`** (`0 / 1,000` shipped in random good/bad mix) | `[0.0, 0.0]` | **PASS** |
 
 - **No-LLM Template Latency:** `p50 = 1.6 ms`, `p95 = 3.2 ms` (`< 50 ms` requirement) across 100 reports (50 EN + 50 HI).

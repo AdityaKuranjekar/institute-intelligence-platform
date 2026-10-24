@@ -496,3 +496,20 @@ def test_metrics_json_validates_against_contract_schema():
     assert by_key["genai_verifier_injected_error_catch_rate"]["passed_bar"] is True
     assert by_key["genai_unverified_reports_shipped"]["value"] == 0.0
     assert by_key["genai_unverified_reports_shipped"]["passed_bar"] is True
+
+
+def test_second_adversarial_set_reports_honestly():
+    from backend.app.genai.adversarial_set2 import run_second_set
+
+    res = run_second_set()
+    assert res["total"] == 100
+    # honest accounting: any case that still passes must be listed; none is expected after the fix
+    assert res["caught"] + len(res["still_passing"]) == 100
+    assert res["still_passing"] == [], res["still_passing"]
+
+
+def test_independent_set_and_artifact_location():
+    res = write_genai_artifacts(version="v1.0.0", seed=42)
+    assert res["independent"]["missed"] == [] and res["independent"]["harmless_ok"]
+    assert "backend" in res["metrics_path"] and "artifacts" in res["metrics_path"]
+    assert Path(res["metrics_path"]).parent.joinpath("manifest.json").exists()
