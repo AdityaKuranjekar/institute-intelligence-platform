@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { apiFetch, loadSession, saveSession, setUnauthorizedHandler, type Role, type Session } from "./http";
 
 export const ROLE_HOME: Record<Role, string> = {
@@ -35,6 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const router = useRouter();
   const path = usePathname() ?? "/";
+  const expired = useRef(false); // a 401 already chose the redirect (with ?expired=1)
 
   useEffect(() => {
     setSession(loadSession());
@@ -44,6 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // A 401 anywhere (expired or unknown token) sends the user back to the login screen.
   useEffect(() => {
     setUnauthorizedHandler((reason) => {
+      expired.current = true;
       setSession(null);
       const next = typeof window !== "undefined" ? window.location.pathname : "/";
       router.replace(`/login?expired=1&next=${encodeURIComponent(next)}`);
@@ -58,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       json: { role, institute_id: institute },
       auth: false,
     });
+    expired.current = false;
     const next: Session = { token: s.access_token, user: s.user };
     saveSession(next);
     setSession(next);
@@ -72,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Not signed in -> login (except on the login page itself).
   useEffect(() => {
-    if (ready && !session && path !== "/login") router.replace(`/login?next=${encodeURIComponent(path)}`);
+    if (ready && !session && path !== "/login" && !expired.current) router.replace(`/login?next=${encodeURIComponent(path)}`);
   }, [ready, session, path, router]);
 
   const value = useMemo<Ctx>(
