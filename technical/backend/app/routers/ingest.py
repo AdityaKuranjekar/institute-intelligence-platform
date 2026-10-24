@@ -1,0 +1,45 @@
+"""P4 upload endpoints: preview (mapping + row errors) then commit. CSV and XLSX."""
+from __future__ import annotations
+
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+
+from .. import deps
+from ..services import ingest as svc
+
+router = APIRouter(prefix="/api/v1/ingest")
+WRITE = deps.require(*deps.MANAGERS)
+KINDS = ("students", "guardians", "attendance", "fees", "results", "answer-key")
+
+
+def _wrap(fn, *a, **k):
+    try:
+        return fn(*a, **k)
+    except svc.IngestError as e:
+        raise HTTPException(e.status, detail={"message": e.message, **e.extra})
+
+
+@router.post("/{kind}")
+async def upload(kind: str, file: UploadFile = File(...), mapping: str | None = Form(None), test_id: str | None = Form(None),
+                 test_name: str | None = Form(None), batch_id: str | None = Form(None), test_date: str | None = Form(None),
+                 max_marks: str | None = Form(None), commit: bool = Form(False),
+                 p=Depends(WRITE), conn=Depends(deps.tenant)):
+    """Upload a file. Returns a mapping preview and row errors; nothing is written until commit (or commit=true)."""
+    if kind not in KINDS:
+        raise HTTPException(404, f"unknown upload kind '{kind}'; use one of {KINDS}")
+    data = await file.read()
+    params = {"mapping": mapping, "test_id": test_id, "test_name": test_name, "batch_id": batch_id, "test_date": test_date, "max_marks": max_marks}
+    out = _wrap(svc.preview, conn, p.institute_id, p.user_id, kind, file.filename or "upload", data, params)
+    if commit and out["can_commit"] and not out["duplicate"]:
+        out["commit"] = _wrap(svc.commit, conn, p.institute_id, out["job_id"])
+        out["status"], out["committed"] = "confirmed", True
+    return out
+
+
+@router.get("/jobs/{job_id}")
+def job(job_id: str, p=Depends(WRITE), conn=Depends(deps.tenant)):
+    return _wrap(svc.get_job, conn, job_id)
+
+
+@router.post("/jobs/{job_id}/commit")
+def commit_job(job_id: str, p=Depends(WRITE), conn=Depends(deps.tenant)):
+    return _wrap(svc.commit, conn, p.institute_id, job_id)

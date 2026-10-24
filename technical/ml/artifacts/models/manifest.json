@@ -1,0 +1,63 @@
+{
+ "model_version": "v1.1.0",
+ "trained_at": "2026-10-24T23:01:03.391046+00:00",
+ "seed": 42,
+ "data": "synthetic, seed 42",
+ "seconds": 5.8,
+ "files": {
+  "item_difficulty.csv": "70ad7dfdcefe1a3e",
+  "percentile_mapping.json": "0a271eaa5e6429cc",
+  "percentile_meta.json": "fba9eb39982537e2",
+  "percentile_point.txt": "dc28e361103e71c3",
+  "risk_A.txt": "bffc67c97b4a7035",
+  "risk_AB.txt": "34571110fbca3afe",
+  "risk_ABC.txt": "e633a1079545b7a5",
+  "risk_ABCD.txt": "361206c23369816d",
+  "risk_ablation.json": "28f6073e125e4d1a"
+ },
+ "ablation": {
+  "A": {
+   "auc": 0.6680434322323306,
+   "precision": 0.08260869565217391,
+   "recall": 0.1130952380952381,
+   "lead_time_days": 15.684999999999999
+  },
+  "AB": {
+   "auc": 0.759083784116056,
+   "precision": 0.24782608695652175,
+   "recall": 0.3392857142857143,
+   "lead_time_days": 13.184249084249084
+  },
+  "ABC": {
+   "auc": 0.7631608064912713,
+   "precision": 0.24347826086956523,
+   "recall": 0.3333333333333333,
+   "lead_time_days": 13.326963241436923
+  },
+  "ABCD": {
+   "auc": 0.812263339070568,
+   "precision": 0.3217391304347826,
+   "recall": 0.44047619047619047,
+   "lead_time_days": 14.297879041967663
+  },
+  "B2_ranked_attendance": {
+   "auc": 0.7418903505177171,
+   "precision": 0.22826086956521738,
+   "recall": 0.3125,
+   "lead_time_days": 13.567281840966052
+  },
+  "B1_attendance_rule": {
+   "precision": 0.09164059007599464,
+   "recall": 0.6101190476190477,
+   "flagged_share": 0.24715501049607777
+  }
+ },
+ "percentile": {
+  "halfwidth": 3.434851976685657,
+  "coverage_target": 0.8,
+  "empirical_coverage_2026": 0.799755426475084,
+  "mae_2026": 2.473215009529538,
+  "calibrated_on": 2025,
+  "tested_on": 2026
+ }
+}

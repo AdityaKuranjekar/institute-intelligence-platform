@@ -1,0 +1,38 @@
+{
+ "id": "learned_from_synthetic_outcomes_v1",
+ "assumption": true,
+ "table": [
+  {
+   "marks": 7.0,
+   "percentile": 72.9
+  },
+  {
+   "marks": 18.0,
+   "percentile": 85.2
+  },
+  {
+   "marks": 28.0,
+   "percentile": 92.8
+  },
+  {
+   "marks": 38.0,
+   "percentile": 96.0
+  },
+  {
+   "marks": 49.0,
+   "percentile": 97.9
+  },
+  {
+   "marks": 59.0,
+   "percentile": 99.0
+  },
+  {
+   "marks": 69.0,
+   "percentile": 99.7
+  },
+  {
+   "marks": 79.0,
+   "percentile": 99.8
+  }
+ ]
+}

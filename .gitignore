@@ -31,3 +31,6 @@ presentation/video/ref/
 presentation/video/.tts-venv/
 presentation/video/**/work/
 presentation/video/**/node_modules/
+.pgdata/
+.pgdata_test/
+.ingest_cache/
