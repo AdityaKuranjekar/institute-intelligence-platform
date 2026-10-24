@@ -63,5 +63,13 @@
   "features": [
    "att30"
   ]
+ },
+ "B1_attendance_rule": {
+  "precision": 0.09164059007599464,
+  "recall": 0.6101190476190477,
+  "flagged_share": 0.24715501049607777,
+  "features": [
+   "att30"
+  ]
  }
 }

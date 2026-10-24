@@ -32,3 +32,4 @@ presentation/video/.tts-venv/
 presentation/video/**/work/
 presentation/video/**/node_modules/
 .pgdata/
+.pgdata_test/

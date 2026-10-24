@@ -1,19 +1,19 @@
 {
  "model_version": "v1.1.0",
- "trained_at": "2026-10-24T22:54:53.215560+00:00",
+ "trained_at": "2026-10-24T23:01:03.391046+00:00",
  "seed": 42,
  "data": "synthetic, seed 42",
- "seconds": 5.3,
+ "seconds": 5.8,
  "files": {
   "item_difficulty.csv": "70ad7dfdcefe1a3e",
-  "percentile_mapping.json": "af23474d80fffb25",
-  "percentile_meta.json": "ff4084a0c2f24ddf",
-  "percentile_point.txt": "aa0e99dba0c1fbda",
+  "percentile_mapping.json": "0a271eaa5e6429cc",
+  "percentile_meta.json": "fba9eb39982537e2",
+  "percentile_point.txt": "dc28e361103e71c3",
   "risk_A.txt": "bffc67c97b4a7035",
   "risk_AB.txt": "34571110fbca3afe",
   "risk_ABC.txt": "e633a1079545b7a5",
   "risk_ABCD.txt": "361206c23369816d",
-  "risk_ablation.json": "518e69e628639c85"
+  "risk_ablation.json": "28f6073e125e4d1a"
  },
  "ablation": {
   "A": {
@@ -45,13 +45,18 @@
    "precision": 0.22826086956521738,
    "recall": 0.3125,
    "lead_time_days": 13.567281840966052
+  },
+  "B1_attendance_rule": {
+   "precision": 0.09164059007599464,
+   "recall": 0.6101190476190477,
+   "flagged_share": 0.24715501049607777
   }
  },
  "percentile": {
-  "halfwidth": 3.4922775977839016,
+  "halfwidth": 3.434851976685657,
   "coverage_target": 0.8,
-  "empirical_coverage_2026": 0.7951348182883939,
-  "mae_2026": 2.5962201661577007,
+  "empirical_coverage_2026": 0.799755426475084,
+  "mae_2026": 2.473215009529538,
   "calibrated_on": 2025,
   "tested_on": 2026
  }

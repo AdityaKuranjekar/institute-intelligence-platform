@@ -1,8 +1,8 @@
 {
- "halfwidth": 3.4922775977839016,
+ "halfwidth": 3.434851976685657,
  "coverage_target": 0.8,
- "empirical_coverage_2026": 0.7951348182883939,
- "mae_2026": 2.5962201661577007,
+ "empirical_coverage_2026": 0.799755426475084,
+ "mae_2026": 2.473215009529538,
  "calibrated_on": 2025,
  "tested_on": 2026
 }

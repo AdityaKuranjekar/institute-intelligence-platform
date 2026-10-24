@@ -16,15 +16,17 @@ from .. import config
 PF = ["m3", "mall", "chap", "n"]
 
 
-def features(tt: pd.DataFrame, asof: pd.Timestamp) -> pd.DataFrame:
-    """tt[student_id, test_date, pct, exam_pattern_code]; one row per student with at least one test."""
+def features(tt: pd.DataFrame, asof: pd.Timestamp, strict: bool = False) -> pd.DataFrame:
+    """tt[student_id, test_date, pct, exam_pattern_code]; one row per student with at least one test.
+    strict=True (training) keeps only students with at least one non-internal test, as ml/build_artifacts.py did;
+    at runtime students with only chapter tests still get a range (falling back to their chapter-test mean)."""
     t = tt[(tt.test_date <= asof) & (tt.exam_pattern_code != "internal_chapter_test")].sort_values("test_date")
     if t.empty:
         t = tt[tt.test_date <= asof].sort_values("test_date")
     g = t.groupby("student_id")
     F = pd.DataFrame({"m3": g.tail(3).groupby("student_id").pct.mean(), "mall": g.pct.mean(), "n": g.size()})
     ch = tt[tt.test_date <= asof].groupby("student_id").pct.mean().rename("chap")
-    F = F.join(ch, how="outer")
+    F = F.join(ch, how="left" if strict else "outer")
     F["m3"] = F.m3.fillna(F.chap)
     F["mall"] = F.mall.fillna(F.chap)
     F["n"] = F.n.fillna(0)

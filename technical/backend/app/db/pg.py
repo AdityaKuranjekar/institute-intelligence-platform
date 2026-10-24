@@ -7,6 +7,7 @@ by the seed loader and by /auth/login (to resolve which tenant a login belongs t
 from __future__ import annotations
 
 import contextlib
+import os
 import threading
 from typing import Iterator
 
@@ -33,7 +34,8 @@ def database_uri() -> str:
             import pgserver
 
             config.PG_DATA_DIR.mkdir(parents=True, exist_ok=True)
-            _server = pgserver.get_server(str(config.PG_DATA_DIR), cleanup_mode=None)  # keeps running after exit
+            keep = os.environ.get("PG_KEEP_RUNNING", "1") == "1"
+            _server = pgserver.get_server(str(config.PG_DATA_DIR), cleanup_mode=None if keep else "stop")  # demo keeps it running
             _uri = _server.get_uri()
         return _uri
 

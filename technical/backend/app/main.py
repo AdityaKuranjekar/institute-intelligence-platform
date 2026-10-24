@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .db import pg
-from .routers import system
+from .routers import read, system
 
 
 @contextlib.asynccontextmanager
@@ -25,3 +25,4 @@ app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:3000", "http
 
 app.include_router(system.router)
 app.include_router(system.router, prefix="/api/v1")
+app.include_router(read.router)

@@ -119,6 +119,9 @@ def train() -> dict:
     pr, rc, ld = _at_cap(te, "b2")
     ablation["B2_ranked_attendance"] = {"auc": float(roc_auc_score(te.y, te.b2.fillna(0))), "precision": pr,
                                         "recall": rc, "lead_time_days": ld, "features": ["att30"]}
+    f1 = te[te.att30 < 0.75]
+    ablation["B1_attendance_rule"] = {"precision": float(f1.y.mean()), "recall": float(f1.y.sum() / te.y.sum()),
+                                      "flagged_share": float(len(f1) / len(te)), "features": ["att30"]}
     (config.MODELS_DIR / "risk_ablation.json").write_text(json.dumps(ablation, indent=1), encoding="utf-8")
 
     # ---------------------------------------------------------- percentile
@@ -126,7 +129,7 @@ def train() -> dict:
     for yr in (2024, 2025, 2026):
         asof = pd.Timestamp(f"{yr}-09-01")
         stu = students[students.academic_year == yr].set_index("id")
-        F = percentile.features(tt[tt.student_id.isin(stu.index)], asof)
+        F = percentile.features(tt[tt.student_id.isin(stu.index)], asof, strict=True)
         F = F.join(outc.set_index("student_id")[["true_final_percentile", "exam"]]).dropna(subset=["true_final_percentile"])
         F["institute_id"] = stu.institute_id.reindex(F.index).values
         P[yr] = F
