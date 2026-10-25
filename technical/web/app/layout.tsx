@@ -3,7 +3,6 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/noto-sans-devanagari";
 import "./globals.css";
 import { AppProvider } from "@/lib/app-context";
-import { AuthProvider } from "@/lib/auth";
 import { Shell } from "@/components/shell";
 
 export const metadata: Metadata = {
@@ -17,9 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="bg-bg font-sans text-ink antialiased">
         <AppProvider>
-          <AuthProvider>
-            <Shell>{children}</Shell>
-          </AuthProvider>
+          <Shell>{children}</Shell>
         </AppProvider>
       </body>
     </html>

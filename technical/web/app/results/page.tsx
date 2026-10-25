@@ -4,6 +4,7 @@ import type { EChartsOption } from "echarts";
 import { EChart } from "@/components/echart";
 import { Badge, Card, CardTitle, Note, Origin, PageHead, PageSkeleton, Stat, Unavailable } from "@/components/ui";
 import { useApp, useData } from "@/lib/app-context";
+import { useBatches } from "@/lib/views";
 import { pct } from "@/lib/utils";
 
 const REASONS: Record<string, [string, string]> = {
@@ -14,25 +15,22 @@ const REASONS: Record<string, [string, string]> = {
   health_other: ["Health / other", "स्वास्थ्य / अन्य"],
 };
 
-export default function OwnerPage() {
+export default function ResultsPage() {
   const { L } = useApp();
   const owner = useData("owner");
-  const risk = useData("risk");
-  const mastery = useData("mastery");
-  const moat = useData("moat");
+  const bq = useBatches();
 
   if (owner.loading) return <PageSkeleton />;
   const o = owner.data;
-  if (!o) return <Unavailable what="owner" detail={owner.error} status={owner.status} />;
+  if (!o) return <Unavailable what="results" detail={owner.error} status={owner.status} onRetry={owner.reload} />;
 
-  const batchName = (id: string) => mastery.data?.batches.find((b) => b.batch_id === id)?.name ?? id.slice(0, 6);
+  const batchName = (id: string) => bq.data?.find((b) => b.id === id)?.name ?? L("Another batch", "अन्य बैच");
   const months = o.retention.monthly;
   const first = months[0];
   const last = months[months.length - 1];
   const totalDropped = months.reduce((a, m) => a + m.dropped, 0);
   const retained = first ? 1 - totalDropped / first.enrolled : null;
   const roi = o.roi;
-  const rk = risk.data;
 
   const forest = (rows: typeof o.batch_compare, name: (r: (typeof rows)[number]) => string): EChartsOption => {
     const ok = rows.filter((r) => r.enough_data);
@@ -61,10 +59,10 @@ export default function OwnerPage() {
             return {
               type: "group",
               children: [
-                { type: "line", shape: { x1: lo[0], y1: lo[1], x2: hi[0], y2: hi[1] }, style: { stroke: "#1e4a8a", lineWidth: 2 } },
-                { type: "line", shape: { x1: lo[0], y1: lo[1] - 5, x2: lo[0], y2: lo[1] + 5 }, style: { stroke: "#1e4a8a", lineWidth: 2 } },
-                { type: "line", shape: { x1: hi[0], y1: hi[1] - 5, x2: hi[0], y2: hi[1] + 5 }, style: { stroke: "#1e4a8a", lineWidth: 2 } },
-                { type: "circle", shape: { cx: mid[0], cy: mid[1], r: 5 }, style: { fill: "#1e4a8a" } },
+                { type: "line", shape: { x1: lo[0], y1: lo[1], x2: hi[0], y2: hi[1] }, style: { stroke: "#3b5bdb", lineWidth: 2 } },
+                { type: "line", shape: { x1: lo[0], y1: lo[1] - 5, x2: lo[0], y2: lo[1] + 5 }, style: { stroke: "#3b5bdb", lineWidth: 2 } },
+                { type: "line", shape: { x1: hi[0], y1: hi[1] - 5, x2: hi[0], y2: hi[1] + 5 }, style: { stroke: "#3b5bdb", lineWidth: 2 } },
+                { type: "circle", shape: { cx: mid[0], cy: mid[1], r: 5 }, style: { fill: "#3b5bdb" } },
               ],
             };
           },
@@ -95,23 +93,9 @@ export default function OwnerPage() {
     series: [{ type: "bar", data: reasons.map(([, v]) => v), itemStyle: { color: "#5b6fb3" }, barMaxWidth: 22 }],
   };
 
-  const mo = moat.data;
-  const moatOpt: EChartsOption | null = mo
-    ? {
-        tooltip: { trigger: "axis" },
-        xAxis: { type: "category", data: mo.points.map((p) => String(p.n_institutes)), name: L("Institutes pooling item statistics", "आइटम आँकड़े साझा करने वाले संस्थान"), nameLocation: "middle", nameGap: 30 },
-        yAxis: { type: "value", name: L("Difficulty calibration error", "कठिनाई अंशांकन त्रुटि"), scale: true },
-        series: [
-          { name: "low", type: "line", data: mo.points.map((p) => p.ci_low), lineStyle: { opacity: 0 }, stack: "ci", symbol: "none" },
-          { name: "band", type: "line", data: mo.points.map((p) => p.ci_high - p.ci_low), lineStyle: { opacity: 0 }, areaStyle: { color: "#1e4a8a", opacity: 0.15 }, stack: "ci", symbol: "none" },
-          { name: L("Error", "त्रुटि"), type: "line", data: mo.points.map((p) => p.calibration_error), symbolSize: 9, lineStyle: { width: 3 } },
-        ],
-      }
-    : null;
-
   return (
     <div className="space-y-6">
-      <PageHead title={L("Owner view", "मालिक दृश्य")} sub={L("Is it working, and is it worth it?", "क्या यह काम कर रहा है, और क्या यह फ़ायदेमंद है?")} />
+      <PageHead sub={L("Is it working, and is it worth it?", "क्या यह काम कर रहा है, और क्या यह फ़ायदेमंद है?")} />
 
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label={L("Students enrolled (latest month)", "नामांकित विद्यार्थी (नवीनतम माह)")} value={last ? last.enrolled : "—"} sub={last?.month} origin={o.origin} />
@@ -121,12 +105,7 @@ export default function OwnerPage() {
           sub={L(`${totalDropped} left in ${months.length} months`, `${months.length} माह में ${totalDropped} गए`)}
           origin={o.origin}
         />
-        <Stat
-          label={L("Support list catches", "सहयोग सूची पकड़ती है")}
-          value={rk ? pct(rk.operating_point.recall) : "—"}
-          sub={rk ? L(`of students who later left; ${rk.capacity_per_week} per week`, `उन विद्यार्थियों में से जो बाद में गए; ${rk.capacity_per_week} प्रति सप्ताह`) : undefined}
-          origin="model"
-        />
+        <Stat label={L("Students who left", "जो विद्यार्थी छोड़ गए")} value={totalDropped} sub={L(`in ${months.length} months`, `${months.length} माह में`)} />
         <Stat label={L("Owner return (range)", "मालिक का रिटर्न (सीमा)")} value={`${roi.ratio_low}–${roi.ratio_high}x`} sub={L(`base ${roi.ratio_base}x`, `आधार ${roi.ratio_base}x`)} origin="assumption" />
       </section>
 
@@ -167,19 +146,13 @@ export default function OwnerPage() {
               [L("High", "अधिक"), roi.ratio_high],
             ].map(([k, v]) => (
               <div key={String(k)} className="rounded-xl bg-amber-soft p-3">
-                <p className="text-xs text-[#7a4e05]">{k}</p>
+                <p className="text-xs text-[#8a5200]">{k}</p>
                 <p className="text-2xl font-semibold tabular-nums text-ink">{v}x</p>
               </div>
             ))}
           </div>
           <p className="mt-3 text-sm text-ink-soft">{roi.note}</p>
           <p className="mt-1 text-xs text-ink-mute">{L("Assumption: willingness to pay is untested until a pilot.", "अनुमान: भुगतान की इच्छा पायलट तक परखी नहीं गई है।")}</p>
-        </Card>
-        <Card>
-          <CardTitle right={<Origin origin={mo?.origin ?? "synthetic"} />}>{L("The data moat", "डेटा मोट")}</CardTitle>
-          {moatOpt ? <EChart option={moatOpt} height={240} label="Calibration error vs institutes" /> : <Unavailable what="moat" detail={moat.error} status={moat.status} />}
-          <p className="mt-1 text-sm text-ink-soft">{L("Only question difficulty is shared across institutes, never student data. More institutes means better difficulty estimates for everyone.", "संस्थानों के बीच केवल प्रश्नों की कठिनाई साझा होती है, विद्यार्थियों का डेटा कभी नहीं। अधिक संस्थान, सबके लिए बेहतर कठिनाई अनुमान।")}</p>
-          {mo?.note && <p className="mt-1 text-xs text-ink-mute">{mo.note}</p>}
         </Card>
       </div>
       <Badge tone="neutral">{L("All numbers are synthetic or modelled; a real pilot settles real uplift.", "सभी संख्याएँ कृत्रिम या मॉडल-आधारित हैं; असली लाभ पायलट से तय होगा।")}</Badge>

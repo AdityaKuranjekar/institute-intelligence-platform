@@ -1,44 +1,36 @@
 import { expect, test } from "@playwright/test";
-import { resetMock, signIn, type Role } from "./helpers";
+import { openApp, resetMock } from "./helpers";
 
-const SCREENS: { path: string; role: Role; text: RegExp }[] = [
-  { path: "/teacher", role: "teacher", text: /Topic mastery/ },
-  { path: "/capture", role: "teacher", text: /Capture data/ },
-  { path: "/owner", role: "owner", text: /./ },
-  { path: "/privacy", role: "owner", text: /Consent and privacy/ },
-  { path: "/student/_", role: "student", text: /Predicted percentile range/ },
-  { path: "/parent/_", role: "parent", text: /Monthly report/ },
-  { path: "/data-card", role: "teacher", text: /./ },
-  { path: "/how-it-works", role: "teacher", text: /./ },
+const SCREENS: { path: string; text: RegExp }[] = [
+  { path: "/", text: /Your week in 5 steps/ },
+  { path: "/add-data", text: /Spreadsheet|CSV/ },
+  { path: "/weak-topics", text: /Topic by topic/ },
+  { path: "/support", text: /This week/ },
+  { path: "/students", text: /Hi |नमस्ते|Not enough data|अभी पर्याप्त/ },
+  { path: "/parents", text: /Monthly report|मासिक रिपोर्ट|Not enough data|अभी पर्याप्त/ },
+  { path: "/results", text: /Retention by month|माह के अनुसार/ },
+  { path: "/privacy", text: /early-warning model may use|अर्ली-वार्निंग/ },
+  { path: "/about", text: /./ },
+  { path: "/about/data-card", text: /./ },
+  { path: "/about/evidence", text: /Model vs your current rule|मॉडल बनाम/ },
 ];
 
-test.beforeEach(async ({ page }) => {
-  await resetMock(page);
-});
-
-test("login screen renders, wrong server is reported calmly", async ({ page }) => {
-  await page.goto("/login");
-  await expect(page.getByRole("heading", { name: "Pragati" })).toBeVisible();
-  await expect(page.getByRole("radio")).toHaveCount(5);
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
-  expect(overflow).toBe(false);
-});
+test.beforeEach(async ({ page }) => resetMock(page));
 
 for (const s of SCREENS) {
-  test(`${s.path} as ${s.role}: loads offline, no console errors, no sideways scroll`, async ({ page }) => {
+  test(`${s.path}: loads offline, no console errors, no sideways scroll`, async ({ page }) => {
     const external: string[] = [];
     const errors: string[] = [];
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
     page.on("pageerror", (e) => errors.push(e.message));
     await page.route("**/*", (route) => {
       const u = new URL(route.request().url());
-      if (u.hostname === "localhost" || u.protocol === "data:" || u.protocol === "blob:") return route.continue();
+      if (["localhost", "127.0.0.1"].includes(u.hostname) || u.protocol === "data:" || u.protocol === "blob:") return route.continue();
       external.push(u.href);
       return route.abort();
     });
-    await signIn(page, s.role);
-    await page.goto(s.path);
-    await expect(page.getByRole("main")).toContainText(s.text);
+    await openApp(page, s.path);
+    await expect(page.getByRole("main")).toContainText(s.text, { timeout: 20_000 });
     await page.waitForLoadState("networkidle");
     expect(external, "requests that left the machine").toEqual([]);
     expect(errors.filter((e) => !/Failed to load resource/.test(e)), "console errors").toEqual([]);
@@ -48,41 +40,31 @@ for (const s of SCREENS) {
 }
 
 // Hindi pass: with the UI in Hindi, long runs of plain English in the main area mean a missed translation.
-const ALLOW = /Pragati|Synthetic|synthetic|OMR|CSV|Excel|DigiLocker|AUC|WhatsApp|PDF|JEE|NEET|IRT|ML|ECharts|LightGBM|SHAP|OULAD|ASSISTments|KPI|DPDP|ID|FAQ|ROI|LTV|CAC|SaaS|Rasch|Hindi|English|API|NTA|IIT|MoE|Kota|Patna|Gaya|Lucknow|Raw|Date|Student|Roll|PAT\S*|[A-Z]{2,}\S*|\S*\d\S*/g;
-// Evidence pages (owner, data card, how it works) render English-only text from the artifact files
-// (scaling.json, datacard.json, owner.json). For those we only assert the page chrome is Hindi; see NOTES.md.
-const EVIDENCE = ["/owner", "/data-card", "/how-it-works"];
+const ALLOW = /Pragati|Synthetic|synthetic|OMR|CSV|Excel|DigiLocker|AUC|WhatsApp|PDF|JEE|NEET|IRT|ML|ECharts|LightGBM|SHAP|OULAD|ASSISTments|KPI|DPDP|ID|FAQ|ROI|LTV|CAC|SaaS|Rasch|Hindi|English|API|NTA|IIT|MoE|Kota|Patna|Gaya|Lucknow|Raw|Date|Student|Roll|JEE-\S*|PAT\S*|[A-Z]{2,}\S*|\S*\d\S*/g;
+// Evidence pages render English-only text from artifact files; for those only the page title is asserted.
+const EVIDENCE = ["/about", "/about/data-card", "/about/evidence", "/results"];
 for (const s of SCREENS) {
   test(`Hindi pass ${s.path}`, async ({ page }) => {
     await page.addInitScript(() => localStorage.setItem("pragati.lang", "hi"));
-    await signIn(page, s.role);
     await page.goto(s.path);
-    await page.waitForLoadState("networkidle");
+    await expect(page.getByTestId("page-title")).toHaveText(/[ऀ-ॿ]/);
+    await expect(page.getByRole("main")).toContainText(s.text, { timeout: 20_000 });
     await page.waitForTimeout(600);
-    if (EVIDENCE.includes(s.path)) {
-      await expect(page.getByRole("heading", { level: 1 })).toHaveText(/[ऀ-ॿ]/);
-      return;
-    }
-    // known data gaps (English-only strings in the artifacts) are tagged data-gap in the markup
+    if (EVIDENCE.includes(s.path)) return;
     await page.evaluate(() => document.querySelectorAll<HTMLElement>("[data-gap]").forEach((e) => (e.style.display = "none")));
     const text = await page.getByRole("main").innerText();
     const runs = text
       .split("\n")
       .map((l) => l.replace(ALLOW, " ").trim())
-      .filter((l) => /(?:[A-Za-z]{3,}\s+){2,}[A-Za-z]{3,}/.test(l));
+      .filter((l) => /(?:[A-Za-z]{3,}\s+){2,}[A-Za-z]{3,}/.test(l));
     expect(runs, "English-only lines found while language is Hindi").toEqual([]);
   });
 }
 
 test("server unreachable: calm message with a way to retry, not a blank page", async ({ page }) => {
-  await signIn(page, "teacher");
-  await page.route("**/api/mock/**", (r) => r.abort());
-  await page.goto("/teacher");
-  await expect(page.getByRole("alert").first()).toContainText("Cannot reach the server");
-});
-
-test("a student asking for a teacher screen gets a 403 message, not data", async ({ page }) => {
-  await signIn(page, "student");
-  await page.goto("/teacher");
-  await expect(page.getByRole("alert").first()).toContainText(/Not available for your role/);
+  await openApp(page);
+  await page.route("**/api/**", (r) => r.abort());
+  await page.route("http://127.0.0.1:8000/**", (r) => r.abort());
+  await page.goto("/results");
+  await expect(page.getByRole("alert").first()).toContainText("Cannot reach the server", { timeout: 20_000 });
 });

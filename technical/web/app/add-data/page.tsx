@@ -4,29 +4,19 @@ import { Camera, FileSpreadsheet } from "lucide-react";
 import { useState } from "react";
 import { Card, CardTitle, Note, Origin, PageHead } from "@/components/ui";
 import { useApp, useData } from "@/lib/app-context";
-import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { IngestPanel } from "./ingest-panel";
 import { OmrPanel } from "./omr-panel";
 
 export default function CapturePage() {
   const { L } = useApp();
-  const { can } = useAuth();
   const dc = useData("datacard");
   const [tab, setTab] = useState<"file" | "omr">("file");
   const clean = dc.data?.cleaning;
 
-  if (!can("ingest"))
-    return (
-      <div className="space-y-4">
-        <PageHead title={L("Capture data", "डेटा जोड़ें")} />
-        <Note tone="calm">{L("Uploading data is for the owner and teachers.", "डेटा अपलोड करना मालिक और शिक्षकों के लिए है।")}</Note>
-      </div>
-    );
-
   return (
     <div className="space-y-6">
-      <PageHead title={L("Capture data", "डेटा जोड़ें")} sub={L("Upload a spreadsheet or a photo of an OMR sheet. You check the column match and any problem rows before anything is saved.", "स्प्रेडशीट या OMR शीट की फ़ोटो अपलोड करें। कुछ भी सहेजने से पहले आप कॉलम मिलान और समस्या वाली पंक्तियाँ जाँचते हैं।")} />
+      <PageHead sub={L("Upload a spreadsheet or a photo of an OMR sheet. You check the column match and any problem rows before anything is saved.", "स्प्रेडशीट या OMR शीट की फ़ोटो अपलोड करें। कुछ भी सहेजने से पहले आप कॉलम मिलान और समस्या वाली पंक्तियाँ जाँचते हैं।")} />
       <div role="tablist" aria-label={L("Source", "स्रोत")} className="flex gap-2">
         {([["file", FileSpreadsheet, "Spreadsheet", "स्प्रेडशीट"], ["omr", Camera, "OMR photo", "OMR फ़ोटो"]] as const).map(([id, Icon, en, hi]) => (
           <button
@@ -50,7 +40,7 @@ export default function CapturePage() {
               <div key={i} className="flex items-center justify-between rounded-xl border border-line px-3 py-2 text-sm">
                 <code className="text-ink-soft line-through">{e.raw}</code>
                 <span>→</span>
-                <code className="font-medium text-[#0a7467]">{e.clean}</code>
+                <code className="font-medium text-[#087f5b]">{e.clean}</code>
               </div>
             ))}
           </div>

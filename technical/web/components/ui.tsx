@@ -1,7 +1,7 @@
 "use client";
 
 import { Info } from "lucide-react";
-import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
+import { createContext, useContext, type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from "react";
 import { useApp } from "@/lib/app-context";
 import { cn } from "@/lib/utils";
 
@@ -26,9 +26,9 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-1.5 rounded-xl px-3.5 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:opacity-50",
+        "inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-[15px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:opacity-50",
         variant === "primary" && "bg-brand text-white hover:bg-brand-dark",
-        variant === "soft" && "bg-brand-soft text-brand-dark hover:bg-[#d8e6ff]",
+        variant === "soft" && "bg-brand-soft text-brand-dark hover:bg-[#dbe4ff]",
         variant === "ghost" && "text-ink-soft hover:bg-brand-soft",
         className
       )}
@@ -40,14 +40,14 @@ export function Button({
 const TONES = {
   neutral: "bg-[#eef1f6] text-ink-soft",
   brand: "bg-brand-soft text-brand-dark",
-  teal: "bg-teal-soft text-[#0a7467]",
-  amber: "bg-amber-soft text-[#9a6206]",
-  calm: "bg-calm-soft text-[#3f4f8c]",
+  teal: "bg-teal-soft text-[#087f5b]",
+  amber: "bg-amber-soft text-[#8a5200]",
+  calm: "bg-calm-soft text-[#5f3dc4]",
 } as const;
 export function Badge({ tone = "neutral", className, ...p }: HTMLAttributes<HTMLSpanElement> & { tone?: keyof typeof TONES }) {
   return (
     <span
-      className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", TONES[tone], className)}
+      className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium", TONES[tone], className)}
       {...p}
     />
   );
@@ -61,8 +61,10 @@ const ORIGIN_TONE: Record<string, keyof typeof TONES> = {
   real_photo: "teal",
 };
 /** Origin chip: synthetic / public / model / assumption. */
+export const EvidenceContext = createContext(false);
 export function Origin({ origin, className }: { origin?: string; className?: string }) {
-  if (!origin) return null;
+  const evidence = useContext(EvidenceContext);
+  if (!origin || !evidence) return null;
   return (
     <Badge tone={ORIGIN_TONE[origin] ?? "neutral"} className={className} data-testid="origin-chip">
       {origin.replace("_", " ")}
@@ -119,21 +121,22 @@ export function Empty({ children }: { children: ReactNode }) {
 }
 
 export function Note({ children, tone = "amber" }: { children: ReactNode; tone?: "amber" | "brand" | "calm" }) {
-  const c = tone === "amber" ? "bg-amber-soft text-[#7a4e05]" : tone === "brand" ? "bg-brand-soft text-brand-dark" : "bg-calm-soft text-[#3f4f8c]";
+  const c = tone === "amber" ? "bg-amber-soft text-[#8a5200]" : tone === "brand" ? "bg-brand-soft text-brand-dark" : "bg-calm-soft text-[#5f3dc4]";
   return (
-    <div className={cn("flex gap-2 rounded-xl px-3 py-2 text-[13px] leading-snug", c)}>
+    <div className={cn("flex gap-2 rounded-xl px-3 py-2 text-sm leading-snug", c)}>
       <Info size={15} className="mt-0.5 shrink-0" />
       <div>{children}</div>
     </div>
   );
 }
 
-export function PageHead({ title, sub, right }: { title: ReactNode; sub?: ReactNode; right?: ReactNode }) {
+/** Lead line under the top-bar title. `title` (optional) is a subheading, not a second page title. */
+export function PageHead({ title, sub, right }: { title?: ReactNode; sub?: ReactNode; right?: ReactNode }) {
   return (
     <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">{title}</h1>
-        {sub && <p className="mt-1 text-sm text-ink-soft">{sub}</p>}
+      <div className="min-w-0">
+        {title && <h2 className="text-xl font-semibold tracking-tight text-ink">{title}</h2>}
+        {sub && <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">{sub}</p>}
       </div>
       {right}
     </div>

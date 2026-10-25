@@ -103,7 +103,7 @@ export function IngestPanel() {
   const done = job?.status === "done";
   useEffect(() => {
     if (done && job) {
-      const t = setTimeout(() => router.push(`${job.redirect ?? "/teacher"}?uploaded=${job.job_id}`), 900);
+      const t = setTimeout(() => router.push(`/weak-topics?uploaded=${job.job_id}`), 900);
       return () => clearTimeout(t);
     }
   }, [done, job, router]);
@@ -159,7 +159,7 @@ export function IngestPanel() {
           <input ref={input} data-testid="ingest-file" type="file" accept=".csv,.tsv,.xlsx,.xls" className="sr-only" disabled={busy !== null && busy !== undefined} onChange={(e) => void pick(e.target.files?.[0])} />
         </label>
         {err && (
-          <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#7a4e05]">
+          <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#8a5200]">
             {err}
           </p>
         )}
@@ -297,9 +297,9 @@ export function IngestPanel() {
                   <div className="h-2 rounded-full bg-brand transition-all" style={{ width: `${Math.round(job.progress * 100)}%` }} />
                 </div>
                 {job.status === "failed" ? (
-                  <p role="alert" className="mt-3 text-sm text-[#7a4e05]">{job.error}</p>
+                  <p role="alert" className="mt-3 text-sm text-[#8a5200]">{job.error}</p>
                 ) : done ? (
-                  <p className="mt-3 flex items-center gap-1.5 text-sm font-medium text-[#0a7467]"><CheckCircle2 size={16} /> {L("Saved. Opening the heatmap…", "सहेजा गया। हीटमैप खुल रहा है…")}</p>
+                  <p className="mt-3 flex items-center gap-1.5 text-sm font-medium text-[#087f5b]"><CheckCircle2 size={16} /> {(job as { duplicate?: boolean }).duplicate ? L("This exact file was already saved earlier, so nothing changed. Opening the topic map…", "यही फ़ाइल पहले ही सहेजी जा चुकी है, इसलिए कुछ नहीं बदला। विषय मानचित्र खुल रहा है…") : L("Saved. Opening the topic map…", "सहेजा गया। विषय मानचित्र खुल रहा है…")}</p>
                 ) : null}
               </div>
             )}

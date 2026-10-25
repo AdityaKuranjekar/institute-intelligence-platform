@@ -1,17 +1,13 @@
-// The one place that talks HTTP. Token handling, 401 and 403 live here.
+// The one place that talks HTTP. Token handling and the silent re-login on 401 live here.
 // Switch the whole app between the mock and the FastAPI server with NEXT_PUBLIC_API_BASE
-// (default "/api/mock"; real server: "http://localhost:8000/api/v1").
+// (default "/api/mock"; real server: "http://127.0.0.1:8000/api/v1").
 export const API_BASE = (process.env.NEXT_PUBLIC_API_BASE ?? "/api/mock").replace(/\/$/, "");
 
-export type Role = "owner" | "teacher" | "mentor" | "student" | "parent";
-export type Session = {
-  token: string;
-  user: { id: string; role: Role; name: string; institute_id: string; student_id?: string | null };
-};
+export type Session = { token: string; institute: string; role: string; name: string };
 
-const KEY = "pragati.session";
+const KEY = "pragati.session.v2";
 let memory: Session | null = null;
-let onUnauthorized: ((reason: string) => void) | null = null;
+let reauth: (() => Promise<void>) | null = null;
 
 export function loadSession(): Session | null {
   if (memory) return memory;
@@ -28,8 +24,9 @@ export function saveSession(s: Session | null) {
     else localStorage.removeItem(KEY);
   } catch {}
 }
-export function setUnauthorizedHandler(fn: ((reason: string) => void) | null) {
-  onUnauthorized = fn;
+/** The auth provider registers how to get a fresh demo token; apiFetch calls it once on a 401. */
+export function setReauth(fn: (() => Promise<void>) | null) {
+  reauth = fn;
 }
 
 export class ApiError extends Error {
@@ -42,6 +39,10 @@ export class ApiError extends Error {
 function detailOf(body: unknown, fallback: string): { message: string; fields?: Record<string, string> } {
   const d = (body as { detail?: unknown; error?: unknown } | null)?.detail ?? (body as { error?: unknown } | null)?.error;
   if (typeof d === "string") return { message: d };
+  if (d && typeof d === "object" && !Array.isArray(d)) {
+    const m = (d as { message?: unknown; msg?: unknown }).message ?? (d as { msg?: unknown }).msg;
+    if (typeof m === "string") return { message: m };
+  }
   if (Array.isArray(d)) {
     const fields: Record<string, string> = {};
     const parts = d.map((x: { loc?: unknown[]; msg?: string }) => {
@@ -56,7 +57,7 @@ function detailOf(body: unknown, fallback: string): { message: string; fields?: 
 
 type Init = { method?: string; json?: unknown; form?: FormData; signal?: AbortSignal; auth?: boolean };
 
-export async function apiFetch<T>(path: string, init: Init = {}): Promise<T> {
+export async function apiFetch<T>(path: string, init: Init = {}, retried = false): Promise<T> {
   const headers: Record<string, string> = { accept: "application/json" };
   const s = loadSession();
   if (init.auth !== false && s) headers.authorization = `Bearer ${s.token}`;
@@ -79,11 +80,12 @@ export async function apiFetch<T>(path: string, init: Init = {}): Promise<T> {
     json = text ? JSON.parse(text) : null;
   } catch {}
   if (!res.ok) {
-    const d = detailOf(json, `HTTP ${res.status}`);
-    if (res.status === 401 && init.auth !== false) {
-      saveSession(null);
-      onUnauthorized?.(d.message);
+    // demo token expired or the server restarted: get a new one silently and try once more
+    if (res.status === 401 && init.auth !== false && !retried && reauth) {
+      await reauth();
+      return apiFetch<T>(path, init, true);
     }
+    const d = detailOf(json, `HTTP ${res.status}`);
     throw new ApiError(res.status, d.message, d.fields);
   }
   return json as T;

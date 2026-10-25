@@ -56,7 +56,7 @@ export function ReportGenerator({ studentId }: { studentId: string }) {
           {L("Try the local language model first", "पहले स्थानीय भाषा-मॉडल आज़माएँ")}
         </label>
       </div>
-      {err && <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#7a4e05]">{err}</p>}
+      {err && <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#8a5200]">{err}</p>}
 
       {r && (
         <div className="mt-4 space-y-3" data-testid="report-result" aria-live="polite">
@@ -67,11 +67,11 @@ export function ReportGenerator({ studentId }: { studentId: string }) {
             <Badge tone={r.source === "template" ? "calm" : "brand"} data-testid="source-badge">
               {r.source === "template" ? L("Written from a template", "टेम्पलेट से लिखा गया") : L("Written by the local model", "स्थानीय मॉडल ने लिखा")}
             </Badge>
-            {r.latency_ms !== undefined && <span className="text-xs text-ink-mute">{(r.latency_ms / 1000).toFixed(1)} s</span>}
+            {r.latency_ms != null && <span className="text-xs text-ink-mute">{(r.latency_ms / 1000).toFixed(1)} s</span>}
           </div>
           {r.fallback_used && (
             <div data-testid="fallback-note">
-              <Note tone="calm">{L(...(REASON[r.fallback_reason ?? ""] ?? ["The template was used instead of the model.", "मॉडल की जगह टेम्पलेट इस्तेमाल हुआ।"] as [string, string]))}</Note>
+              <Note tone="calm">{REASON[r.fallback_reason ?? ""] ? L(...REASON[r.fallback_reason ?? ""]) : L("The local language model is not available, so the safe template was used.", "स्थानीय भाषा-मॉडल उपलब्ध नहीं है, इसलिए सुरक्षित टेम्पलेट इस्तेमाल हुआ।")}</Note>
             </div>
           )}
           {r.verified ? (
@@ -86,8 +86,8 @@ export function ReportGenerator({ studentId }: { studentId: string }) {
             <summary className="cursor-pointer text-ink-soft">{L("What was checked", "क्या जाँचा गया")}</summary>
             <ul className="mt-2 space-y-1" data-testid="check-list">
               {r.checks.map((c) => (
-                <li key={c.id} className="flex items-center gap-2 text-[13px]">
-                  <span className={cn("grid h-4 w-4 place-items-center rounded-full", c.passed ? "bg-teal-soft text-[#0a7467]" : "bg-amber-soft text-[#9a6206]")}>{c.passed ? <Check size={11} /> : "!"}</span>
+                <li key={c.id} className="flex items-center gap-2 text-sm">
+                  <span className={cn("grid h-4 w-4 place-items-center rounded-full", c.passed ? "bg-teal-soft text-[#087f5b]" : "bg-amber-soft text-[#8a5200]")}>{c.passed ? <Check size={11} /> : "!"}</span>
                   {c.label ?? c.id}
                 </li>
               ))}

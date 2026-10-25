@@ -6,4 +6,9 @@ html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
-:focus-visible { outline: 2px solid #1e4a8a; outline-offset: 2px; }
+:focus-visible { outline: 2px solid #3b5bdb; outline-offset: 2px; }
+
+:root { --tint: #edf2ff; }
+body { font-size: 16px; line-height: 1.55; }
+.card-lift { transition: box-shadow .2s ease, transform .2s ease; }
+.card-lift:hover { box-shadow: 0 2px 4px rgba(31,36,48,.06), 0 14px 32px -12px rgba(59,91,219,.28); transform: translateY(-1px); }

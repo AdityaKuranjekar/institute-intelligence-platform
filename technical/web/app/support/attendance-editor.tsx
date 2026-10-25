@@ -4,7 +4,6 @@ import { Loader2, Pencil } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui";
 import { useApp } from "@/lib/app-context";
-import { useAuth } from "@/lib/auth";
 import { ApiError } from "@/lib/http";
 import { patchAttendance, type AttendanceResult } from "@/lib/teacher-api";
 
@@ -21,13 +20,10 @@ export function AttendanceEditor({
   alwaysOpen?: boolean;
 }) {
   const { L } = useApp();
-  const { can } = useAuth();
   const [open, setOpen] = useState(alwaysOpen);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  if (!can("edit_attendance")) return current !== undefined ? <span className="text-xs text-ink-soft">{L("Attendance", "उपस्थिति")} {current}%</span> : null;
 
   const save = async () => {
     const v = Number(text.replace("%", "").trim());
@@ -90,7 +86,7 @@ export function AttendanceEditor({
         )}
       </div>
       {error && (
-        <p id={`att-err-${studentId}`} role="alert" data-testid="attendance-error" className="mt-1 text-xs text-[#7a4e05]">
+        <p id={`att-err-${studentId}`} role="alert" data-testid="attendance-error" className="mt-1 text-xs text-[#8a5200]">
           {error}
         </p>
       )}

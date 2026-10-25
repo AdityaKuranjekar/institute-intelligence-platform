@@ -5,8 +5,9 @@ export { API_BASE };
 
 // Artifact-shaped reads live at {base}/{institute|global}/{file}. If the FastAPI server uses a
 // different path shape for these, change only urlFor.
+const ALIAS: Partial<Record<FileKey, string>> = { owner: "/owner/dashboard", datacard: "/datacard", scaling: "/scaling", models: "/models" };
 export function urlFor(file: FileKey, institute: string) {
-  return `/${GLOBAL_FILES.includes(file) ? "global" : institute}/${file}`;
+  return ALIAS[file] ?? `/${GLOBAL_FILES.includes(file) ? "global" : institute}/${file}`;
 }
 export const figureUrl = (path: string) => `${API_BASE}/figures/${path.split("/").pop()}`;
 
