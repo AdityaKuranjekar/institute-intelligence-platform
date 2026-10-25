@@ -41,8 +41,15 @@ test("edit attendance inline: server validation message, then the list updates i
 test("a minor's attendance edit is saved but the model does not use it (academic track)", async ({ page }) => {
   await signIn(page, "teacher");
   await page.goto("/teacher");
-  const minor = page.locator('[data-testid="support-list"] li[data-track="academic_support"]').first();
-  await minor.getByTestId("edit-attendance").click();
+  await page.waitForLoadState("networkidle");
+  const first = page.locator('[data-testid="support-list"] li[data-track="academic_support"]').first();
+  await expect(first).toBeVisible();
+  const sid = await first.getAttribute("data-student");
+  const minor = page.locator(`[data-testid="support-list"] li[data-student="${sid}"]`);
+  await expect(async () => {
+    await minor.getByTestId("edit-attendance").click();
+    await expect(minor.getByTestId("attendance-input")).toBeVisible({ timeout: 2000 });
+  }).toPass({ timeout: 20_000 });
   await minor.getByTestId("attendance-input").fill("40");
   await minor.getByTestId("attendance-save").click();
   await expect(page.getByTestId("edit-note")).toContainText("Under 18");
