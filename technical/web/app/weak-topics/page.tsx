@@ -72,7 +72,7 @@ export default function WeakTopicsPage() {
   return (
     <div className="space-y-6">
       <UploadBanner />
-      <PageHead sub={L("Darker means stronger. Look down a column to see a topic the whole class finds hard.", "गहरा रंग मतलब ज़्यादा मज़बूत। किसी कॉलम में ऊपर से नीचे देखें: जो विषय पूरी कक्षा को कठिन लगता है।")} right={<BatchPicker onChange={() => setSel(null)} />} />
+      <PageHead sub={L("Darker means stronger. A mostly pale column is a topic the whole class finds hard.", "गहरा रंग यानी ज़्यादा मज़बूत। लगभग हल्का कॉलम वह विषय है जो पूरी कक्षा को कठिन लगता है।")} right={<BatchPicker onChange={() => setSel(null)} />} />
 
       {hm.loading || rosterLoading ? (
         <PageSkeleton />

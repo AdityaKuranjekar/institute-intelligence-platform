@@ -10,8 +10,8 @@ export const BAND_COLOR: Record<Band, string> = {
 };
 export const BAND_LABEL: Record<Band, [string, string]> = {
   not_enough_data: ["Not enough data", "पर्याप्त डेटा नहीं"],
-  needs_support: ["Building", "सीख रहे हैं"],
-  steady: ["Steady", "स्थिर"],
+  needs_support: ["Needs practice", "अभ्यास चाहिए"],
+  steady: ["Fair", "ठीक-ठाक"],
   strong: ["Strong", "मज़बूत"],
 };
 export const BAND_TONE: Record<Band, "neutral" | "calm" | "brand" | "teal" | "amber"> = {

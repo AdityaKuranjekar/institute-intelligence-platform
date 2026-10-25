@@ -10,7 +10,7 @@ test("the app opens straight into the product: no login, one navigation, small t
   await expect(page.locator("nav")).toHaveCount(1); // exactly one navigation in the whole page (the sidebar; a drawer on phones)
   await expect(page.getByTestId("page-title")).toHaveText("Home");
   await expect(page.getByTestId("headline-numbers")).toBeVisible();
-  await expect(page.getByTestId("primary-cta")).toContainText("Next: Add data");
+  await expect(page.getByTestId("primary-cta")).toContainText("Next step: Add data");
 });
 
 // Every page, one after the other, with NO reload in between: content must be visible each time.
@@ -23,7 +23,7 @@ const PAGES: [string | RegExp, string, RegExp][] = [
   ["Results", "Results", /Retention by month/],
   ["Privacy and consent", "Privacy and consent", /What the early-warning model may use/],
   ["How it works and evidence", "How it works and evidence", /./],
-  ["Home", "Home", /Your week in 5 steps/],
+  ["Home", "Home", /This week's checklist/],
 ];
 test("click through every page in sequence without reloading", async ({ page }) => {
   await openApp(page);

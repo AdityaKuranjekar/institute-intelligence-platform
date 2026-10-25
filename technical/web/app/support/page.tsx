@@ -57,7 +57,7 @@ export default function SupportPage() {
   return (
     <div className="space-y-5">
       <UploadBanner />
-      <PageHead sub={L("A short list, chosen to fit your mentors' time. Each name comes with why, and one kind next step. Listed by name, not by priority.", "आपके मेंटरों के समय के हिसाब से छोटी सूची। हर नाम के साथ कारण और एक सहयोगी कदम। नाम के क्रम में, प्राथमिकता के नहीं।")} right={<BatchPicker />} />
+      <PageHead sub={L("A short list sized to your mentors' time. Each name shows the reason and one next step. Sorted by name.", "मेंटरों के समय के हिसाब से छोटी सूची। हर नाम के साथ कारण और एक अगला कदम। नाम के क्रम में।")} right={<BatchPicker />} />
 
       <Card className="bg-white">
         <CardTitle
@@ -79,8 +79,8 @@ export default function SupportPage() {
         ) : !sl.data ? (
           <Unavailable what={L("support list", "सहयोग सूची")} detail={sl.error} status={sl.status} onRetry={sl.reload} />
         ) : rows.length === 0 ? (
-          <EmptyState title={L("Nobody needs extra help this week", "इस सप्ताह किसी को अतिरिक्त मदद नहीं चाहिए")} tone="teal">
-            {L("Good news. Check again after the next test.", "अच्छी खबर। अगले टेस्ट के बाद फिर देखें।")}
+          <EmptyState title={L("No one is on the list this week", "इस सप्ताह सूची में कोई नहीं है")} tone="teal">
+            {L("Check again after the next test.", "अगले टेस्ट के बाद फिर देखें।")}
           </EmptyState>
         ) : (
           <ul className="space-y-3" data-testid="support-list">
@@ -111,7 +111,7 @@ export default function SupportPage() {
                   </button>
                   {isOpen && (
                     <div className="mt-2 rounded-xl bg-bg p-3">
-                      <p className="mb-1 text-sm text-ink-soft">{L("If the attendance record is wrong, correct it here and the list updates.", "यदि उपस्थिति रिकॉर्ड गलत है तो यहाँ सुधारें, सूची अपडेट हो जाएगी।")}</p>
+                      <p className="mb-1 text-sm text-ink-soft">{L("If the attendance record is wrong, correct it here.", "उपस्थिति रिकॉर्ड गलत हो तो यहाँ सुधारें।")}</p>
                       <AttendanceEditor studentId={row.student_id} current={row.attendance_pct} onSaved={saved} />
                     </div>
                   )}
@@ -123,8 +123,8 @@ export default function SupportPage() {
       </Card>
 
       <Card>
-        <CardTitle>{L("Try a change", "बदलकर देखें")}</CardTitle>
-        <p className="mb-3 text-sm text-ink-soft">{L("Pick any student, type a new attendance %, and watch the list above update. Students under 18 stay on the academic track: their attendance is saved but not used to build the list.", "कोई भी विद्यार्थी चुनें, नई उपस्थिति % लिखें और ऊपर की सूची को बदलते देखें। 18 से कम उम्र के विद्यार्थी शैक्षिक ट्रैक पर रहते हैं: उनकी उपस्थिति सहेजी जाती है पर सूची बनाने में इस्तेमाल नहीं होती।")}</p>
+        <CardTitle>{L("Correct attendance", "उपस्थिति सुधारें")}</CardTitle>
+        <p className="mb-3 text-sm text-ink-soft">{L("Choose a student and enter the correct attendance %. The list above updates. For students under 18 the attendance is saved, but it is not used to build the list.", "विद्यार्थी चुनें और सही उपस्थिति % लिखें। ऊपर की सूची बदल जाएगी। 18 से कम उम्र के विद्यार्थियों की उपस्थिति सहेजी जाती है, पर सूची बनाने में इस्तेमाल नहीं होती।")}</p>
         {inBatch.length === 0 ? (
           <p className="text-sm text-ink-soft">{L("No students in this batch yet.", "इस बैच में अभी कोई विद्यार्थी नहीं।")}</p>
         ) : (
