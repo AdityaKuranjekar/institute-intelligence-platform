@@ -4,7 +4,6 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge, Button, Card, CardTitle, Empty, Select, Unavailable } from "@/components/ui";
 import { useApp } from "@/lib/app-context";
-import { useAuth } from "@/lib/auth";
 import { ApiError } from "@/lib/http";
 import { fixKey, getFlagged, getTests, type Flagged } from "@/lib/teacher-api";
 import { pct } from "@/lib/utils";
@@ -13,7 +12,6 @@ type Load<T> = { data: T | null; error: ApiError | null; loading: boolean };
 
 export function FlaggedPanel({ batchId }: { batchId: string }) {
   const { L } = useApp();
-  const { can } = useAuth();
   const [tests, setTests] = useState<Load<{ test_id: string; name: string; date?: string }[]>>({ data: null, error: null, loading: true });
   const [testId, setTestId] = useState("");
   const [flagged, setFlagged] = useState<Load<Flagged[]>>({ data: null, error: null, loading: false });
@@ -69,7 +67,7 @@ export function FlaggedPanel({ batchId }: { batchId: string }) {
     }
   };
 
-  const editable = can("fix_key");
+  const editable = true;
   return (
     <Card>
       <CardTitle right={tests.data && tests.data.length > 0 ? <Select label={L("Test", "टेस्ट")} value={testId} onChange={setTestId} options={tests.data.map((t) => ({ value: t.test_id, label: `${t.name}${t.date ? ` · ${t.date}` : ""}` }))} /> : undefined}>
@@ -98,7 +96,7 @@ export function FlaggedPanel({ batchId }: { batchId: string }) {
                 </span>
                 {f.status === "fixed" ? <Badge tone="teal">{L("Key fixed", "कुंजी ठीक की गई")}</Badge> : <Badge tone="amber">{L("Please check", "कृपया जाँचें")}</Badge>}
               </div>
-              <p className="mt-1 text-[13px] text-ink-soft">
+              <p className="mt-1 text-sm text-ink-soft">
                 {L(
                   `Key says ${f.current_key}. ${pct(f.share_top_group_chose_suggested ?? 0)} of the strongest students chose ${f.suggested_key}, ${pct(f.share_chose_current_key ?? 0)} chose ${f.current_key}. ${f.n_students ?? "?"} students.`,
                   `कुंजी में ${f.current_key} है। सबसे मज़बूत विद्यार्थियों में से ${pct(f.share_top_group_chose_suggested ?? 0)} ने ${f.suggested_key} चुना, ${pct(f.share_chose_current_key ?? 0)} ने ${f.current_key}। ${f.n_students ?? "?"} विद्यार्थी।`
@@ -128,8 +126,8 @@ export function FlaggedPanel({ batchId }: { batchId: string }) {
           ))}
         </ul>
       )}
-      {msg && <p role="status" className="mt-3 rounded-xl bg-teal-soft px-3 py-2 text-sm text-[#0a7467]">{msg}</p>}
-      {err && <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#7a4e05]">{err}</p>}
+      {msg && <p role="status" className="mt-3 rounded-xl bg-teal-soft px-3 py-2 text-sm text-[#087f5b]">{msg}</p>}
+      {err && <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#8a5200]">{err}</p>}
     </Card>
   );
 }

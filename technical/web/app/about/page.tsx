@@ -42,7 +42,7 @@ export default function HowItWorksPage() {
 
   return (
     <div className="space-y-6">
-      <PageHead title={L("How it works", "यह कैसे काम करता है")} sub={L("From a pain point to a model to a screen, and how it grows.", "समस्या से मॉडल, मॉडल से स्क्रीन, और यह कैसे बढ़ता है।")} right={<Origin origin={s.origin} />} />
+      <PageHead sub={L("From a pain point to a model to a screen, and how it grows.", "समस्या से मॉडल, मॉडल से स्क्रीन, और यह कैसे बढ़ता है।")} right={<Origin origin={s.origin} />} />
 
       <Card>
         <CardTitle>{L("Five pain points", "पाँच समस्याएँ")}</CardTitle>

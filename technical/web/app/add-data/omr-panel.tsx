@@ -57,7 +57,7 @@ export function OmrPanel() {
     try {
       const r = await confirmOmr(job.job_id, fixes);
       setDone(r);
-      setTimeout(() => router.push(`${r.redirect ?? "/teacher"}?uploaded=${job.job_id}`), 1400);
+      setTimeout(() => router.push(`/weak-topics?uploaded=${job.job_id}`), 1400);
     } catch (e) {
       fail(e);
     } finally {
@@ -76,7 +76,7 @@ export function OmrPanel() {
           <input ref={input} data-testid="omr-file" type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => void pick(e.target.files?.[0])} />
         </label>
         {err && (
-          <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#7a4e05]">
+          <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#8a5200]">
             {err}
           </p>
         )}
@@ -142,7 +142,7 @@ export function OmrPanel() {
 
       {done && (
         <Card>
-          <p className="flex items-center gap-1.5 font-medium text-[#0a7467]" role="status"><CheckCircle2 size={16} /> {L("Sheet scored. Opening the heatmap…", "शीट का अंकन हुआ। हीटमैप खुल रहा है…")}</p>
+          <p className="flex items-center gap-1.5 font-medium text-[#087f5b]" role="status"><CheckCircle2 size={16} /> {L("Sheet scored. Opening the heatmap…", "शीट का अंकन हुआ। हीटमैप खुल रहा है…")}</p>
           <p className="mt-1 text-sm text-ink-soft">
             {L("Correct", "सही")} {done.scored.correct} · {L("wrong", "गलत")} {done.scored.wrong} · {L("blank", "खाली")} {done.scored.blank} · {L("marks", "अंक")} {done.scored.marks}/{done.scored.max_marks}
           </p>

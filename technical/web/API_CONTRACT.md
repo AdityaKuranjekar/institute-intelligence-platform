@@ -1,13 +1,13 @@
 # What the web app sends and expects (for the backend)
 
 The web app calls `${NEXT_PUBLIC_API_BASE}${path}`. Mock: `/api/mock` (in-process, `lib/mock/server.ts`). Real server: set `NEXT_PUBLIC_API_BASE=http://localhost:8000/api/v1` and rebuild (`NEXT_PUBLIC_*` is compiled in). Errors use FastAPI's `{"detail": "text"}` or `{"detail": [{"loc": ["body","field"], "msg": "text"}]}`; the screen shows `msg` as is (for example "Attendance must be between 0 and 100 (got 140)").
-Every call except `POST /auth/login` sends `Authorization: Bearer <token>`. 401 sends the user to the login screen; 403 shows "not available for your role". CORS must allow the web origin and the `Authorization` header.
+Every call except `POST /auth/login` sends `Authorization: Bearer <token>`. 401: the app gets a new demo token and retries once; 403 shows "not available". CORS must allow the web origin and the `Authorization` header.
 
 Each response below is validated with zod in `lib/*.ts`; extra fields are fine, missing required ones show an error.
 
 | Method and path | Request | Response (fields the UI reads) |
 |---|---|---|
-| `POST /auth/login` | `{role: owner|teacher|mentor|student|parent, institute_id}` | `{access_token, user: {id, role, name, institute_id, student_id|null}}` (student and parent get the first student by roll no.) |
+| `POST /auth/login` | `{role: "owner", institute_id}` (the app always signs in as owner, silently, and again after any 401) | `{access_token, me: {name, role, institute_slug, ...}}`; the client also accepts `user` |
 | `GET /{institute}/{file}` and `/global/{file}` | | Artifact-shaped JSON, the same bodies as `ml/artifacts/<institute>/<file>.json`. Files: `mastery risk student percentile parent reports owner datacard` and global `moat scaling models metrics`. Student and parent roles must only receive their own `student_id` rows. `risk.list[].attendance_pct` is new and optional. |
 | `POST /ingest/{students,attendance,fees,results,answer-key}` | multipart `file` (CSV or XLSX) | job preview (below), HTTP 201 |
 | `POST /ingest/jobs/{id}/mapping` | `{mapping: {source_column: target_field|null}}` | job preview (re-validated) |
@@ -31,3 +31,6 @@ Each response below is validated with zod in `lib/*.ts`; extra fields are fine, 
 Job preview fields: `job_id, kind, filename, status, stage, progress, row_count, accepted_count, error_count, warning_count, rejected_rows, columns: [{source, target|null, confidence 0..1, alternatives}], targets: [{id, required, label_en, label_hi}], missing_required: [target ids], one_of: [target ids]|null, one_of_missing, can_commit, errors: [{row, column, code, severity: "error"|"warning", value, message_en, message_hi}], errors_truncated, sample_rows: [{source_column: value}], redirect`. Target ids follow `contracts/csv_templates/*.csv` (for attendance, `attendance_pct` is an addition so a percent-per-student sheet also works).
 
 Roles enforced by the mock (the real server should do the same): staff = owner, teacher, mentor. Ingest and answer keys: owner, teacher. Attendance edit: staff. Consent write and privacy-tier PUT: owner only. Student and parent: only their own artifact rows and report. Other institute: 403.
+
+
+The screens read batch and student data from `GET /batches`, `/batches/{id}/students|heatmap|support-list`, `/students/{id}/profile|parent-view`, `/owner/dashboard`, `/datacard`, `/scaling`, `/models`, and `/global/moat` (all served by the real backend and by the mock).

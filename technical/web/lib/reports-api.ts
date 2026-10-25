@@ -10,12 +10,12 @@ export const ReportSchema = z
     verified: z.boolean(),
     checks: z.array(z.object({ id: z.string(), label: z.string().optional(), passed: z.boolean() })),
     source: z.string(),
-    llm_requested: z.boolean().optional(),
-    llm_available: z.boolean().optional(),
-    fallback_used: z.boolean().optional(),
+    llm_requested: z.boolean().nullish(),
+    llm_available: z.boolean().nullish(),
+    fallback_used: z.boolean().nullish(),
     fallback_reason: z.string().nullable().optional(),
-    hi_reviewed: z.boolean().optional(),
-    latency_ms: z.number().optional(),
+    hi_reviewed: z.boolean().nullish(),
+    latency_ms: z.number().nullish(),
   })
   .passthrough();
 export type GeneratedReport = z.infer<typeof ReportSchema>;

@@ -4,7 +4,6 @@ import { Loader2, ShieldCheck } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Badge, Button, Card, CardTitle, Empty, Note, Origin, PageHead, PageSkeleton, Unavailable } from "@/components/ui";
 import { useApp } from "@/lib/app-context";
-import { useAuth } from "@/lib/auth";
 import { ApiError } from "@/lib/http";
 import { addConsent, getConsents, getTier, putTier, withdrawConsent, type Consent, type Tier } from "@/lib/privacy-api";
 import { cn, pct } from "@/lib/utils";
@@ -14,7 +13,6 @@ const errText = (e: unknown) => (e instanceof ApiError ? e.message : (e as Error
 
 function TierCard() {
   const { L } = useApp();
-  const { can } = useAuth();
   const [tier, setTier] = useState<Tier | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
   const [choice, setChoice] = useState<Tier["tier"] | null>(null);
@@ -34,7 +32,7 @@ function TierCard() {
   const cur = tier.options.find((o) => o.tier === tier.tier)!;
   const pick = choice ?? tier.tier;
   const next = tier.options.find((o) => o.tier === pick)!;
-  const owner = can("set_tier");
+  const owner = true;
   const apply = async () => {
     setBusy(true);
     setErr(null);
@@ -118,10 +116,10 @@ function TierCard() {
           {busy && <Loader2 size={14} className="animate-spin motion-reduce:animate-none" />}
           {L("Apply this setting", "यह सेटिंग लागू करें")}
         </Button>
-        {!owner && <span className="text-sm text-ink-soft">{L("Only the owner can change this.", "इसे केवल मालिक बदल सकता है।")}</span>}
+        
       </div>
-      {result && <p role="status" data-testid="tier-result" className="mt-3 rounded-xl bg-teal-soft px-3 py-2 text-sm text-[#0a7467]">{result}</p>}
-      {err && <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#7a4e05]">{err}</p>}
+      {result && <p role="status" data-testid="tier-result" className="mt-3 rounded-xl bg-teal-soft px-3 py-2 text-sm text-[#087f5b]">{result}</p>}
+      {err && <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#8a5200]">{err}</p>}
       <p className="mt-3 text-xs text-ink-mute">{L("Numbers come from the synthetic 2026 test cohort (3 snapshots, 45-day horizon, capacity 5% of active students). A real pilot settles the true values.", "आँकड़े कृत्रिम 2026 टेस्ट समूह के हैं (3 स्नैपशॉट, 45 दिन की अवधि, क्षमता सक्रिय विद्यार्थियों का 5%)। असली मान पायलट से तय होंगे।")}</p>
     </Card>
   );
@@ -129,8 +127,7 @@ function TierCard() {
 
 function Ledger() {
   const { L } = useApp();
-  const { can } = useAuth();
-  const owner = can("manage_consent");
+  const owner = true;
   const [q, setQ] = useState("");
   const [data, setData] = useState<{ items: Consent[]; summary: { total: number; active: number; withdrawn: number } } | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
@@ -235,8 +232,8 @@ function Ledger() {
           <Button variant="ghost" disabled={sp >= pages - 1} onClick={() => setPage(sp + 1)}>{L("Next", "अगला")}</Button>
         </div>
       )}
-      {msg && <p role="status" data-testid="consent-msg" className="mt-3 rounded-xl bg-teal-soft px-3 py-2 text-sm text-[#0a7467]">{msg}</p>}
-      {err && <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#7a4e05]">{err}</p>}
+      {msg && <p role="status" data-testid="consent-msg" className="mt-3 rounded-xl bg-teal-soft px-3 py-2 text-sm text-[#087f5b]">{msg}</p>}
+      {err && <p role="alert" className="mt-3 rounded-xl bg-amber-soft px-3 py-2 text-sm text-[#8a5200]">{err}</p>}
 
       {owner && (
         <form
@@ -278,12 +275,9 @@ function Ledger() {
 
 export default function PrivacyPage() {
   const { L } = useApp();
-  const { session, ready } = useAuth();
-  if (!ready || !session) return <PageSkeleton />;
-  if (session.user.role === "student" || session.user.role === "parent") return <Note tone="calm">{L("This page is for the institute's staff.", "यह पेज संस्थान के स्टाफ़ के लिए है।")}</Note>;
   return (
     <div className="space-y-6">
-      <PageHead title={L("Consent and privacy", "सहमति और गोपनीयता")} sub={L("Who has agreed, and what the early-warning model is allowed to see.", "किसने सहमति दी है और अर्ली-वार्निंग मॉडल क्या देख सकता है।")} />
+      <PageHead sub={L("Who has agreed, and what the early-warning model is allowed to see.", "किसने सहमति दी है और अर्ली-वार्निंग मॉडल क्या देख सकता है।")} />
       <TierCard />
       <Ledger />
     </div>

@@ -4,12 +4,12 @@ import { useEffect, useRef } from "react";
 import type { EChartsOption, ECharts } from "echarts";
 
 // One consistent ECharts theme: calm blue / teal / amber, never red.
-export const PALETTE = ["#1e4a8a", "#0e9f8e", "#d98a0b", "#5b6fb3", "#7886a3"];
+export const PALETTE = ["#3b5bdb", "#0ca678", "#f08c00", "#7048e8", "#6b7389"];
 const BASE: EChartsOption = {
   color: PALETTE,
   textStyle: { fontFamily: "'Inter Variable', 'Noto Sans Devanagari Variable', system-ui, sans-serif", color: "#4a5876" },
   grid: { left: 40, right: 16, top: 24, bottom: 32, containLabel: true },
-  tooltip: { backgroundColor: "#fff", borderColor: "#e3e8f1", textStyle: { color: "#17233b" } },
+  tooltip: { backgroundColor: "#fff", borderColor: "#e3e8f1", textStyle: { color: "#1f2430" } },
 };
 
 export function EChart({
@@ -25,6 +25,8 @@ export function EChart({
 }) {
   const el = useRef<HTMLDivElement>(null);
   const chart = useRef<ECharts | null>(null);
+  const optRef = useRef(option);
+  optRef.current = option;
   const clickRef = useRef(onClick);
   clickRef.current = onClick;
 
@@ -37,7 +39,7 @@ export function EChart({
       chart.current.on("click", (p) => clickRef.current?.(p as never));
       ro = new ResizeObserver(() => chart.current?.resize());
       ro.observe(el.current);
-      chart.current.setOption({ ...BASE, ...option, animation: !matchMedia("(prefers-reduced-motion: reduce)").matches });
+      chart.current.setOption({ ...BASE, ...optRef.current, animation: !matchMedia("(prefers-reduced-motion: reduce)").matches }, true);
     });
     return () => {
       dead = true;

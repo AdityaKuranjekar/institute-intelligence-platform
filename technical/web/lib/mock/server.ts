@@ -181,7 +181,7 @@ async function login(json: J | undefined): Promise<MockRes> {
   const token = `mock.${role}.${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
   const user: User = { id: `demo-${role}-${inst}`, role, name, institute_id: inst, student_id: sid };
   S.tokens.set(token, user);
-  return ok({ access_token: token, token_type: "bearer", user });
+  return ok({ access_token: token, token_type: "bearer", token, me: { user_id: user.id, name: user.name, role, institute_slug: inst, student_id: sid }, user });
 }
 
 // ---- ingest ---------------------------------------------------------------------------------------
@@ -473,6 +473,63 @@ async function tierView(inst: string): Promise<J> {
   };
 }
 
+
+// ---- real-server-shaped reads, composed from the artifact files -------------------------------------
+async function batchList(inst: string): Promise<J[]> {
+  return ((await art(inst, "mastery"))?.batches as J[]) ?? [];
+}
+async function batchPeople(inst: string, ids: string[]): Promise<J[]> {
+  const st = new Map((await students(inst)).map((x) => [x.student_id, x]));
+  const adults = new Set((((await art(inst, "risk"))?.list as J[]) ?? []).filter((x) => x.track === "full").map((x) => x.student_id));
+  return ids.map((sid) => {
+    const x = st.get(sid);
+    return {
+      student_id: sid,
+      roll_no: x?.roll_no ?? `ID-${sid.slice(0, 4)}`,
+      name: x?.display_name ?? `Student ${sid.slice(0, 4)}`,
+      status: "active",
+      dob: x ? (x.age_class === "minor" ? "2010-06-01" : "2000-06-01") : adults.has(sid) ? "2004-01-01" : "2010-06-01",
+    };
+  });
+}
+async function liveRead(inst: string, p: string[]): Promise<MockRes | null> {
+  const [a, b, c] = p;
+  if (a === "batches" && !b) {
+    const risk = await art(inst, "risk");
+    const bs = await batchList(inst);
+    return ok({ institute_slug: inst, batches: bs.map((x) => ({ id: x.batch_id, name: x.name, exam: x.exam, class_level: x.class_level, academic_year: 2026, mentor_capacity_per_week: Math.max(1, Math.round(((risk?.capacity_per_week as number) ?? 4) / Math.max(1, bs.length))), students: x.student_ids.length, active_students: x.student_ids.length })) });
+  }
+  if (a === "batches" && b && (c === "students" || c === "heatmap" || c === "support-list")) {
+    const bt = (await batchList(inst)).find((x) => x.batch_id === b);
+    if (!bt) return fail(404, "Unknown batch");
+    if (c === "students") return ok({ batch_id: b, students: await batchPeople(inst, bt.student_ids) });
+    if (c === "heatmap") {
+      const m = (await art(inst, "mastery")) as J;
+      const ids = new Set<string>(bt.student_ids);
+      m.batches = [bt];
+      m.cells = (m.cells as J[]).filter((x) => ids.has(x.student_id));
+      m.students = (await batchPeople(inst, bt.student_ids)).map((x) => ({ student_id: x.student_id, roll_no: x.roll_no, name: x.name }));
+      return ok(m);
+    }
+    const r = await supportList(inst);
+    if (!r) return fail(404, "No support list");
+    const ids = new Set<string>(bt.student_ids);
+    r.list = (r.list as J[]).filter((x) => ids.has(x.student_id)).map((x, i) => ({ ...x, priority_slot: i + 1 }));
+    return ok(r);
+  }
+  if (a === "students" && b && (c === "profile" || c === "parent-view" || c === "percentile")) {
+    const file = c === "profile" ? "student" : c === "parent-view" ? "parent" : "percentile";
+    const body = await art(inst, file);
+    if (!body) return fail(404, "No data");
+    const key = file === "parent" ? "parents" : "students";
+    const rows = (body[key] as J[]).filter((x) => x.student_id === b);
+    if (!rows.length) return fail(404, "Not enough data for this student yet");
+    body[key] = rows;
+    return ok(body);
+  }
+  return null;
+}
+
 // ---- router ---------------------------------------------------------------------------------------------
 function can(u: User, method: string, p: string[]): string | null {
   const [a, b] = p;
@@ -541,7 +598,6 @@ export async function handle(req: MockReq): Promise<MockRes> {
   }
 
   if (a === "batches" && b && c === "tests" && method === "GET") return ok({ batch_id: b, tests: await testsFor(inst, b), simulated: true });
-  if (a === "batches" && b && c === "support-list" && method === "GET") return ok(await supportList(inst));
   if (a === "tests" && b && c === "flagged-questions" && method === "GET") return ok({ test_id: b, flagged: flaggedFor(b), origin: "synthetic", simulated: true });
   if (a === "answer-keys" && b && c && method === "POST") {
     const key = String(req.json?.key ?? "").trim().toUpperCase();
@@ -612,6 +668,12 @@ export async function handle(req: MockReq): Promise<MockRes> {
     }
   }
 
+  if (method === "GET") {
+    const live = await liveRead(inst, p);
+    if (live) return live;
+    if (a === "owner" && b === "dashboard") return readFile(u, inst, "owner");
+    if (!b && (a === "datacard" || a === "scaling" || a === "models")) return readFile(u, a === "datacard" ? inst : "global", a);
+  }
   // artifact-shaped reads: /{institute|global}/{file}
   if (a && b && !c && method === "GET" && /^[a-z0-9_]+$/.test(a) && /^[a-z0-9_]+$/.test(b)) return readFile(u, a, b);
   return fail(404, `No route for ${method} /${p.join("/")}`);

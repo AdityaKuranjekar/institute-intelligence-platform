@@ -1,23 +1,24 @@
 // Plain-language mastery bands. Raw ability (theta) is never shown to students or parents.
 export type Band = "not_enough_data" | "needs_support" | "steady" | "strong";
 
+// Sequential light-yellow -> teal -> navy: ordered by lightness, so it stays readable with red-green colour blindness.
 export const BAND_COLOR: Record<Band, string> = {
-  not_enough_data: "#eef1f6",
-  needs_support: "#c9daf2",
-  steady: "#7fa3d8",
-  strong: "#1e4a8a",
+  not_enough_data: "#ece9e3",
+  needs_support: "#fde9a6",
+  steady: "#4fb3a5",
+  strong: "#2d3a8c",
 };
 export const BAND_LABEL: Record<Band, [string, string]> = {
   not_enough_data: ["Not enough data", "पर्याप्त डेटा नहीं"],
-  needs_support: ["Building", "सीख रहे हैं"],
-  steady: ["Steady", "स्थिर"],
+  needs_support: ["Needs practice", "अभ्यास चाहिए"],
+  steady: ["Fair", "ठीक-ठाक"],
   strong: ["Strong", "मज़बूत"],
 };
-export const BAND_TONE: Record<Band, "neutral" | "calm" | "brand" | "teal"> = {
+export const BAND_TONE: Record<Band, "neutral" | "calm" | "brand" | "teal" | "amber"> = {
   not_enough_data: "neutral",
-  needs_support: "calm",
-  steady: "brand",
-  strong: "teal",
+  needs_support: "amber",
+  steady: "teal",
+  strong: "brand",
 };
 
 /** Same cut-offs the model uses (observed from mastery.json). */
