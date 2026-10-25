@@ -7,7 +7,7 @@ test("the app opens straight into the product: no login, one navigation, small t
   await openApp(page);
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByText(/sign in|log in/i)).toHaveCount(0);
-  await expect(page.getByRole("navigation", { name: /^Main$/ })).toHaveCount(1); // exactly one main navigation
+  await expect(page.locator("nav")).toHaveCount(1); // exactly one navigation in the whole page (the sidebar; a drawer on phones)
   await expect(page.getByTestId("page-title")).toHaveText("Home");
   await expect(page.getByTestId("headline-numbers")).toBeVisible();
   await expect(page.getByTestId("primary-cta")).toContainText("Next: Add data");

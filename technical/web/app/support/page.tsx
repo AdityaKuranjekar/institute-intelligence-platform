@@ -16,7 +16,7 @@ export default function SupportPage() {
   const { L, lang, institute } = useApp();
   const { batch, loading: bl, error: be, status: bs, reload: br } = useBatchChoice();
   const sl = useSupportList(batch?.id ?? null);
-  const { byId } = useRoster();
+  const { byId, loading: rosterLoading } = useRoster();
   const [done, setDone] = useState<string[]>([]);
   const [note, setNote] = useState<{ en: string; hi: string } | null>(null);
   const [open, setOpen] = useState<string | null>(null);
@@ -74,7 +74,7 @@ export default function SupportPage() {
             {L(note.en, note.hi)}
           </p>
         )}
-        {sl.loading ? (
+        {sl.loading || rosterLoading ? (
           <PageSkeleton />
         ) : !sl.data ? (
           <Unavailable what={L("support list", "सहयोग सूची")} detail={sl.error} status={sl.status} onRetry={sl.reload} />

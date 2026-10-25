@@ -8,6 +8,7 @@ import { useApp } from "@/lib/app-context";
 import { useParentView, useRoster } from "@/lib/views";
 import { cn } from "@/lib/utils";
 
+const FEE: Record<string, [string, string]> = { on_track: ["On track", "समय पर"], paid: ["Paid", "भुगतान हो गया"], due_soon: ["Due soon", "जल्द देय"], late: ["A little late", "थोड़ी देर"], overdue: ["A little late", "थोड़ी देर"] };
 const TYPE_LABEL: Record<string, [string, string]> = {
   monthly_report: ["Monthly report", "मासिक रिपोर्ट"],
   fee_reminder: ["Fee reminder", "फ़ीस सूचना"],
@@ -120,7 +121,7 @@ export function ParentView({ id }: { id: string }) {
               <CardTitle>{L("Next fee due", "अगली फ़ीस")}</CardTitle>
               {ms.fee.amount_inr ? (
                 <p className="text-sm">
-                  ₹{ms.fee.amount_inr.toLocaleString("en-IN")} · {ms.fee.next_due_date} <Badge tone="teal">{ms.fee.status.replace(/_/g, " ")}</Badge>
+                  ₹{ms.fee.amount_inr.toLocaleString("en-IN")} · {ms.fee.next_due_date} <Badge tone="teal">{FEE[ms.fee.status] ? L(...FEE[ms.fee.status]) : ms.fee.status.replace(/_/g, " ")}</Badge>
                 </p>
               ) : (
                 <p className="text-sm text-ink-soft">{L("Nothing due", "कोई बकाया नहीं")}</p>
@@ -165,7 +166,7 @@ export function ParentView({ id }: { id: string }) {
               <CardTitle>{L("Consent", "सहमति")}</CardTitle>
               <Badge tone={p.consent.verified ? "teal" : "amber"}>{p.consent.verified ? L("Verified", "सत्यापित") : L("Pending", "लंबित")}</Badge>
               <p className="mt-2 text-xs text-ink-soft">
-                {p.consent.method.replace(/_/g, " ")} · {p.consent.date}
+                {p.consent.method === "in_person_id_check" ? L("In person, ID checked", "व्यक्तिगत रूप से, ID जाँची") : p.consent.method === "digilocker" ? "DigiLocker" : p.consent.method.replace(/_/g, " ")} · {p.consent.date}
               </p>
               <p className="mt-2 text-xs text-ink-soft">{L("Questions or worries? You can talk to the institute counsellor any time.", "कोई सवाल या चिंता? आप कभी भी संस्थान के काउंसलर से बात कर सकते हैं।")}</p>
             </Card>

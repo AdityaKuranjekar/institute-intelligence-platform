@@ -2,10 +2,10 @@ import { expect, test } from "@playwright/test";
 import { openApp, resetMock } from "./helpers";
 
 const SCREENS: { path: string; text: RegExp }[] = [
-  { path: "/", text: /Your week in 5 steps/ },
+  { path: "/", text: /Your week in 5 steps|5 कदमों/ },
   { path: "/add-data", text: /Spreadsheet|CSV/ },
-  { path: "/weak-topics", text: /Topic by topic/ },
-  { path: "/support", text: /This week/ },
+  { path: "/weak-topics", text: /Topic by topic|विषय-दर-विषय/ },
+  { path: "/support", text: /This week|इस सप्ताह/ },
   { path: "/students", text: /Hi |नमस्ते|Not enough data|अभी पर्याप्त/ },
   { path: "/parents", text: /Monthly report|मासिक रिपोर्ट|Not enough data|अभी पर्याप्त/ },
   { path: "/results", text: /Retention by month|माह के अनुसार/ },

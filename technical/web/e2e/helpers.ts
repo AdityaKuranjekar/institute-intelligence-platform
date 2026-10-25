@@ -27,3 +27,20 @@ export const fixture = (name: string) => path.join(__dirname, "fixtures", name);
 export async function resetMock(page: Page) {
   if (!IS_REAL) await page.request.post("/api/mock/dev/reset");
 }
+
+/** Open the support list on a batch that has people on it (the mock's batches are not all non-empty). */
+export async function openSupportWithRows(page: Page) {
+  await openApp(page, "/support");
+  const list = page.getByTestId("support-list");
+  const empty = page.getByTestId("empty-state");
+  await expect(list.or(empty)).toBeVisible({ timeout: 20_000 });
+  const select = page.getByLabel("Batch", { exact: true }).first();
+  const values = await select.locator("option").evaluateAll((os) => os.map((o) => (o as HTMLOptionElement).value));
+  for (const v of values) {
+    if (await list.isVisible()) return list;
+    await select.selectOption(v);
+    await expect(list.or(empty)).toBeVisible({ timeout: 20_000 });
+  }
+  await expect(list).toBeVisible();
+  return list;
+}

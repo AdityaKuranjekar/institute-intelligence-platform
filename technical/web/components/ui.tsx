@@ -11,7 +11,7 @@ export function Card({ className, ...p }: HTMLAttributes<HTMLDivElement>) {
 
 export function CardTitle({ children, right }: { children: ReactNode; right?: ReactNode }) {
   return (
-    <div className="mb-3 flex items-start justify-between gap-3">
+    <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
       <h3 className="text-[15px] font-semibold text-ink">{children}</h3>
       {right}
     </div>
@@ -155,13 +155,13 @@ export function Select({
   label: string;
 }) {
   return (
-    <label className="inline-flex items-center gap-2 text-sm text-ink-soft">
+    <label className="inline-flex max-w-full items-center gap-2 text-sm text-ink-soft">
       <span className="sr-only sm:not-sr-only">{label}</span>
       <select
         aria-label={label}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-xl border border-line bg-white px-3 py-2 text-sm text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
+        className="min-h-[44px] min-w-0 max-w-full rounded-xl border border-line bg-white px-3 py-2 text-sm text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>

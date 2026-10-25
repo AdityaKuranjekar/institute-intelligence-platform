@@ -1,11 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { go, IS_REAL, openApp, resetMock } from "./helpers";
+import { go, IS_REAL, openApp, openSupportWithRows, resetMock } from "./helpers";
 
 test.beforeEach(async ({ page }) => resetMock(page));
 
 test("support list: names, reasons, a kind next step, never ranked", async ({ page }) => {
-  await openApp(page, "/support");
-  const list = page.getByTestId("support-list");
+  const list = await openSupportWithRows(page);
   await expect(list.locator("li").first()).toBeVisible({ timeout: 15_000 });
   const text = await page.getByRole("main").innerText();
   expect(text).not.toMatch(/rank #|leaderboard|top performer|priority \d/i);
@@ -13,8 +12,7 @@ test("support list: names, reasons, a kind next step, never ranked", async ({ pa
 });
 
 test("edit attendance: server validation message, then the list updates in place", async ({ page }) => {
-  await openApp(page, "/support");
-  const list = page.getByTestId("support-list");
+  const list = await openSupportWithRows(page);
   await expect(list.locator("li").first()).toBeVisible({ timeout: 15_000 });
   const row = list.locator("li").first();
   await row.getByTestId("row-details").click();

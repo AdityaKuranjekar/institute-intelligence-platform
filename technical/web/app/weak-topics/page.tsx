@@ -19,7 +19,7 @@ export default function WeakTopicsPage() {
   const { L, lang } = useApp();
   const { batch, loading: bl, error: be, status: bs, reload: br } = useBatchChoice();
   const hm = useHeatmap(batch?.id ?? null);
-  const { byId } = useRoster();
+  const { byId, loading: rosterLoading } = useRoster();
   const [sel, setSel] = useState<string | null>(null);
   const [details, setDetails] = useState(false);
 
@@ -56,7 +56,7 @@ export default function WeakTopicsPage() {
         },
       },
       xAxis: { type: "category", position: "bottom", data: grid.topics.map(tn), axisLabel: { rotate: 55, interval: 0, fontSize: 11, formatter: (s: string) => (s.length > 24 ? s.slice(0, 23) + "…" : s) }, axisLine: { show: false }, axisTick: { show: false } },
-      yAxis: { type: "category", inverse: true, data: grid.ids.map((s) => nameOf(s).split(" ")[0]), axisLabel: { fontSize: 12 }, axisLine: { show: false }, axisTick: { show: false } },
+      yAxis: { type: "category", inverse: true, data: grid.ids.map((s) => nameOf(s)), axisLabel: { fontSize: 12 }, axisLine: { show: false }, axisTick: { show: false } },
       visualMap: { type: "piecewise", show: false, dimension: 2, pieces: BANDS.map((b, i) => ({ value: i, color: BAND_COLOR[b] })) },
       series: [{ type: "heatmap", data, itemStyle: { borderColor: "#fff", borderWidth: 2, borderRadius: 3 } }],
     } as EChartsOption;
@@ -74,7 +74,7 @@ export default function WeakTopicsPage() {
       <UploadBanner />
       <PageHead sub={L("Darker means stronger. Look down a column to see a topic the whole class finds hard.", "गहरा रंग मतलब ज़्यादा मज़बूत। किसी कॉलम में ऊपर से नीचे देखें: जो विषय पूरी कक्षा को कठिन लगता है।")} right={<BatchPicker onChange={() => setSel(null)} />} />
 
-      {hm.loading ? (
+      {hm.loading || rosterLoading ? (
         <PageSkeleton />
       ) : !m || !grid || !option ? (
         <Unavailable what={L("topic map", "विषय मानचित्र")} detail={hm.error} status={hm.status} onRetry={hm.reload} />

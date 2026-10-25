@@ -114,13 +114,14 @@ export function Shell({ children }: { children: ReactNode }) {
       )}
 
       <header className="sticky top-0 z-30 border-b border-line bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2.5 sm:gap-3">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-2 px-4 py-2.5 sm:flex-nowrap sm:gap-3">
           <button onClick={() => setOpen(true)} aria-label={L("Open menu", "मेन्यू खोलें")} className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-line text-ink-soft hover:bg-bg lg:hidden" data-testid="menu-button">
             <Menu size={20} />
           </button>
-          <h1 className="min-w-0 flex-1 truncate text-lg font-semibold tracking-tight text-ink sm:text-xl" data-testid="page-title">
+          <h1 className="min-w-0 flex-1 basis-[50%] truncate text-lg font-semibold tracking-tight text-ink sm:basis-auto sm:text-xl" data-testid="page-title">
             {L(here.en, here.hi)}
           </h1>
+          <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start sm:gap-3">
           <Select label={L("Institute", "संस्थान")} value={institute} onChange={setInstitute} options={INSTITUTES.map((i) => ({ value: i.id, label: i.label }))} />
           <div role="group" aria-label={L("Language", "भाषा")} className="flex shrink-0 rounded-xl border border-line p-0.5 text-sm">
             {(["en", "hi"] as const).map((l) => (
@@ -133,6 +134,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 {l === "en" ? "EN" : "हि"}
               </button>
             ))}
+          </div>
           </div>
         </div>
       </header>
